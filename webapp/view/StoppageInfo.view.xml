@@ -96,7 +96,7 @@
                             </ColumnListItem>
                         </items>
                     </Table>
-  //hey
+
                     <!-- Pager -->
                     <HBox justifyContent="Center" alignItems="Center" class="mhPager">
                         <Button text="Previous" enabled="false" />
