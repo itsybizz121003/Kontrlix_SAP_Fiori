@@ -39,39 +39,39 @@
                             </VBox>
                         </HBox>
                         <HBox alignItems="Center" class="mhControls">
-                            <Select width="8rem">
+                            <Select width="8rem" selectedKey="{stoppage>/selectedTime}">
                                 <items>
                                     <core:Item key="allTime" text="All Time" />
                                 </items>
                             </Select>
-                            <Select width="10rem">
+                            <Select width="10rem" selectedKey="{stoppage>/selectedMachine}">
                                 <items>
                                     <core:Item key="allMachines" text="All Machines" />
                                 </items>
                             </Select>
-                            <Button text="Refresh" type="Default" />
+                            <Button text="Refresh" type="Default" press=".onRefresh" />
                         </HBox>
                     </HBox>
 
-                    <!-- Summary cards -->
+                    <!-- Summary cards — bound to stoppage model -->
                     <HBox class="liveCardsRow">
                         <VBox class="liveCard">
                             <Text text="RUN TIME" class="dashCardTitle" />
-                            <Text text="727h 17m" class="dashCardValue" />
+                            <Text text="{stoppage>/runTime}" class="dashCardValue" />
                         </VBox>
                         <VBox class="liveCard">
                             <Text text="IDEAL TIME" class="dashCardTitle" />
-                            <Text text="727h 13m" class="dashCardValue" />
+                            <Text text="{stoppage>/idealTime}" class="dashCardValue" />
                         </VBox>
                         <VBox class="liveCard">
                             <Text text="STOP TIME" class="dashCardTitle" />
-                            <Text text="20h 7m" class="dashCardValue" />
+                            <Text text="{stoppage>/stopTime}" class="dashCardValue" />
                         </VBox>
                     </HBox>
 
-                    <!-- Events table -->
-                    <Text text="Stoppage Events (9 total)" class="mhSectionTitle" />
-                    <Table class="mhTable">
+                    <!-- Events table — bound to stoppageRows -->
+                    <Text text="{= 'Stoppage Events (' + ${stoppage>/stoppageTotalCount} + ' total)'}" class="mhSectionTitle" />
+                    <Table class="mhTable" items="{stoppage>/stoppageRows}">
                         <columns>
                             <Column><Text text="MACHINE" /></Column>
                             <Column><Text text="DEVICE ID" /></Column>
@@ -84,14 +84,14 @@
                             <ColumnListItem>
                                 <cells>
                                     <VBox>
-                                        <Text text="ABC Industries" />
-                                        <Text text="Injection Molding Machine X200" />
+                                        <Text text="{stoppage>company}" />
+                                        <Text text="{stoppage>machineName}" />
                                     </VBox>
-                                    <Text text="MACHINE-001" />
-                                    <Text text="27 Feb 2026, 05:01:22 pm" />
-                                    <Text text="10 Mar 2026, 04:26:50 pm" />
-                                    <Text text="263h 25m" />
-                                    <Text text="263h 24m" />
+                                    <Text text="{stoppage>deviceId}" />
+                                    <Text text="{stoppage>startedAt}" />
+                                    <Text text="{stoppage>stoppedAt}" />
+                                    <Text text="{stoppage>runTime}" />
+                                    <Text text="{stoppage>idealTime}" />
                                 </cells>
                             </ColumnListItem>
                         </items>
