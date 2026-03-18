@@ -50,7 +50,7 @@
 
                             <HBox justifyContent="SpaceBetween" alignItems="Center" class="loginMetaRow">
                                 <Text text="Admin already exists" class="loginMetaText" />
-                                <Link text="Forgot password?" press=".onForgotPassword" />
+                                <!-- <Link text="Forgot password?" press=".onForgotPassword" /> -->
                             </HBox>
 
                             <Button text="Sign In" type="Emphasized" width="100%" press=".onSignIn" class="loginButton" />

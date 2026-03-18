@@ -45,10 +45,39 @@ export default class LiveData extends Controller {
   public formatCardClass(sStatusState: string): string {
     const base = "liveCard";
     switch (sStatusState) {
-      case "Success": return `${base} liveCardRunning`;  // GREEN header
-      case "Warning": return `${base} liveCardIdle`;     // AMBER header
-      case "Error":   return `${base} liveCardFaulted`;  // RED header
+      case "Success": return `${base} runningCard`;
+      case "Warning": return `${base} idleCard`;
+      case "Error":   return `${base} stoppedCard`;
       default:        return base;
+    }
+  }
+
+  /**
+   * Returns inline style string for the card VBox based on machine status.
+   * RUNNING  → green  bg + green  border
+   * IDLE     → amber  bg + amber  border
+   * STOPPED  → red    bg + red    border
+   */
+  public formatCardStyle(sStatusState: string): string {
+    const base =
+      "width:320px; border-radius:18px; padding:1rem 1.2rem; transition:all 0.3s ease;";
+    switch (sStatusState) {
+      case "Success":
+        return base +
+          "background-color:#f0fdf4; border:2.5px solid #22c55e;" +
+          "box-shadow:0 4px 16px rgba(34,197,94,0.25);";
+      case "Warning":
+        return base +
+          "background-color:#fffbeb; border:2.5px solid #f59e0b;" +
+          "box-shadow:0 4px 16px rgba(245,158,11,0.25);";
+      case "Error":
+        return base +
+          "background-color:#fef2f2; border:2.5px solid #ef4444;" +
+          "box-shadow:0 4px 16px rgba(239,68,68,0.25);";
+      default:
+        return base +
+          "background-color:#ffffff; border:1px solid #e5e7eb;" +
+          "box-shadow:0 6px 18px rgba(15,23,42,0.08);";
     }
   }
 
@@ -288,28 +317,28 @@ export default class LiveData extends Controller {
       temperature     = String(parameters.TEMPERATURE     || parameters.TEMP || "-");
       pressure        = String(parameters.PRESSURE        || "-");
       rpm             = String(parameters.RPM             || "-");
-      productionCount = String(parameters.PRODUCTION_COUNT|| parameters.PRODUCTION || "-");
+      productionCount = String(row.ProductionCount|| parameters.PRODUCTION || "-");
     } catch (_error) {
       alarm = "NONE";
     }
 
     const status      = String(row.Status || "UNKNOWN");
     const statusUpper = status.toUpperCase();
-
+     
     // ── statusState drives card color via formatCardClass formatter ──
     const statusState =
       statusUpper === "RUNNING"  ? "Success" :
       statusUpper === "IDLE"     ? "Warning" :
       statusUpper === "WARNING"  ? "Warning" : "Error";
-
+console.log("status",status)
     const alarmState =
       alarm === "NONE"          ? "Success" :
       alarm.includes("WARN")    ? "Warning" : "Error";
 
     return {
       deviceId:        String(row.DeviceId || "-"),
-      subLine:         `${String(row.Companyname || "-")} · ${String(row.Plantname || "-")} · ${String(row.Linenumber || "-")}`,
-      status:          statusUpper,
+      subLine:         `${String(row.Companyname || "-")} `,
+      status:          status,
       statusState,                          // "Success" | "Warning" | "Error"
       model:           String(row.PlcModel      || "-"),
       partNo:          String(row.PartNo        || "-"),
@@ -318,10 +347,11 @@ export default class LiveData extends Controller {
       alarmState,                           // "Success" | "Warning" | "Error"
       startTime:       String(row.StartTime     || row.Timestamp || "-"),
       timestamp:       String(row.Timestamp     || "-"),
-      productionCount,
+      productionCount ,
       rpm,
       temperature,
       pressure,
+      MachineBrand:    String(row.MachineBrand || "-"),
     };
   }
 }

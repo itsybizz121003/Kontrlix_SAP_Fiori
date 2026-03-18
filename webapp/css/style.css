@@ -335,49 +335,62 @@
     font-weight: bold !important;
 }
 
+/* ================================
+   MACHINE CARD STATUS COLORS
+   ================================ */
+
 /* GREEN - RUNNING */
-.liveCard.runningCard {
-    background-color: #e8f5e9 !important;
-    border: 2px solid #4caf50 !important;
+.liveCard.runningCard,
+.sapMVBox.runningCard {
+    background-color: #1e7438 !important;
+    border: 2.5px solid #22c55e !important;
+    box-shadow: 0 4px 16px rgba(34, 197, 94, 0.25) !important;
 }
 
-.liveCard.runningCard .liveCardMachine {
-    color: #2e7d32;
+.runningCard .liveCardMachine,
+.runningCard .sapMText.liveCardMachine {
+    color: #15803d !important;
 }
 
 .liveStatusRunning {
-    color: #2e7d32 !important;
-    font-weight: 600;
+    color: #15803d !important;
+    font-weight: 700;
 }
 
-/* RED - STOPPED */
-.liveCard.stoppedCard {
-    background-color: #fdecea !important;
-    border: 2px solid #f44336 !important;
+/* RED - STOPPED / FAULTED */
+.liveCard.stoppedCard,
+.sapMVBox.stoppedCard {
+    background-color: #fef2f2 !important;
+    border: 2.5px solid #ef4444 !important;
+    box-shadow: 0 4px 16px rgba(239, 68, 68, 0.25) !important;
 }
 
-.liveCard.stoppedCard .liveCardMachine {
-    color: #c62828;
+.stoppedCard .liveCardMachine,
+.stoppedCard .sapMText.liveCardMachine {
+    color: #b91c1c !important;
 }
 
 .liveStatusStopped {
-    color: #c62828 !important;
-    font-weight: 600;
+    color: #b91c1c !important;
+    font-weight: 700;
 }
 
-/* AMBER - IDLE/WARNING */
-.liveCard.idleCard {
-    background-color: #fff3e0 !important;
-    border: 2px solid #ff9800 !important;
+/* AMBER - IDLE / WARNING */
+.liveCard.idleCard,
+.sapMVBox.idleCard {
+    background-color: #fffbeb !important;
+    border: 2.5px solid #f59e0b !important;
+    box-shadow: 0 4px 16px rgba(245, 158, 11, 0.25) !important;
 }
 
-.liveCard.idleCard .liveCardMachine {
-    color: #e65100;
+.idleCard .liveCardMachine,
+.idleCard .sapMText.liveCardMachine {
+    color: #b45309 !important;
 }
 
 .liveStatusIdle {
-    color: #e65100 !important;
-    font-weight: 600;
+    color: #b45309 !important;
+    font-weight: 700;
 }
 
 /* ALARM COLORS */
@@ -831,109 +844,7 @@
 }
 
 
-/* .liveCard {
-    padding: 1rem;
-    border-radius: 12px;
-    border: 1px solid #ddd;
-    transition: 0.3s ease;
-} */
-
-/* GREEN - RUNNING */
-.runningCard {
-    background-color: #e8f5e9;
-    border: 1px solid #4caf50;
-}
-
-.runningCard .liveCardMachine {
-    color: #2e7d32;
-    font-weight: bold;
-}
-
-/* RED - STOPPED */
-.stoppedCard {
-    background-color: #fdecea;
-    border: 1px solid #f44336;
-}
-
-.stoppedCard .liveCardMachine {
-    color: #c62828;
-    font-weight: bold;
-}
-
-
-.stoppedCard {
-    background-color: #fdecea;
-    border: 1px solid #f44336;
-}
-
-.liveCardsRow {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
-}
-
-.liveCard {
-    width: 340px;
-    padding: 1rem;
-    border-radius: 16px;
-    background: #ffffff;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
-    transition: 0.3s;
-}
-
-/* HOVER EFFECT */
-.liveCard:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 26px rgba(0,0,0,0.12);
-}
-
-/* RUNNING */
-.runningCard {
-    background-color: #e8f5e9;
-    border: 1px solid #4caf50;
-}
-
-/* STOPPED */
-.stoppedCard {
-    background-color: #fdecea;
-    border: 1px solid #f44336;
-}
-
-/* TEXT */
-.liveCardMachine {
-    font-weight: 700;
-    font-size: 1rem;
-}
-
-.liveCardSub {
-    font-size: 0.8rem;
-    opacity: 0.7;
-}
-
-/* STATS */
-.liveStatsRow {
-    margin-top: 1rem;
-}
-
-.liveLabel {
-    font-size: 0.7rem;
-    opacity: 0.6;
-}
-
-.liveBigValue {
-    font-size: 1.4rem;
-    font-weight: 700;
-}
-
 /* PARAM BOX */
-.liveParamBox {
-    margin-top: 1rem;
-    padding: 0.8rem;
-    border-radius: 12px;
-    background: rgba(0,0,0,0.03);
-}
-
 .liveParamRow2 {
     margin-top: 0.5rem;
 }
-
