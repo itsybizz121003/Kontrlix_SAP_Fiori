@@ -1,0 +1,108 @@
+<mvc:View controllerName="ashu.ashu.controller.Resources"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core">
+    <Page id="resourcesPage" title="Resource Management" showHeader="false" class="dashboardPage">
+        <content>
+            <VBox class="dashMainArea">
+                <!-- Top bar -->
+                <HBox class="supTopBar" justifyContent="SpaceBetween" alignItems="Center">
+                    <HBox alignItems="Center">
+                        <Avatar displayShape="Circle" class="supIcon" />
+                        <VBox>
+                            <Title text="Resource Management" level="H3" />
+                            <Text text="{res>/connectionStatusText}" class="{= ${res>/connectionStatusState} === 'Success' ? 'onlineText' : 'offlineText'}" />
+                        </VBox>
+                    </HBox>
+                    <HBox alignItems="Center" class="supControls">
+                        <Button text="+ Add New Resource" type="Emphasized" press=".onOpenAddResource" />
+                        <Button text="Refresh" type="Default" press=".onRefreshResources" />
+                    </HBox>
+                </HBox>
+
+                <!-- Search box -->
+                <VBox class="supSearchBox">
+                    <Label text="Search resources..." />
+                    <SearchField placeholder="Search by name, type, custom ID..." width="100%" search=".onSearch" liveChange=".onSearch" />
+                </VBox>
+
+                <!-- Directory title -->
+                <HBox justifyContent="SpaceBetween" alignItems="Center" class="supDirHeader">
+                    <VBox>
+                        <Text text="{= 'Total Resources: ' + ${res>/rowCount}}" class="supDirTitle" />
+                    </VBox>
+                    <Text text="{= 'Last Updated: ' + ${res>/lastUpdated}}" />
+                </HBox>
+
+                <!-- Dynamic Table -->
+                <Table items="{res>/rows}" class="supTable">
+                    <columns>
+                        <Column><Text text="CUSTOM ID" /></Column>
+                        <Column><Text text="RESOURCE NAME" /></Column>
+                        <Column><Text text="TYPE" /></Column>
+                        <Column><Text text="SPECIFICATION" /></Column>
+                        <Column><Text text="ACTIONS" /></Column>
+                    </columns>
+                    <items>
+                        <ColumnListItem>
+                            <cells>
+                                <Text text="{res>CustomId}" />
+                                <Text text="{res>ResName}" />
+                                <Text text="{res>ResType}" />
+                                <Text text="{res>Specification}" />
+                                <HBox>
+                                    <Button icon="sap-icon://show" type="Transparent" press=".onViewResource" />
+                                    <Button icon="sap-icon://edit" type="Transparent" press=".onEditResource" />
+                                    <Button icon="sap-icon://delete" type="Transparent" press=".onDeleteResource" />
+                                </HBox>
+                            </cells>
+                        </ColumnListItem>
+                    </items>
+                </Table>
+
+                <!-- Pagination -->
+                <HBox justifyContent="Center" alignItems="Center" class="sapUiMediumMarginTop">
+                    <Button icon="sap-icon://navigation-left-arrow" press=".onPrevPage" enabled="{= ${res>/currentPage} &gt; 1 }" />
+                    <Text text="Page {res>/currentPage} of {res>/totalPages}" class="sapUiSmallMarginBeginEnd" />
+                    <Button icon="sap-icon://navigation-right-arrow" press=".onNextPage" enabled="{= ${res>/currentPage} &lt; ${res>/totalPages} }" />
+                </HBox>
+            </VBox>
+
+            <!-- Add Resource Drawer -->
+            <VBox id="addResourceOverlay" class="supModalOverlay" visible="false">
+                <VBox class="supDrawer">
+                    <HBox justifyContent="SpaceBetween" alignItems="Center" class="supDrawerHeader">
+                        <Title text="{res>/ui/modalTitle}" level="H4" />
+                        <Button icon="sap-icon://decline" type="Transparent" press=".onCloseAddResource" class="supDrawerClose" />
+                    </HBox>
+
+                    <VBox class="supDrawerBody">
+                        <Label text="Resource ID" class="supFieldLabel" />
+                        <Input value="{res>/form/ResourceId}" placeholder="e.g. RES001 (optional)" width="100%" editable="{= ${res>/ui/mode} === 'ADD' }" />
+
+                        <Label text="Resource Name *" class="supFieldLabel" />
+                        <Input value="{res>/form/ResName}" placeholder="e.g. XYZ Manufacturing Ltd" width="100%" editable="{= ${res>/ui/mode} !== 'VIEW' }" />
+
+                        <Label text="Resource Type *" class="supFieldLabel" />
+                        <Select selectedKey="{res>/form/ResType}" width="100%" enabled="{= ${res>/ui/mode} !== 'VIEW' }">
+                            <items>
+                                <core:Item key="" text="Select Resource Type" />
+                                <core:Item key="Machine" text="Machine" />
+                                <core:Item key="Tool" text="Tool" />
+                                <core:Item key="Material" text="Material" />
+                            </items>
+                        </Select>
+
+                        <Label text="Custom ID *" class="supFieldLabel" />
+                        <Input value="{res>/form/CustomId}" placeholder="e.g. XYZ001" width="100%" editable="{= ${res>/ui/mode} === 'ADD' }" />
+
+                        <Label text="Specification" class="supFieldLabel" />
+                        <TextArea value="{res>/form/Specification}" rows="5" placeholder="Enter specification..." width="100%" editable="{= ${res>/ui/mode} !== 'VIEW' }" />
+                    </VBox>
+
+                    <Button text="{res>/ui/confirmButtonText}" type="Emphasized" width="100%" class="supCreateBtn" press=".onConfirmAction" visible="{= ${res>/ui/mode} !== 'VIEW' }" />
+                </VBox>
+            </VBox>
+        </content>
+    </Page>
+</mvc:View>

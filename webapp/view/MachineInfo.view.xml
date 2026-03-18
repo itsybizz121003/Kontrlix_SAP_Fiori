@@ -1,0 +1,113 @@
+<mvc:View controllerName="ashu.ashu.controller.MachineInfo"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core">
+    <Page id="machineInfoPage" title="Machine Info" showHeader="false" class="dashboardPage">
+        <content>
+            <HBox fitContainer="true" class="dashboardLayout">
+                <!-- Side navigation -->
+                <VBox class="dashSideNav">
+                    <HBox class="dashLogoRow" justifyContent="Start" alignItems="Center">
+                        <Image src="" width="36px" />
+                        <Text text="ITSYBIZZ" class="dashLogoText" />
+                    </HBox>
+                    <List mode="None" class="dashSideList" itemPress=".onSideItemPress">
+                        <StandardListItem title="Monitoring-Dashboard" icon="sap-icon://home" type="Active" />
+                        <StandardListItem title="Live Data" icon="sap-icon://activity-individual" type="Active" />
+                        <StandardListItem title="Supervisor" icon="sap-icon://group-2" type="Active" />
+                        <StandardListItem title="Employees" icon="sap-icon://employee" type="Active" />
+                        <StandardListItem title="Machine History" icon="sap-icon://history" type="Active" />
+                        <StandardListItem title="Resources" icon="sap-icon://database" type="Active" />
+                        <StandardListItem title="Machine Info" icon="sap-icon://settings" type="Active" selected="true" />
+                        <StandardListItem title="Stoppage Info" icon="sap-icon://alert" type="Active" />
+                        <StandardListItem title="Requests" icon="sap-icon://inbox" type="Active" />
+                        <StandardListItem title="Kontrolix-AI" icon="sap-icon://physical-activity" type="Active" />
+                        <StandardListItem title="My Profile" icon="sap-icon://customer" type="Active" />
+                    </List>
+                    <Button text="Log Out" type="Transparent" class="dashLogout" press=".onLogout" />
+                </VBox>
+
+                <!-- Main area -->
+                <VBox class="dashMainArea">
+                    <!-- Top bar -->
+                    <HBox class="mhTopBar" justifyContent="SpaceBetween" alignItems="Center">
+                        <HBox alignItems="Center">
+                            <Avatar displayShape="Circle" class="mhIcon" />
+                            <VBox>
+                                <Title text="Machine Information" level="H3" />
+                                <Text text="View detailed information about your machines" />
+                            </VBox>
+                        </HBox>
+                        <HBox alignItems="Center" class="mhControls">
+                            <Select width="10rem">
+                                <items>
+                                    <core:Item key="allMachines" text="All Machines" />
+                                </items>
+                            </Select>
+                            <Button text="Refresh" type="Default" />
+                        </HBox>
+                    </HBox>
+
+                    <!-- Section title -->
+                    <Text text="Machine Information" class="mhSectionTitle" />
+
+                    <!-- Table -->
+                    <Table class="mhTable">
+                        <columns>
+                            <Column><Text text="COMPANY" /></Column>
+                            <Column><Text text="MODEL" /></Column>
+                            <Column><Text text="PLC STATUS" /></Column>
+                            <Column><Text text="MOTOR" /></Column>
+                            <Column><Text text="ASSIGNED" /></Column>
+                            <Column><Text text="PRODUCT" /></Column>
+                            <Column><Text text="TEMP (°C)" /></Column>
+                        </columns>
+                        <items>
+                            <ColumnListItem>
+                                <cells>
+                                    <Text text="ABC Industries" />
+                                    <Text text="Injection Molding Machine X200" />
+                                    <ObjectStatus text="STOPPED" state="Error" />
+                                    <ObjectStatus text="INACTIVE" state="Error" />
+                                    <Text text="-" />
+                                    <Text text="No product" />
+                                    <Text text="44.8" />
+                                </cells>
+                            </ColumnListItem>
+                            <ColumnListItem>
+                                <cells>
+                                    <Text text="Global Tech Fabricators" />
+                                    <Text text="ServoPress Z900" />
+                                    <ObjectStatus text="STOPPED" state="Error" />
+                                    <ObjectStatus text="INACTIVE" state="Error" />
+                                    <Text text="-" />
+                                    <Text text="No product" />
+                                    <Text text="38.9" />
+                                </cells>
+                            </ColumnListItem>
+                            <ColumnListItem>
+                                <cells>
+                                    <Text text="XYZ Manufacturing Ltd" />
+                                    <Text text="Extrusion Pro 500" />
+                                    <ObjectStatus text="STOPPED" state="Error" />
+                                    <ObjectStatus text="INACTIVE" state="Error" />
+                                    <Text text="-" />
+                                    <Text text="No product" />
+                                    <Text text="62.4" />
+                                </cells>
+                            </ColumnListItem>
+                        </items>
+                    </Table>
+
+                    <!-- Pagination -->
+                    <HBox justifyContent="Center" alignItems="Center" class="mhPager">
+                        <Button text="Previous" enabled="false" />
+                        <Button text="1" type="Emphasized" />
+                        <Button text="Next" />
+                    </HBox>
+                </VBox>
+            </HBox>
+        </content>
+    </Page>
+</mvc:View>
+

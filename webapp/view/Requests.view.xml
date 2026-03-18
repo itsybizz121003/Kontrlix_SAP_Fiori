@@ -1,0 +1,127 @@
+<mvc:View controllerName="ashu.ashu.controller.Requests"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core">
+    <Page id="requestsPage" title="Requests" showHeader="false" class="dashboardPage">
+        <content>
+            <HBox fitContainer="true" class="dashboardLayout">
+                <!-- Side navigation -->
+                <VBox class="dashSideNav">
+                    <HBox class="dashLogoRow" justifyContent="Start" alignItems="Center">
+                        <Image src="" width="36px" />
+                        <Text text="ITSYBIZZ" class="dashLogoText" />
+                    </HBox>
+                    <List mode="None" class="dashSideList" itemPress=".onSideItemPress">
+                        <StandardListItem title="Monitoring-Dashboard" icon="sap-icon://home" type="Active" />
+                        <StandardListItem title="Live Data" icon="sap-icon://activity-individual" type="Active" />
+                        <StandardListItem title="Supervisor" icon="sap-icon://group-2" type="Active" />
+                        <StandardListItem title="Employees" icon="sap-icon://employee" type="Active" />
+                        <StandardListItem title="Machine History" icon="sap-icon://history" type="Active" />
+                        <StandardListItem title="Resources" icon="sap-icon://database" type="Active" />
+                        <StandardListItem title="Machine Info" icon="sap-icon://settings" type="Active" />
+                        <StandardListItem title="Stoppage Info" icon="sap-icon://alert" type="Active" />
+                        <StandardListItem title="Requests" icon="sap-icon://inbox" type="Active" selected="true" />
+                        <StandardListItem title="Kontrolix-AI" icon="sap-icon://physical-activity" type="Active" />
+                        <StandardListItem title="My Profile" icon="sap-icon://customer" type="Active" />
+                    </List>
+                    <Button text="Log Out" type="Transparent" class="dashLogout" press=".onLogout" />
+                </VBox>
+
+                <!-- Main area -->
+                <VBox class="dashMainArea">
+
+                    <!-- Summary cards -->
+                    <HBox class="liveCardsRow">
+                        <VBox class="liveCard">
+                            <Text text="Total Requests" class="dashCardTitle" />
+                            <Text text="{req>/rowCount}" class="dashCardValue" />
+                        </VBox>
+                        <VBox class="liveCard">
+                            <Text text="Pending" class="dashCardTitle" />
+                            <Text text="{req>/pendingCount}" class="dashCardValue" />
+                        </VBox>
+                        <VBox class="liveCard">
+                            <Text text="Supervisor Approved" class="dashCardTitle" />
+                            <Text text="{req>/supApprovedCount}" class="dashCardValue" />
+                        </VBox>
+                        <VBox class="liveCard">
+                            <Text text="Approved" class="dashCardTitle" />
+                            <Text text="{req>/approvedCount}" class="dashCardValue" />
+                        </VBox>
+                        <VBox class="liveCard">
+                            <Text text="Rejected" class="dashCardTitle" />
+                            <Text text="{req>/rejectedCount}" class="dashCardValue" />
+                        </VBox>
+                    </HBox>
+
+                    <!-- Search + filter -->
+                    <HBox class="supSearchBox" alignItems="Center" justifyContent="SpaceBetween">
+                        <SearchField placeholder="Search by employee name, email, or reason..." width="100%" />
+                        <Button icon="sap-icon://synchronize" type="Transparent" press=".onRefreshRequests" />
+                        <Select width="8rem">
+                            <items>
+                                <core:Item key="allStatus" text="All Status" />
+                                <core:Item key="pending" text="Pending" />
+                                <core:Item key="approved" text="Approved" />
+                                <core:Item key="rejected" text="Rejected" />
+                            </items>
+                        </Select>
+                    </HBox>
+
+                    <!-- Last updated -->
+                    <HBox justifyContent="End" class="sapUiSmallMarginBottom">
+                        <Text text="{= 'Last Updated: ' + ${req>/lastUpdated}}" />
+                    </HBox>
+
+                    <!-- Dynamic Requests Table -->
+                    <Table items="{req>/rows}" class="supTable">
+                        <columns>
+                            <Column><Text text="EMPLOYEE" /></Column>
+                            <Column><Text text="TYPE" /></Column>
+                            <Column><Text text="REASON" /></Column>
+                            <Column><Text text="SUPERVISOR" /></Column>
+                            <Column><Text text="STATUS" /></Column>
+                            <Column><Text text="DATE" /></Column>
+                            <Column><Text text="ACTIONS" /></Column>
+                        </columns>
+                        <items>
+                            <ColumnListItem>
+                                <cells>
+                                    <VBox>
+                                        <Text text="{req>EmployeeName}" />
+                                        <Text text="{req>EmployeeEmail}" />
+                                    </VBox>
+                                    <ObjectStatus text="{req>ReqType}" state="None" />
+                                    <Text text="{req>Reason}" />
+                                    <VBox>
+                                        <Text text="{req>SupervisorName}" />
+                                        <Text text="{req>SupervisorEmail}" />
+                                    </VBox>
+                                    <ObjectStatus
+                                        text="{req>Status}"
+                                        state="{= ${req>Status} === 'approved' ? 'Success' : ${req>Status} === 'rejected' ? 'Error' : 'Warning'}" />
+                                    <Text text="{req>CreatedAt}" />
+                                    <HBox>
+                                        <Button
+                                            text="Approve"
+                                            type="Accept"
+                                            visible="{= ${req>AdminApprovalStatus} === 'pending'}"
+                                            press=".onApproveRequest" />
+                                        <Button
+                                            text="Reject"
+                                            type="Reject"
+                                            visible="{= ${req>AdminApprovalStatus} === 'pending'}"
+                                            press=".onRejectRequest" />
+                                        <Text
+                                            text="No action"
+                                            visible="{= ${req>AdminApprovalStatus} !== 'pending'}" />
+                                    </HBox>
+                                </cells>
+                            </ColumnListItem>
+                        </items>
+                    </Table>
+                </VBox>
+            </HBox>
+        </content>
+    </Page>
+</mvc:View>

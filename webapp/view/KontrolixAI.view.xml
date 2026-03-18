@@ -1,0 +1,71 @@
+<mvc:View controllerName="ashu.ashu.controller.KontrolixAI"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core">
+    <Page id="kontrolixAIPage" title="Kontrolix AI" showHeader="false" class="dashboardPage">
+        <content>
+            <HBox fitContainer="true" class="dashboardLayout">
+                <!-- Side navigation -->
+                <VBox class="dashSideNav">
+                    <HBox class="dashLogoRow" justifyContent="Start" alignItems="Center">
+                        <Image src="" width="36px" />
+                        <Text text="ITSYBIZZ" class="dashLogoText" />
+                    </HBox>
+                    <List mode="None" class="dashSideList" itemPress=".onSideItemPress">
+                        <StandardListItem title="Monitoring-Dashboard" icon="sap-icon://home" type="Active" />
+                        <StandardListItem title="Live Data" icon="sap-icon://activity-individual" type="Active" />
+                        <StandardListItem title="Supervisor" icon="sap-icon://group-2" type="Active" />
+                        <StandardListItem title="Employees" icon="sap-icon://employee" type="Active" />
+                        <StandardListItem title="Machine History" icon="sap-icon://history" type="Active" />
+                        <StandardListItem title="Resources" icon="sap-icon://database" type="Active" />
+                        <StandardListItem title="Machine Info" icon="sap-icon://settings" type="Active" />
+                        <StandardListItem title="Stoppage Info" icon="sap-icon://alert" type="Active" />
+                        <StandardListItem title="Requests" icon="sap-icon://inbox" type="Active" />
+                        <StandardListItem title="Kontrolix-AI" icon="sap-icon://physical-activity" type="Active" selected="true" />
+                        <StandardListItem title="My Profile" icon="sap-icon://customer" type="Active" />
+                    </List>
+                    <Button text="Log Out" type="Transparent" class="dashLogout" press=".onLogout" />
+                </VBox>
+
+                <!-- Main area -->
+                <VBox class="aiMainArea">
+                    <VBox class="aiHeader">
+                        <Text text="Kontrolix AI" class="dashSectionTitle" />
+                        <Text text="Manage employee requests for breaks and other activities with AI-powered recommendations." />
+                    </VBox>
+
+                    <VBox class="aiCard">
+                        <!-- Recommended Actions -->
+                        <HBox alignItems="Center" class="aiSectionHeader">
+                            <core:Icon src="sap-icon://accept" color="Positive" />
+                            <Text text="Recommended Actions" class="aiSectionTitle" />
+                        </HBox>
+                        <VBox class="aiMessage">
+                            <Text text="machineAssignments की मैपिंग वेरीफाई करें और &quot;undefined&quot; को सही डिवाइस/लाइन आईडी से बदलें।" />
+                            <Text text="खाली मॉड्यूल्स (products, machineTelemetry, registeredDevices इत्यादि) को डेटा भरें ताकि निर्णय सटीक हों — वर्तमान में Required data is not available." />
+                            <Text text="डिवाइस टाइमस्टैम्प और आईडी क्रॉस-चेक करें ताकि stopped/running स्टेटस सही ढंग से रिपोर्टेड हो।" />
+                            <Text text="डेटा वैलिडेशन और अलर्ट लागू करें ताकि असंगतियों पर तुरंत जांच हो और निष्कर्ष गलत जानकारी पर निर्भर न करें।" />
+                        </VBox>
+
+                        <!-- Additional Insights -->
+                        <HBox alignItems="Center" class="aiSectionHeader aiInsightsHeader">
+                            <core:Icon src="sap-icon://pushpin-on" />
+                            <Text text="Additional Insights" class="aiSectionTitle" />
+                        </HBox>
+                        <VBox class="aiMessage">
+                            <Text text="डेटा असंगतियां (undefined mapping, missing modules, टाइमिंग अंतर) वास्तविक गलतियों के कारण बन सकती हैं — इसलिए Kontrolix outputs कभी-कभी गलत हो सकते हैं जब इन मुद्दों को ठीक न किया गया हो।" />
+                        </VBox>
+                    </VBox>
+
+                    <!-- Input area -->
+                    <HBox class="aiInputRow" alignItems="Center">
+                        <TextArea placeholder="Ask about employees, machines..." growing="false" width="100%" />
+                        <Button icon="sap-icon://paper-plane" type="Emphasized" class="aiSendButton" />
+                    </HBox>
+                    <Text text="*Kontrolix AI can make mistakes.*" class="aiDisclaimer" />
+                </VBox>
+            </HBox>
+        </content>
+    </Page>
+</mvc:View>
+

@@ -1,0 +1,129 @@
+<mvc:View controllerName="ashu.ashu.controller.MyProfile"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:form="sap.ui.layout.form">
+    <Page showHeader="false" class="dashboardPage">
+        <content>
+            <HBox fitContainer="true" class="dashboardLayout">
+                <!-- Side Nav -->
+                <VBox class="dashSideNav">
+                    <HBox class="dashLogoRow" justifyContent="Start" alignItems="Center">
+                        <Text text="ITSYBIZZ" class="dashLogoText" />
+                    </HBox>
+                    <List mode="None" class="dashSideList" itemPress=".onSideItemPress">
+                        <StandardListItem title="Monitoring-Dashboard" icon="sap-icon://home" type="Active" />
+                        <StandardListItem title="Live Data" icon="sap-icon://activity-individual" type="Active" />
+                        <StandardListItem title="Supervisor" icon="sap-icon://group-2" type="Active" />
+                        <StandardListItem title="Employees" icon="sap-icon://employee" type="Active" />
+                        <StandardListItem title="Machine History" icon="sap-icon://history" type="Active" />
+                        <StandardListItem title="Resources" icon="sap-icon://database" type="Active" />
+                        <StandardListItem title="Machine Info" icon="sap-icon://settings" type="Active" />
+                        <StandardListItem title="Stoppage Info" icon="sap-icon://alert" type="Active" />
+                        <StandardListItem title="Requests" icon="sap-icon://inbox" type="Active" />
+                        <StandardListItem title="Kontrolix-AI" icon="sap-icon://physical-activity" type="Active" />
+                        <StandardListItem title="My Profile" icon="sap-icon://customer" type="Active" selected="true" />
+                    </List>
+                    <Button text="Log Out" type="Transparent" class="dashLogout" press=".onLogout" />
+                </VBox>
+
+                <!-- Main -->
+                <VBox class="dashMainArea">
+                    <HBox class="supTopBar" justifyContent="SpaceBetween" alignItems="Center">
+                        <Title text="My Profile" level="H3" />
+                        <Button text="Edit Profile" type="Emphasized" press=".onOpenEditProfile" />
+                    </HBox>
+
+                    <!-- Profile Card -->
+                    <VBox alignItems="Center" class="sapUiMediumMargin">
+                        <Avatar initials="{profile>/initials}" displaySize="XL" />
+                        <Title text="{profile>/fullName}" level="H2" class="sapUiSmallMarginTop" />
+                        <ObjectStatus text="{profile>/role}" state="Success" />
+                    </VBox>
+
+                    <!-- Info List -->
+                    <VBox class="sapUiMediumMargin">
+                        <HBox justifyContent="SpaceBetween" class="sapUiSmallMarginBottom">
+                            <Label text="User ID" />
+                            <Text text="{profile>/userId}" />
+                        </HBox>
+                        <HBox justifyContent="SpaceBetween" class="sapUiSmallMarginBottom">
+                            <Label text="Email" />
+                            <Text text="{profile>/email}" />
+                        </HBox>
+                        <HBox justifyContent="SpaceBetween" class="sapUiSmallMarginBottom">
+                            <Label text="Phone" />
+                            <Text text="{profile>/phone}" />
+                        </HBox>
+                        <HBox justifyContent="SpaceBetween" class="sapUiSmallMarginBottom">
+                            <Label text="Company" />
+                            <Text text="{profile>/CpnyName}" />
+                        </HBox>
+                        <HBox justifyContent="SpaceBetween" class="sapUiSmallMarginBottom">
+                            <Label text="Address" />
+                            <Text text="{profile>/address}" />
+                        </HBox>
+                        <HBox justifyContent="SpaceBetween" class="sapUiSmallMarginBottom">
+                            <Label text="GSTIN" />
+                            <Text text="{profile>/gstin}" />
+                        </HBox>
+                        <HBox justifyContent="SpaceBetween" class="sapUiSmallMarginBottom">
+                            <Label text="Bank Name" />
+                            <Text text="{profile>/bankName}" />
+                        </HBox>
+                        <HBox justifyContent="SpaceBetween" class="sapUiSmallMarginBottom">
+                            <Label text="Account No" />
+                            <Text text="{profile>/accountNo}" />
+                        </HBox>
+                        <HBox justifyContent="SpaceBetween" class="sapUiSmallMarginBottom">
+                            <Label text="IFSC Code" />
+                            <Text text="{profile>/ifscCode}" />
+                        </HBox>
+                    </VBox>
+                </VBox>
+            </HBox>
+
+            <!-- Edit Drawer -->
+            <VBox id="editProfileOverlay" class="supModalOverlay" visible="false">
+                <VBox class="supDrawer">
+                    <HBox justifyContent="SpaceBetween" alignItems="Center" class="supDrawerHeader">
+                        <Title text="Edit Profile" level="H4" />
+                        <Button icon="sap-icon://decline" type="Transparent" press=".onCloseEditProfile" />
+                    </HBox>
+
+                    <VBox class="supDrawerBody">
+                        <Label text="First Name" />
+                        <Input value="{profile>/editForm/FirstName}" width="100%" />
+
+                        <Label text="Last Name" />
+                        <Input value="{profile>/editForm/LastName}" width="100%" />
+
+                        <Label text="Phone" />
+                        <Input value="{profile>/editForm/Phone}" width="100%" />
+
+                        <Label text="Company Name" />
+                        <Input value="{profile>/editForm/CpnyName}" width="100%" />
+
+                        <Label text="Address" />
+                        <Input value="{profile>/editForm/Address}" width="100%" />
+
+                        <Label text="GSTIN" />
+                        <Input value="{profile>/editForm/Gstin}" width="100%" />
+
+                        <Label text="Bank Name" />
+                        <Input value="{profile>/editForm/BankName}" width="100%" />
+
+                        <Label text="Account No" />
+                        <Input value="{profile>/editForm/AccountNo}" width="100%" />
+
+                        <Label text="IFSC Code" />
+                        <Input value="{profile>/editForm/IfscCode}" width="100%" />
+                    </VBox>
+
+                    <Button text="Update Profile" type="Emphasized"
+                        width="100%" press=".onUpdateProfile" />
+                </VBox>
+            </VBox>
+        </content>
+    </Page>
+</mvc:View>

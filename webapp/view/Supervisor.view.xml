@@ -1,0 +1,133 @@
+<mvc:View controllerName="ashu.ashu.controller.Supervisor"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core">
+    <Page id="supervisorPage" title="Supervisors" showHeader="false" class="dashboardPage">
+        <content>
+            <VBox class="dashMainArea">
+                <!-- Top bar -->
+                <HBox class="supTopBar" justifyContent="SpaceBetween" alignItems="Center">
+                    <HBox alignItems="Center">
+                        <Avatar displayShape="Circle" class="supIcon" />
+                        <VBox>
+                            <Title text="Supervisors" level="H3" />
+                            <Text text="{sup>/connectionStatusText}" />
+                        </VBox>
+                    </HBox>
+                    <HBox alignItems="Center" class="supControls">
+                        <Button text="+ Add New Supervisor" type="Emphasized" press=".onOpenAddSupervisor" />
+                        <Button text="Refresh" type="Default" press=".onRefreshSupervisors" />
+                    </HBox>
+                </HBox>
+
+                <!-- Search box -->
+                <VBox class="supSearchBox">
+                    <Label text="Search Supervisors" />
+                    <SearchField placeholder="Search by name, email, phone..." width="100%" search=".onSearch" liveChange=".onSearch" />
+                </VBox>
+
+                <!-- Directory title -->
+                <HBox justifyContent="SpaceBetween" alignItems="Center" class="supDirHeader">
+                    <VBox>
+                        <Text text="Supervisor Directory" class="supDirTitle" />
+                        <Text text="{= 'Showing ' + ${sup>/rowCount} + ' supervisors'}" />
+                    </VBox>
+                    <Text text="{= 'Last Updated: ' + ${sup>/lastUpdated}}" />
+                </HBox>
+
+                <!-- Dynamic Table -->
+                <Table items="{sup>/rows}" class="supTable">
+                    <columns>
+                        <Column><Text text="SUPERVISOR ID" /></Column>
+                        <Column><Text text="FIRST NAME" /></Column>
+                        <Column><Text text="LAST NAME" /></Column>
+                        <Column><Text text="EMAIL" /></Column>
+                        <Column><Text text="PHONE" /></Column>
+                        <Column><Text text="ASSIGNED EMPLOYEES" /></Column>
+                        <Column><Text text="ACTIONS" /></Column>
+                    </columns>
+                    <items>
+                        <ColumnListItem>
+                            <cells>
+                                <Text text="{sup>SupervisorId}" />
+                                <Text text="{sup>FirstName}" />
+                                <Text text="{sup>LastName}" />
+                                <Text text="{sup>Email}" />
+                                <Text text="{sup>Phone}" />
+                                <Text text="{path: 'sup>AssignedEmployees', formatter: '.formatAssignedEmployees'}" />
+                                <HBox>
+                                    <Button icon="sap-icon://show" type="Transparent" press=".onViewSupervisor" />
+                                    <Button icon="sap-icon://edit" type="Transparent" press=".onEditSupervisor" />
+                                    <Button icon="sap-icon://delete" type="Transparent" press=".onDeleteSupervisor" />
+                                </HBox>
+                            </cells>
+                        </ColumnListItem>
+                    </items>
+                </Table>
+
+                <!-- Pagination -->
+                <HBox justifyContent="Center" alignItems="Center" class="sapUiMediumMarginTop">
+                    <Button icon="sap-icon://navigation-left-arrow" press=".onPrevPage" enabled="{= ${sup>/currentPage} &gt; 1 }" />
+                    <Text text="Page {sup>/currentPage} of {sup>/totalPages}" class="sapUiSmallMarginBeginEnd" />
+                    <Button icon="sap-icon://navigation-right-arrow" press=".onNextPage" enabled="{= ${sup>/currentPage} &lt; ${sup>/totalPages} }" />
+                </HBox>
+            </VBox>
+
+            <!-- Add Supervisor Drawer -->
+            <VBox id="addSupervisorOverlay" class="supModalOverlay" visible="false">
+                <VBox class="supDrawer">
+                    <HBox justifyContent="SpaceBetween" alignItems="Center" class="supDrawerHeader">
+                        <Title text="{sup>/ui/modalTitle}" level="H4" />
+                        <Button icon="sap-icon://decline" type="Transparent" press=".onCloseAddSupervisor" class="supDrawerClose" />
+                    </HBox>
+
+                    <VBox class="supDrawerBody">
+                        <Label text="Supervisor ID" class="supFieldLabel" />
+                        <Input value="{sup>/form/SupervisorId}" placeholder="e.g. RAV0001 (optional)" width="100%" editable="{= ${sup>/ui/mode} === 'ADD' }" />
+
+                        <Label text="First Name *" class="supFieldLabel" />
+                        <Input value="{sup>/form/FirstName}" placeholder="Enter first name" width="100%" editable="{= ${sup>/ui/mode} !== 'VIEW' }" />
+
+                        <Label text="Last Name" class="supFieldLabel" />
+                        <Input value="{sup>/form/LastName}" placeholder="Enter last name" width="100%" editable="{= ${sup>/ui/mode} !== 'VIEW' }" />
+
+                        <Label text="Email *" class="supFieldLabel" />
+                        <Input value="{sup>/form/Email}" type="Email" placeholder="Enter email" width="100%" editable="{= ${sup>/ui/mode} === 'ADD' }" />
+
+                        <Label text="Phone Number *" class="supFieldLabel" />
+                        <Input value="{sup>/form/Phone}" placeholder="Enter phone number" width="100%" editable="{= ${sup>/ui/mode} !== 'VIEW' }" />
+
+                        <Label text="Password *" class="supFieldLabel" visible="{= ${sup>/ui/mode} === 'ADD' }" />
+                        <Input value="{sup>/form/Password}" type="Password" placeholder="Enter password" width="100%" visible="{= ${sup>/ui/mode} === 'ADD' }" />
+
+                        <Label text="Company Name" class="supFieldLabel" />
+                        <Input value="{sup>/form/CpnyName}" placeholder="Enter company name" width="100%" editable="{= ${sup>/ui/mode} !== 'VIEW' }" />
+
+                        <Label text="Assigned Employees" class="supFieldLabel" />
+                        <MultiComboBox
+                            width="100%"
+                            items="{sup>/employeesList}"
+                            selectedKeys="{sup>/selectedEmployees}"
+                            selectionChange=".onEmployeeSelectionChange"
+                            editable="{= ${sup>/ui/mode} !== 'VIEW' }">
+                            <core:Item key="{sup>UserId}" text="{sup>FirstName} {sup>LastName} ({sup>UserId})" />
+                        </MultiComboBox>
+
+                        <Label text="Assigned Resources" class="supFieldLabel" />
+                        <MultiComboBox
+                            width="100%"
+                            items="{sup>/resourcesList}"
+                            selectedKeys="{sup>/selectedResources}"
+                            selectionChange=".onResourceSelectionChange"
+                            editable="{= ${sup>/ui/mode} !== 'VIEW' }">
+                            <core:Item key="{sup>ResourceId}" text="{sup>ResName} ({sup>CustomId})" />
+                        </MultiComboBox>
+                    </VBox>
+
+                    <Button text="{sup>/ui/confirmButtonText}" type="Emphasized" width="100%"
+                        class="supCreateBtn" press=".onConfirmAction" visible="{= ${sup>/ui/mode} !== 'VIEW' }" />
+                </VBox>
+            </VBox>
+        </content>
+    </Page>
+</mvc:View>

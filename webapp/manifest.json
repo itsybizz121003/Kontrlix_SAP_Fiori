@@ -1,0 +1,234 @@
+{
+  "_version": "1.82.0",
+  "sap.app": {
+    "id": "ashu.ashu",
+    "type": "application",
+    "i18n": "i18n/i18n.properties",
+    "applicationVersion": {
+      "version": "0.0.1"
+    },
+    "title": "{{appTitle}}",
+    "description": "{{appDescription}}",
+    "resources": "resources.json",
+    "sourceTemplate": {
+      "id": "@sap/generator-fiori:basic",
+      "version": "1.20.4",
+      "toolsId": "e458bb6d-ab1b-4f46-9e8b-b7d5b0996ddf"
+    },
+    "crossNavigation": {
+      "inbounds": {
+        "ashu-display": {
+          "semanticObject": "ashu",
+          "action": "display",
+          "title": "{{ashu-display.flpTitle}}",
+          "subTitle": "{{ashu-display.flpSubtitle}}",
+          "signature": {
+            "parameters": {},
+            "additionalParameters": "allowed"
+          }
+        }
+      }
+    }
+  },
+  "sap.ui": {
+    "technology": "UI5",
+    "icons": {
+      "icon": "",
+      "favIcon": "",
+      "phone": "",
+      "phone@2": "",
+      "tablet": "",
+      "tablet@2": ""
+    },
+    "deviceTypes": {
+      "desktop": true,
+      "tablet": true,
+      "phone": true
+    }
+  },
+  "sap.ui5": {
+    "flexEnabled": true,
+    "dependencies": {
+      "minUI5Version": "1.145.0",
+      "libs": {
+        "sap.m": {},
+        "sap.ui.core": {},
+        "sap.tnt": {}
+      }
+    },
+    "contentDensities": {
+      "compact": true,
+      "cozy": true
+    },
+    "models": {
+      "i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "settings": {
+          "bundleName": "ashu.ashu.i18n.i18n"
+        }
+      }
+    },
+    "resources": {
+      "css": [
+        {
+          "uri": "css/style.css"
+        }
+      ]
+    },
+    "routing": {
+      "config": {
+        "routerClass": "sap.m.routing.Router",
+        "controlAggregation": "pages",
+        "controlId": "app",
+        "transition": "slide",
+        "type": "View",
+        "viewType": "XML",
+        "path": "ashu.ashu.view",
+        "async": true,
+        "viewPath": "ashu.ashu.view"
+      },
+      "routes": [
+        {
+          "name": "login",
+          "pattern": "",
+          "target": [
+            "Targetashui"
+          ]
+        },
+        {
+          "name": "dashboard",
+          "pattern": "dashboard",
+          "target": [
+            "TargetDashboard"
+          ]
+        },
+        {
+          "name": "liveData",
+          "pattern": "live-data",
+          "target": [
+            "TargetLiveData"
+          ]
+        },
+        {
+          "name": "machineHistory",
+          "pattern": "machine-history",
+          "target": [
+            "TargetMachineHistory"
+          ]
+        },
+        {
+          "name": "machineInfo",
+          "pattern": "machine-info",
+          "target": [
+            "TargetMachineInfo"
+          ]
+        },
+        {
+          "name": "supervisor",
+          "pattern": "supervisor",
+          "target": [
+            "TargetSupervisor"
+          ]
+        },
+        {
+          "name": "employees",
+          "pattern": "employees",
+          "target": [
+            "TargetEmployees"
+          ]
+        },
+        {
+          "name": "resources",
+          "pattern": "resources",
+          "target": [
+            "TargetResources"
+          ]
+        },
+        {
+          "name": "stoppageInfo",
+          "pattern": "stoppage-info",
+          "target": [
+            "TargetStoppageInfo"
+          ]
+        },
+        {
+          "name": "requests",
+          "pattern": "requests",
+          "target": [
+            "TargetRequests"
+          ]
+        },
+        {
+          "name": "kontrolixAI",
+          "pattern": "kontrolix-ai",
+          "target": [
+            "TargetKontrolixAI"
+          ]
+        },
+        {
+          "name": "myProfile",
+          "pattern": "my-profile",
+          "target": [
+            "TargetMyProfile"
+          ]
+        }
+      ],
+      "targets": {
+        "Targetashui": {
+          "id": "ashui",
+          "name": "ashui"
+        },
+        "TargetDashboard": {
+          "id": "Dashboard",
+          "name": "Dashboard"
+        },
+        "TargetLiveData": {
+          "id": "LiveData",
+          "name": "LiveData"
+        },
+        "TargetMachineHistory": {
+          "id": "MachineHistory",
+          "name": "MachineHistory"
+        },
+        "TargetMachineInfo": {
+          "id": "MachineInfo",
+          "name": "MachineInfo"
+        },
+        "TargetSupervisor": {
+          "id": "Supervisor",
+          "name": "Supervisor"
+        },
+        "TargetEmployees": {
+          "id": "Employees",
+          "name": "Employees"
+        },
+        "TargetResources": {
+          "id": "Resources",
+          "name": "Resources"
+        },
+        "TargetStoppageInfo": {
+          "id": "StoppageInfo",
+          "name": "StoppageInfo"
+        },
+        "TargetRequests": {
+          "id": "Requests",
+          "name": "Requests"
+        },
+        "TargetKontrolixAI": {
+          "id": "KontrolixAI",
+          "name": "KontrolixAI"
+        },
+        "TargetMyProfile": {
+          "id": "MyProfile",
+          "name": "MyProfile"
+        }
+      }
+    },
+    "rootView": {
+      "viewName": "ashu.ashu.view.App",
+      "type": "XML",
+      "id": "App",
+      "async": true
+    }
+  }
+}

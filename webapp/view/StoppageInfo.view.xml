@@ -1,0 +1,110 @@
+<mvc:View controllerName="ashu.ashu.controller.StoppageInfo"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core">
+    <Page id="stoppageInfoPage" title="Machine Stoppage Information" showHeader="false" class="dashboardPage">
+        <content>
+            <HBox fitContainer="true" class="dashboardLayout">
+                <!-- Side navigation -->
+                <VBox class="dashSideNav">
+                    <HBox class="dashLogoRow" justifyContent="Start" alignItems="Center">
+                        <Image src="" width="36px" />
+                        <Text text="ITSYBIZZ" class="dashLogoText" />
+                    </HBox>
+                    <List mode="None" class="dashSideList" itemPress=".onSideItemPress">
+                        <StandardListItem title="Monitoring-Dashboard" icon="sap-icon://home" type="Active" />
+                        <StandardListItem title="Live Data" icon="sap-icon://activity-individual" type="Active" />
+                        <StandardListItem title="Supervisor" icon="sap-icon://group-2" type="Active" />
+                        <StandardListItem title="Employees" icon="sap-icon://employee" type="Active" />
+                        <StandardListItem title="Machine History" icon="sap-icon://history" type="Active" />
+                        <StandardListItem title="Resources" icon="sap-icon://database" type="Active" />
+                        <StandardListItem title="Machine Info" icon="sap-icon://settings" type="Active" />
+                        <StandardListItem title="Stoppage Info" icon="sap-icon://alert" type="Active" selected="true" />
+                        <StandardListItem title="Requests" icon="sap-icon://inbox" type="Active" />
+                        <StandardListItem title="Kontrolix-AI" icon="sap-icon://physical-activity" type="Active" />
+                        <StandardListItem title="My Profile" icon="sap-icon://customer" type="Active" />
+                    </List>
+                    <Button text="Log Out" type="Transparent" class="dashLogout" press=".onLogout" />
+                </VBox>
+
+                <!-- Main area -->
+                <VBox class="dashMainArea">
+                    <!-- Top bar -->
+                    <HBox class="mhTopBar" justifyContent="SpaceBetween" alignItems="Center">
+                        <HBox alignItems="Center">
+                            <Avatar displayShape="Circle" class="mhIcon" />
+                            <VBox>
+                                <Title text="Machine Stoppage Information" level="H3" />
+                                <Text text="Track machine stoppages, durations, and downtime analysis" />
+                            </VBox>
+                        </HBox>
+                        <HBox alignItems="Center" class="mhControls">
+                            <Select width="8rem">
+                                <items>
+                                    <core:Item key="allTime" text="All Time" />
+                                </items>
+                            </Select>
+                            <Select width="10rem">
+                                <items>
+                                    <core:Item key="allMachines" text="All Machines" />
+                                </items>
+                            </Select>
+                            <Button text="Refresh" type="Default" />
+                        </HBox>
+                    </HBox>
+
+                    <!-- Summary cards -->
+                    <HBox class="liveCardsRow">
+                        <VBox class="liveCard">
+                            <Text text="RUN TIME" class="dashCardTitle" />
+                            <Text text="727h 17m" class="dashCardValue" />
+                        </VBox>
+                        <VBox class="liveCard">
+                            <Text text="IDEAL TIME" class="dashCardTitle" />
+                            <Text text="727h 13m" class="dashCardValue" />
+                        </VBox>
+                        <VBox class="liveCard">
+                            <Text text="STOP TIME" class="dashCardTitle" />
+                            <Text text="20h 7m" class="dashCardValue" />
+                        </VBox>
+                    </HBox>
+
+                    <!-- Events table -->
+                    <Text text="Stoppage Events (9 total)" class="mhSectionTitle" />
+                    <Table class="mhTable">
+                        <columns>
+                            <Column><Text text="MACHINE" /></Column>
+                            <Column><Text text="DEVICE ID" /></Column>
+                            <Column><Text text="STARTED AT" /></Column>
+                            <Column><Text text="STOPPED AT" /></Column>
+                            <Column><Text text="RUN TIME" /></Column>
+                            <Column><Text text="IDEAL TIME" /></Column>
+                        </columns>
+                        <items>
+                            <ColumnListItem>
+                                <cells>
+                                    <VBox>
+                                        <Text text="ABC Industries" />
+                                        <Text text="Injection Molding Machine X200" />
+                                    </VBox>
+                                    <Text text="MACHINE-001" />
+                                    <Text text="27 Feb 2026, 05:01:22 pm" />
+                                    <Text text="10 Mar 2026, 04:26:50 pm" />
+                                    <Text text="263h 25m" />
+                                    <Text text="263h 24m" />
+                                </cells>
+                            </ColumnListItem>
+                        </items>
+                    </Table>
+
+                    <!-- Pager -->
+                    <HBox justifyContent="Center" alignItems="Center" class="mhPager">
+                        <Button text="Previous" enabled="false" />
+                        <Button text="1" type="Emphasized" />
+                        <Button text="Next" />
+                    </HBox>
+                </VBox>
+            </HBox>
+        </content>
+    </Page>
+</mvc:View>

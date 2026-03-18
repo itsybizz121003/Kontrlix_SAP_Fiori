@@ -1,0 +1,63 @@
+<mvc:View controllerName="ashu.ashu.controller.ashui"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core">
+    <Page id="page" showHeader="false" class="loginPage">
+        <content>
+            <HBox fitContainer="true" justifyContent="SpaceBetween" alignItems="Center" class="loginLayout">
+                <!-- Left marketing copy -->
+                <VBox class="loginBenefits" width="50%">
+                    <Title text="Kontrolix AI" level="H2" class="loginBrand" />
+                    <Text text="Monitor and manage your smart factory in real time with precision and control." class="loginSubtitle" />
+
+                    <VBox class="loginBenefitsList">
+                        <HBox class="loginBenefitItem">
+                            <core:Icon src="sap-icon://accept" class="loginBenefitIcon" />
+                            <Text text="Monitor and manage real-time machine production with precision" />
+                        </HBox>
+                        <HBox class="loginBenefitItem">
+                            <core:Icon src="sap-icon://accept" class="loginBenefitIcon" />
+                            <Text text="Centralized control across all PLC systems" />
+                        </HBox>
+                        <HBox class="loginBenefitItem">
+                            <core:Icon src="sap-icon://accept" class="loginBenefitIcon" />
+                            <Text text="Real-time task tracking, error detection, and approval workflows" />
+                        </HBox>
+                        <HBox class="loginBenefitItem">
+                            <core:Icon src="sap-icon://accept" class="loginBenefitIcon" />
+                            <Text text="Enhance compliance, accuracy, and overall operational efficiency" />
+                        </HBox>
+                        <HBox class="loginBenefitItem">
+                            <core:Icon src="sap-icon://accept" class="loginBenefitIcon" />
+                            <Text text="Real-time intelligence for smarter factory operations" />
+                        </HBox>
+                    </VBox>
+                </VBox>
+
+                <!-- Right login card -->
+                <VBox class="loginCardWrapper" width="35%" justifyContent="Center" alignItems="Center">
+                    <VBox class="loginCard" width="100%">
+                        <HBox justifyContent="Center" class="loginLogoWrapper">
+                            <Avatar displayShape="Circle" src="" initials="K" class="loginLogo" />
+                        </HBox>
+
+                        <VBox class="loginForm" width="100%">
+                            <Label text="Email Address" required="true" labelFor="emailInput" />
+                            <Input id="emailInput" type="Email" placeholder="you@email.com" />
+
+                            <Label text="Password" required="true" labelFor="passwordInput" class="loginPasswordLabel" />
+                            <Input id="passwordInput" type="Password" placeholder="••••••••" showValueHelp="false" />
+
+                            <HBox justifyContent="SpaceBetween" alignItems="Center" class="loginMetaRow">
+                                <Text text="Admin already exists" class="loginMetaText" />
+                                <Link text="Forgot password?" press=".onForgotPassword" />
+                            </HBox>
+
+                            <Button text="Sign In" type="Emphasized" width="100%" press=".onSignIn" class="loginButton" />
+                        </VBox>
+                    </VBox>
+                </VBox>
+            </HBox>
+        </content>
+    </Page>
+</mvc:View>

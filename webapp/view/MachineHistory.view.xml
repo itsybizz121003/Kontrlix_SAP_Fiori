@@ -1,0 +1,114 @@
+<mvc:View controllerName="ashu.ashu.controller.MachineHistory"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core">
+    <Page id="machineHistoryPage" title="Machine History" showHeader="false" class="dashboardPage">
+        <content>
+            <HBox fitContainer="true" class="dashboardLayout">
+                <!-- Side navigation -->
+                <VBox class="dashSideNav">
+                    <HBox class="dashLogoRow" justifyContent="Start" alignItems="Center">
+                        <Image src="" width="36px" />
+                        <Text text="ITSYBIZZ" class="dashLogoText" />
+                    </HBox>
+                    <List mode="None" class="dashSideList" itemPress=".onSideItemPress">
+                        <StandardListItem title="Monitoring-Dashboard" icon="sap-icon://home" type="Active" />
+                        <StandardListItem title="Live Data" icon="sap-icon://activity-individual" type="Active" />
+                        <StandardListItem title="Supervisor" icon="sap-icon://group-2" type="Active" />
+                        <StandardListItem title="Employees" icon="sap-icon://employee" type="Active" />
+                        <StandardListItem title="Machine History" icon="sap-icon://history" type="Active" selected="true" />
+                        <StandardListItem title="Resources" icon="sap-icon://database" type="Active" />
+                        <StandardListItem title="Machine Info" icon="sap-icon://settings" type="Active" />
+                        <StandardListItem title="Stoppage Info" icon="sap-icon://alert" type="Active" />
+                        <StandardListItem title="Requests" icon="sap-icon://inbox" type="Active" />
+                        <StandardListItem title="Kontrolix-AI" icon="sap-icon://physical-activity" type="Active" />
+                        <StandardListItem title="My Profile" icon="sap-icon://customer" type="Active" />
+                    </List>
+                    <Button text="Log Out" type="Transparent" class="dashLogout" press=".onLogout" />
+                </VBox>
+
+                <!-- Main area -->
+                <VBox class="dashMainArea">
+                    <!-- Top bar with title and filters -->
+                    <HBox class="mhTopBar" justifyContent="SpaceBetween" alignItems="Center">
+                        <HBox alignItems="Center">
+                            <Avatar displayShape="Circle" class="mhIcon" />
+                            <VBox>
+                                <Title text="Machine History" level="H3" />
+                                <Text text="Monitor PLC performance and production metrics" />
+                            </VBox>
+                        </HBox>
+                        <HBox alignItems="Center" class="mhControls">
+                            <Select width="10rem" selectedKey="{mh>/timeFilter}" change=".onTimeFilterChange">
+                                <items>
+                                    <core:Item key="all" text="All Time" />
+                                    <core:Item key="today" text="Today" />
+                                    <core:Item key="yesterday" text="Yesterday" />
+                                    <core:Item key="thisWeek" text="This Week" />
+                                    <core:Item key="last3Months" text="Last 3 Months" />
+                                </items>
+                            </Select>
+                            <Button text="Refresh" type="Default" press=".onRefreshMachineHistory" />
+                            <Button text="Export" type="Emphasized" press=".onExportToCSV" />
+                        </HBox>
+                    </HBox>
+
+                    <!-- Recent Machine Data title -->
+                    <HBox justifyContent="SpaceBetween" alignItems="Center" class="mhSectionTitle">
+                        <Text text="Machine Data" />
+                        <ObjectStatus text="{= 'Rows: ' + ${mh>/rowCount} + ' | ' + ${mh>/connectionStatusText} + ' | Last: ' + ${mh>/lastUpdated} }"
+                            state="{mh>/connectionStatusState}" />
+                    </HBox>
+
+                    <!-- Table -->
+                    <Table class="mhTable" items="{mh>/rows}">
+                        <columns>
+                            <Column>
+                                <Text text="TIMESTAMP" />
+                            </Column>
+                            <Column>
+                                <Text text="COMPANY NAME" />
+                            </Column>
+                            <Column>
+                                <Text text="DEVICE ID" />
+                            </Column>
+                            <Column>
+                                <Text text="MODEL" />
+                            </Column>
+                            <Column>
+                                <Text text="STATUS" />
+                            </Column>
+                            <Column>
+                                <Text text="PART NO" />
+                            </Column>
+                            <Column>
+                                <Text text="MATERIAL" />
+                            </Column>
+                        </columns>
+                        <items>
+                            <ColumnListItem>
+                                <cells>
+                                    <Text text="{mh>Timestamp}" />
+                                    <Text text="{mh>Companyname}" />
+                                    <Text text="{mh>DeviceId}" />
+                                    <Text text="{mh>PlcModel}" />
+                                    <ObjectStatus text="{mh>Status}" />
+                                    <Text text="{mh>PartNo}" />
+                                    <Text text="{mh>MaterialCode}" />
+                                </cells>
+                            </ColumnListItem>
+                        </items>
+                    </Table>
+
+                    <!-- Pagination -->
+                    <HBox justifyContent="Center" alignItems="Center" class="sapUiMediumMarginTop">
+                        <Button icon="sap-icon://navigation-left-arrow" press=".onPrevPage" enabled="{= ${mh>/currentPage} &gt; 1 }" />
+                        <Text text="Page {mh>/currentPage} of {mh>/totalPages}" class="sapUiSmallMarginBeginEnd" />
+                        <Button icon="sap-icon://navigation-right-arrow" press=".onNextPage" enabled="{= ${mh>/currentPage} &lt; ${mh>/totalPages} }" />
+                    </HBox>
+                </VBox>
+            </HBox>
+        </content>
+    </Page>
+</mvc:View>
+

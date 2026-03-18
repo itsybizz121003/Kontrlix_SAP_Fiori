@@ -1,0 +1,54 @@
+<mvc:View controllerName="ashu.ashu.controller.App"
+    displayBlock="true"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:tnt="sap.tnt">
+    <tnt:ToolPage id="toolPage" sideExpanded="true">
+        <tnt:header>
+            <tnt:ToolHeader>
+                <Button id="sideNavigationToggleButton"
+                    icon="sap-icon://menu2"
+                    type="Transparent"
+                    press=".onSideNavButtonPress"
+                    visible="{appModel>/isLoggedIn}">
+                    <layoutData>
+                        <OverflowToolbarLayoutData priority="NeverOverflow" />
+                    </layoutData>
+                </Button>
+                <ToolbarSpacer width="20px" />
+                <Image src="" width="36px" />
+                <Title text="ITSYBIZZ" level="H1" />
+                <ToolbarSpacer />
+                <HBox alignItems="Center" class="dashUserInfo" visible="{appModel>/isLoggedIn}">
+                    <Text text="{appModel>/userInitials}" />
+                    <Button icon="sap-icon://log" type="Transparent" press=".onLogout" />
+                </HBox>
+            </tnt:ToolHeader>
+        </tnt:header>
+        <tnt:sideContent>
+            <tnt:SideNavigation id="sideNavigation" 
+                selectedKey="{appModel>/selectedKey}"
+                itemSelect=".onItemSelect"
+                visible="{appModel>/isLoggedIn}">
+                <tnt:item>
+                    <tnt:NavigationList>
+                        <tnt:NavigationListItem text="Monitoring-Dashboard" icon="sap-icon://home" key="dashboard" />
+                        <tnt:NavigationListItem text="Live Data" icon="sap-icon://activity-individual" key="liveData" />
+                        <tnt:NavigationListItem text="Supervisor" icon="sap-icon://group-2" key="supervisor" />
+                        <tnt:NavigationListItem text="Employees" icon="sap-icon://employee" key="employees" />
+                        <tnt:NavigationListItem text="Machine History" icon="sap-icon://history" key="machineHistory" />
+                        <tnt:NavigationListItem text="Resources" icon="sap-icon://database" key="resources" />
+                        <tnt:NavigationListItem text="Machine Info" icon="sap-icon://settings" key="machineInfo" />
+                        <tnt:NavigationListItem text="Stoppage Info" icon="sap-icon://alert" key="stoppageInfo" />
+                        <tnt:NavigationListItem text="Requests" icon="sap-icon://inbox" key="requests" />
+                        <tnt:NavigationListItem text="Kontrolix-AI" icon="sap-icon://physical-activity" key="kontrolixAI" />
+                        <tnt:NavigationListItem text="My Profile" icon="sap-icon://customer" key="myProfile" />
+                    </tnt:NavigationList>
+                </tnt:item>
+            </tnt:SideNavigation>
+        </tnt:sideContent>
+        <tnt:mainContents>
+            <App id="app" />
+        </tnt:mainContents>
+    </tnt:ToolPage>
+</mvc:View>

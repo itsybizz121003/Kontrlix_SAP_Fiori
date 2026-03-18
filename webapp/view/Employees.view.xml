@@ -1,0 +1,123 @@
+<mvc:View controllerName="ashu.ashu.controller.Employees"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core">
+    <Page id="employeesPage" title="Employees" showHeader="false" class="dashboardPage">
+        <content>
+            <VBox class="dashMainArea">
+                <!-- Top bar -->
+                <HBox class="supTopBar" justifyContent="SpaceBetween" alignItems="Center">
+                    <HBox alignItems="Center">
+                        <Avatar displayShape="Circle" class="supIcon" />
+                        <VBox>
+                            <Title text="Employees" level="H3" />
+                            <Text text="Manage employee information and roles" />
+                        </VBox>
+                    </HBox>
+                    <HBox alignItems="Center" class="supControls">
+                        <Button text="+ Add New Employee" type="Emphasized" press=".onOpenAddEmployee" />
+                        <Button text="Refresh" type="Default" press=".onRefreshEmployees" />
+                    </HBox>
+                </HBox>
+
+                <!-- Search box -->
+                <VBox class="supSearchBox">
+                    <Label text="Search Employees" />
+                    <SearchField placeholder="Search by name, email, phone, role..." width="100%" search=".onSearch" liveChange=".onSearch" />
+                </VBox>
+
+                <!-- Directory title -->
+                <HBox justifyContent="SpaceBetween" alignItems="Center" class="supDirHeader">
+                    <VBox>
+                        <Text text="Employee Directory" class="supDirTitle" />
+                        <ObjectStatus
+                            text="{= 'Showing ' + ${emp>/rowCount} + ' employees | ' + ${emp>/connectionStatusText} + ' | Last: ' + ${emp>/lastUpdated} }"
+                            state="{emp>/connectionStatusState}" />
+                    </VBox>
+                </HBox>
+
+                <!-- Table -->
+                <Table class="supTable" items="{emp>/rows}">
+                    <columns>
+                        <Column><Text text="EMPLOYEE ID" /></Column>
+                        <Column><Text text="FIRST NAME" /></Column>
+                        <Column><Text text="LAST NAME" /></Column>
+                        <Column><Text text="EMAIL" /></Column>
+                        <Column><Text text="PHONE" /></Column>
+                        <Column><Text text="ROLE" /></Column>
+                        <Column><Text text="ACTIVE" /></Column>
+                        <Column><Text text="ACTIONS" /></Column>
+                    </columns>
+                    <items>
+                        <ColumnListItem>
+                            <cells>
+                                <Text text="{emp>UserId}" />
+                                <Text text="{emp>FirstName}" />
+                                <Text text="{emp>LastName}" />
+                                <Text text="{emp>Email}" />
+                                <Text text="{emp>Phone}" />
+                                <ObjectStatus
+                                    text="{= ${emp>IsSuper} === 1 ? 'Super Admin' : (${emp>IsSupervisor} === 1 ? 'Supervisor' : 'Employee') }"
+                                    state="{= ${emp>IsSuper} === 1 ? 'Success' : (${emp>IsSupervisor} === 1 ? 'Warning' : 'None') }" />
+                                <ObjectStatus
+                                    text="{= ${emp>IsActive} === 1 ? 'Active' : 'Inactive' }"
+                                    state="{= ${emp>IsActive} === 1 ? 'Success' : 'Error' }" />
+                                <HBox>
+                                    <Button icon="sap-icon://show" type="Transparent" press=".onViewEmployee" />
+                                    <Button icon="sap-icon://edit" type="Transparent" press=".onEditEmployee" />
+                                    <Button icon="sap-icon://delete" type="Transparent" press=".onDeleteEmployee" />
+                                </HBox>
+                            </cells>
+                        </ColumnListItem>
+                    </items>
+                </Table>
+
+                <!-- Pagination -->
+                <HBox justifyContent="Center" alignItems="Center" class="sapUiMediumMarginTop">
+                    <Button icon="sap-icon://navigation-left-arrow" press=".onPrevPage" enabled="{= ${emp>/currentPage} &gt; 1 }" />
+                    <Text text="Page {emp>/currentPage} of {emp>/totalPages}" class="sapUiSmallMarginBeginEnd" />
+                    <Button icon="sap-icon://navigation-right-arrow" press=".onNextPage" enabled="{= ${emp>/currentPage} &lt; ${emp>/totalPages} }" />
+                </HBox>
+            </VBox>
+
+            <VBox id="addEmployeeOverlay" class="supModalOverlay" visible="false">
+                <VBox class="supDrawer">
+                    <HBox justifyContent="SpaceBetween" alignItems="Center" class="supDrawerHeader">
+                        <Title text="{emp>/ui/modalTitle}" level="H4" />
+                        <Button icon="sap-icon://decline" type="Transparent" press=".onCloseAddEmployee" class="supDrawerClose" />
+                    </HBox>
+
+                    <VBox class="supDrawerBody">
+                        <Label text="user Id *" class="supFieldLabel" />
+                        <Input placeholder="Enter userId" value="{emp>/form/UserId}" editable="{= ${emp>/ui/mode} === 'ADD' }" />
+
+                        <Label text="First Name *" class="supFieldLabel" />
+                        <Input placeholder="Enter first name" value="{emp>/form/FirstName}" editable="{= ${emp>/ui/mode} !== 'VIEW' }" />
+
+                        <Label text="Last Name" class="supFieldLabel" />
+                        <Input placeholder="Enter last name" value="{emp>/form/LastName}" editable="{= ${emp>/ui/mode} !== 'VIEW' }" />
+
+                        <Label text="Email *" class="supFieldLabel" />
+                        <Input type="Email" value="{emp>/form/Email}" editable="{= ${emp>/ui/mode} === 'ADD' }" />
+
+                        <Label text="Phone Number *" class="supFieldLabel" />
+                        <Input placeholder="Enter phone number" value="{emp>/form/Phone}" editable="{= ${emp>/ui/mode} !== 'VIEW' }" />
+
+                        <Label text="Password *" class="supFieldLabel" visible="{= ${emp>/ui/mode} === 'ADD' }" />
+                        <Input type="Password" value="{emp>/form/Password}" visible="{= ${emp>/ui/mode} === 'ADD' }" />
+                        <Text text="Password must be at least 8 characters with uppercase, lowercase, number, and special character" class="supHelpText" visible="{= ${emp>/ui/mode} === 'ADD' }" />
+
+                        <Label text="Confirm Password *" class="supFieldLabel" visible="{= ${emp>/ui/mode} === 'ADD' }" />
+                        <Input type="Password" placeholder="Confirm password" value="{emp>/form/ConfirmPassword}" visible="{= ${emp>/ui/mode} === 'ADD' }" />
+
+                        <Label text="Status" class="supFieldLabel" />
+                        <Switch state="{= ${emp>/form/IsActive} === 1 }" change=".onStatusChange" enabled="{= ${emp>/ui/mode} !== 'VIEW' }" />
+                    </VBox>
+
+                    <Button text="{emp>/ui/confirmButtonText}" type="Emphasized" width="100%" class="supCreateBtn" press=".onConfirmAction" visible="{= ${emp>/ui/mode} !== 'VIEW' }" />
+                </VBox>
+            </VBox>
+        </content>
+    </Page>
+</mvc:View>
+
