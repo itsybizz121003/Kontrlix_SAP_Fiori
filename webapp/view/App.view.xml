@@ -16,7 +16,7 @@
                     </layoutData>
                 </Button>
                 <ToolbarSpacer width="20px" />
-                <Image src="" width="36px" />
+                <Image src=""  width="36px" />
                 <Title text="ITSYBIZZ" level="H1" />
                 <ToolbarSpacer />
                 <HBox alignItems="Center" class="dashUserInfo" visible="{appModel>/isLoggedIn}">
