@@ -81,7 +81,11 @@
                         <Input value="{res>/form/ResourceId}" placeholder="e.g. RES001 (optional)" width="100%" editable="{= ${res>/ui/mode} === 'ADD' }" />
 
                         <Label text="Resource Name *" class="supFieldLabel" />
-                        <Input value="{res>/form/ResName}" placeholder="e.g. XYZ Manufacturing Ltd" width="100%" editable="{= ${res>/ui/mode} !== 'VIEW' }" />
+                        <Select items="{res>/brandList}" selectedKey="{res>/form/ResName}" width="100%" enabled="{= ${res>/ui/mode} !== 'VIEW' }">
+                            <items>
+                                <core:Item key="{res>key}" text="{res>text}" />
+                            </items>
+                        </Select>
 
                         <Label text="Resource Type *" class="supFieldLabel" />
                         <Select selectedKey="{res>/form/ResType}" width="100%" enabled="{= ${res>/ui/mode} !== 'VIEW' }">
