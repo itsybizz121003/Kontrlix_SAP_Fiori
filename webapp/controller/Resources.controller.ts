@@ -336,7 +336,7 @@ export default class Resources extends BaseController {
         console.log("DEBUG: Raw resources from API:", allRows);
 
         // Filter resources based on assigned resources for non-super users
-        const userStr = window.localStorage.getItem("user");
+        const userStr = window.localStorage.getItem("assignedResources");
         console.log("DEBUG: User data from localStorage:", userStr);
         
         if (userStr) {
