@@ -193,6 +193,7 @@
 }
 
 .dashFilterRow {
+<<<<<<< HEAD
   background-color: #ffffff;
   padding: 0.75rem 1rem;
   border-radius: 16px;
@@ -202,6 +203,39 @@
 
 .dashFilterGroup > .sapMHBoxChild {
   margin-right: 0.75rem;
+=======
+    background: #ffffff;
+    padding: 16px 24px !important;
+    border-radius: 12px !important;
+    border: 1px solid #e2e8f0;
+    margin-bottom: 24px !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.dashFilterGroup {
+    gap: 1.5rem;
+}
+
+.dashFilterLabel {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #1e293b;
+    margin-bottom: 0.4rem;
+}
+
+.dashFilterResetBtn {
+    background-color: #2563eb !important;
+    border-color: #2563eb !important;
+    color: #ffffff !important;
+    border-radius: 8px !important;
+    padding: 0 1.5rem !important;
+    font-weight: 600 !important;
+}
+
+.dashFilterResetBtn:hover {
+    background-color: #1d4ed8 !important;
+    border-color: #1d4ed8 !important;
+>>>>>>> 26921279b8bf202f19a3fb645c8b01d50736fe19
 }
 
 .dashCardsRow {
@@ -341,9 +375,15 @@
 /* GREEN - RUNNING */
 .liveCard.runningCard,
 .sapMVBox.runningCard {
+<<<<<<< HEAD
   background-color: #1e7438 !important;
   border: 2.5px solid #22c55e !important;
   box-shadow: 0 4px 16px rgba(34, 197, 94, 0.25) !important;
+=======
+    background-color: #dcfce7 !important; /* Light Green Background */
+    border: 2.5px solid #16a34a !important; /* Strong Green Border */
+    box-shadow: 0 4px 16px rgba(34, 197, 94, 0.25) !important;
+>>>>>>> 26921279b8bf202f19a3fb645c8b01d50736fe19
 }
 
 .runningCard .liveCardMachine,
@@ -359,9 +399,15 @@
 /* RED - STOPPED / FAULTED */
 .liveCard.stoppedCard,
 .sapMVBox.stoppedCard {
+<<<<<<< HEAD
   background-color: #fef2f2 !important;
   border: 2.5px solid #ef4444 !important;
   box-shadow: 0 4px 16px rgba(239, 68, 68, 0.25) !important;
+=======
+    background-color: #fee2e2 !important; /* Light Red Background */
+    border: 2.5px solid #dc2626 !important; /* Strong Red Border */
+    box-shadow: 0 4px 16px rgba(239, 68, 68, 0.25) !important;
+>>>>>>> 26921279b8bf202f19a3fb645c8b01d50736fe19
 }
 
 .stoppedCard .liveCardMachine,
@@ -390,6 +436,21 @@
 .liveStatusIdle {
   color: #b45309 !important;
   font-weight: 700;
+}
+.sapMVBox.idleCard {
+    background-color: #fffbeb !important;
+    border: 2.5px solid #f59e0b !important;
+    box-shadow: 0 4px 16px rgba(245, 158, 11, 0.25) !important;
+}
+
+.idleCard .liveCardMachine,
+.idleCard .sapMText.liveCardMachine {
+    color: #b45309 !important;
+}
+
+.liveStatusIdle {
+    color: #b45309 !important;
+    font-weight: 700;
 }
 
 /* ALARM COLORS */
