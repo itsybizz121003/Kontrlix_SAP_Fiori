@@ -40,10 +40,7 @@
                             <Text text="Pending" class="dashCardTitle" />
                             <Text text="{req>/pendingCount}" class="dashCardValue" />
                         </VBox>
-                        <VBox class="liveCard">
-                            <Text text="Supervisor Approved" class="dashCardTitle" />
-                            <Text text="{req>/supApprovedCount}" class="dashCardValue" />
-                        </VBox>
+                        
                         <VBox class="liveCard">
                             <Text text="Approved" class="dashCardTitle" />
                             <Text text="{req>/approvedCount}" class="dashCardValue" />

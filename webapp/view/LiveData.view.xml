@@ -75,21 +75,20 @@
                     <!-- Cards row (API driven) -->
                   <HBox class="liveCardsRow" items="{live>/machines}">
     <items>
-        <VBox class="{
-            = ${live>status} === 'RUNNING' ? 'liveCard runningCard' :
-              ${live>status} === 'STOPPED' ? 'liveCard stoppedCard' :
-              'liveCard'
-        }">
+        <VBox
+            class="liveCard"
+            style="{path: 'live>statusState', formatter: '.formatCardStyle'}">
 
             <!-- HEADER -->
             <HBox justifyContent="SpaceBetween" alignItems="Center">
                 <VBox>
                     <Text text="{live>deviceId}" class="liveCardMachine" />
-                    <Text text="{live>company} - {live>plant} - {live>line}" class="liveCardSub" />
+                    <Text text="{live>subLine}" class="liveCardSub" />
+                    <Text text="{live>MachineBrand}" class="liveCardSub" />
                    
                 </VBox>
                 <ObjectStatus text="{live>status}" 
-                    state="{= ${live>status} === 'RUNNING' ? 'Success' : ${live>status} === 'STOPPED' ? 'Error' : 'None' }" 
+                    state="{live>statusState}" 
                     class="liveStatusBadge" />
             </HBox>
 
@@ -144,8 +143,9 @@
                     <VBox>
                         <Text text="Machine Status" class="liveLabel" />
                         <Text text="{live>status}" class="{
-                            = ${live>status} === 'RUNNING' ? 'liveStatusRunning' :
-                              ${live>status} === 'STOPPED' ? 'liveStatusStopped' :
+                            = ${live>statusState} === 'Success' ? 'liveStatusRunning' :
+                              ${live>statusState} === 'Error' ? 'liveStatusStopped' :
+                              ${live>statusState} === 'Warning' ? 'liveStatusIdle' :
                               ''
                         }" />
                     </VBox>
@@ -173,4 +173,3 @@
         </content>
     </Page>
 </mvc:View>
-

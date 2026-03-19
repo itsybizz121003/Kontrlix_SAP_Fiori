@@ -36,6 +36,8 @@ export default class Dashboard extends Controller {
             totalMachines: 0,
             runningCount: 0,
             stoppedCount: 0,
+            totalProduction: 0,
+            uniqueParameters: 0,
             runTime: "0m",
             stopTime: "0m",
             runPercent: "0%",
@@ -106,7 +108,6 @@ export default class Dashboard extends Controller {
             const stoppageRows: Array<Record<string, any>> = [];
             const historyRows: Array<Record<string, any>> = [];
 
-            // Har device ke liye calculate karo
             Object.keys(deviceMap).forEach((deviceId) => {
                 const deviceRows = deviceMap[deviceId];
 
@@ -149,33 +150,65 @@ export default class Dashboard extends Controller {
                 }
             });
 
+            // ── Har device ka SIRF LAST record use karo ─────────────────────
+            // Production = last record ka PRODUCTION_COUNT ka sum across devices
+            // Running/Stopped = last record ka Status dekho per device
+            let totalProduction = 0;
+            let runningCount    = 0;
+            let stoppedCount    = 0;
+            const paramKeySet   = new Set<string>();
+
+            Object.keys(deviceMap).forEach((devId) => {
+                const deviceRows = deviceMap[devId];
+                const lastRow    = deviceRows[deviceRows.length - 1]; // sirf last record
+                if (!lastRow) return;
+
+                // Production — sirf last row ka count
+                let params: Record<string, any> = {};
+                try { params = JSON.parse(String(lastRow.Parameters || "{}")); } catch { params = {}; }
+                totalProduction += Number(params.PRODUCTION_COUNT ?? lastRow.ProductionCount ?? 0);
+
+                // Unique param keys
+                Object.keys(params).forEach((k) => paramKeySet.add(k));
+
+                // Running / Stopped — last status dekho
+                const lastStatus = String(lastRow.Status || "").toUpperCase();
+                if (lastStatus === "RUNNING") {
+                    runningCount++;
+                } else if (lastStatus === "STOPPED") {
+                    stoppedCount++;
+                }
+            });
+
             // Format
-            const runTimeStr = this.formatDuration(totalRunMs);
+            const runTimeStr  = this.formatDuration(totalRunMs);
             const stopTimeStr = this.formatDuration(totalStopMs);
-            const totalMs = totalRunMs + totalStopMs;
-            const runPct = totalMs > 0 ? Math.round((totalRunMs / totalMs) * 100) : 0;
-            const stopPct = totalMs > 0 ? Math.round((totalStopMs / totalMs) * 100) : 0;
+            const totalMs     = totalRunMs + totalStopMs;
+            const runPct      = totalMs > 0 ? Math.round((totalRunMs  / totalMs) * 100) : 0;
+            const stopPct     = totalMs > 0 ? Math.round((totalStopMs / totalMs) * 100) : 0;
 
             // Model update
-            model.setProperty("/totalMachines", rows.length);
-            model.setProperty("/runningCount", rows.filter((r) => String(r.Status || "").toUpperCase() === "RUNNING").length);
-            model.setProperty("/stoppedCount", rows.filter((r) => String(r.Status || "").toUpperCase() === "STOPPED").length);
-            model.setProperty("/runTime", runTimeStr);
-            model.setProperty("/stopTime", stopTimeStr);
-            model.setProperty("/totalTime", this.formatDuration(totalMs));
-            model.setProperty("/runPercent", `${runPct}%`);
-            model.setProperty("/stopPercent", `${stopPct}%`);
-            model.setProperty("/stoppageRows", stoppageRows.slice(0, 5));
-            model.setProperty("/historyRows", historyRows.slice(0, 5));
+            model.setProperty("/totalMachines",   Object.keys(deviceMap).length);
+            model.setProperty("/runningCount",    runningCount);
+            model.setProperty("/stoppedCount",    stoppedCount);
+            model.setProperty("/totalProduction", totalProduction);
+            model.setProperty("/uniqueParameters", paramKeySet.size);
+            model.setProperty("/runTime",         runTimeStr);
+            model.setProperty("/stopTime",        stopTimeStr);
+            model.setProperty("/totalTime",       this.formatDuration(totalMs));
+            model.setProperty("/runPercent",      `${runPct}%`);
+            model.setProperty("/stopPercent",     `${stopPct}%`);
+            model.setProperty("/stoppageRows",    stoppageRows.slice(0, 5));
+            model.setProperty("/historyRows",     historyRows.slice(0, 5));
             model.setProperty("/connectionStatus", "ONLINE");
-            model.setProperty("/connectionState", "Success");
-            model.setProperty("/lastUpdated", new Date().toLocaleTimeString());
+            model.setProperty("/connectionState",  "Success");
+            model.setProperty("/lastUpdated",      new Date().toLocaleTimeString());
 
             // Time Donut Chart Data
-            const runMinutes = Math.floor(totalRunMs / 60000);
+            const runMinutes  = Math.floor(totalRunMs  / 60000);
             const stopMinutes = Math.floor(totalStopMs / 60000);
             model.setProperty("/timeChartData", [
-                { type: "Run Time", minutes: runMinutes > 0 ? runMinutes : 0.1 },
+                { type: "Run Time",  minutes: runMinutes  > 0 ? runMinutes  : 0.1 },
                 { type: "Stop Time", minutes: stopMinutes > 0 ? stopMinutes : 0.1 }
             ]);
 
@@ -189,24 +222,19 @@ export default class Dashboard extends Controller {
 
             const chartData = latestPerDevice.map((r) => {
                 let params: Record<string, any> = {};
-                try {
-                    params = JSON.parse(String(r.Parameters || "{}")) as Record<string, any>;
-                } catch {
-                    params = {};
-                }
+                try { params = JSON.parse(String(r.Parameters || "{}")); } catch { params = {}; }
                 return {
-                    label: String(r.DeviceId || ""),
-                    temperature: Number(params.TEMPERATURE ?? r.Temperature ?? 0),
-                    production: Number(params.PRODUCTION_COUNT ?? r.ProductionCount ?? 0),
-                    rpm: Number(params.RPM ?? r.Rpm ?? 0),
-                    pressure: Number(params.PRESSURE ?? r.Pressure ?? 0)
+                    label:       String(r.DeviceId || ""),
+                    temperature: Number(params.TEMPERATURE      ?? r.Temperature      ?? 0),
+                    production:  Number(params.PRODUCTION_COUNT ?? r.ProductionCount  ?? 0),
+                    rpm:         Number(params.RPM              ?? r.Rpm              ?? 0),
+                    pressure:    Number(params.PRESSURE         ?? r.Pressure         ?? 0)
                 };
             });
             model.setProperty("/chartData", chartData);
 
             // Chart Properties
             setTimeout(() => {
-                // Donut Chart
                 const timeSummaryChart = this.byId("timeSummaryChart") as any;
                 if (timeSummaryChart) {
                     timeSummaryChart.setVizProperties({
@@ -214,18 +242,12 @@ export default class Dashboard extends Controller {
                         tooltip: { visible: true },
                         plotArea: {
                             colorPalette: ["#19A979", "#eb0d0d"],
-                            dataLabel: {
-                                visible: true,
-                                type: "percentage"
-                            }
+                            dataLabel: { visible: true, type: "percentage" }
                         },
-                        chart: {
-            innerRadius: "50%"  // ← Yeh add karo — bada = thinner ring
-        }
+                        chart: { innerRadius: "50%" }
                     });
                 }
 
-                // Production Chart
                 const productionChart = this.byId("productionChart") as any;
                 if (productionChart) {
                     productionChart.setVizProperties({
@@ -235,12 +257,11 @@ export default class Dashboard extends Controller {
                             colorPalette: ["#5899DA", "#E8743B"],
                             dataLabel: { visible: true, formatString: "#,##0.#" }
                         },
-                        valueAxis: { title: { text: "Production" } },
+                        valueAxis:  { title: { text: "Production" } },
                         valueAxis2: { title: { text: "Temperature (°C)" } }
                     });
                 }
 
-                // RPM Chart
                 const rpmChart = this.byId("rpmChart") as any;
                 if (rpmChart) {
                     rpmChart.setVizProperties({
@@ -250,7 +271,7 @@ export default class Dashboard extends Controller {
                             colorPalette: ["#19A979", "#945ECF"],
                             dataLabel: { visible: true, formatString: "#,##0.#" }
                         },
-                        valueAxis: { title: { text: "RPM" } },
+                        valueAxis:  { title: { text: "RPM" } },
                         valueAxis2: { title: { text: "Pressure (bar)" } }
                     });
                 }
@@ -258,7 +279,7 @@ export default class Dashboard extends Controller {
 
         } catch (e) {
             model.setProperty("/connectionStatus", "OFFLINE");
-            model.setProperty("/connectionState", "Error");
+            model.setProperty("/connectionState",  "Error");
             console.error("Dashboard API error:", e);
         }
     }
@@ -268,29 +289,25 @@ export default class Dashboard extends Controller {
         try {
             let cleaned = ts.trim();
             cleaned = cleaned.replace(" UTC", "Z");
-            cleaned = cleaned.replace(" UT", "Z");
+            cleaned = cleaned.replace(" UT",  "Z");
             if (cleaned.includes(" ") && !cleaned.includes("T")) {
                 cleaned = cleaned.replace(" ", "T");
             }
             const d = new Date(cleaned);
             return isNaN(d.getTime()) ? null : d;
-        } catch {
-            return null;
-        }
+        } catch { return null; }
     }
 
     private formatDuration(ms: number): string {
         if (ms <= 0) return "0m";
         const totalSeconds = Math.floor(ms / 1000);
-        const hours = Math.floor(totalSeconds / 3600);
-        const minutes = Math.floor((totalSeconds    % 3600) / 60);
+        const hours   = Math.floor(totalSeconds / 3600);
+        const minutes = Math.floor((totalSeconds % 3600) / 60);
         const seconds = totalSeconds % 60;
-        if (hours > 0) return `${hours}h ${minutes}m`;
-        else if (minutes > 0) return `${minutes}m ${seconds}s`;
-        else return `${seconds}s`;
+        if (hours   > 0) return `${hours}h ${minutes}m`;
+        if (minutes > 0) return `${minutes}m ${seconds}s`;
+        return `${seconds}s`;
     }
-
-  
 
     public onLogout(): void {
         window.localStorage.removeItem("machineApiToken");
