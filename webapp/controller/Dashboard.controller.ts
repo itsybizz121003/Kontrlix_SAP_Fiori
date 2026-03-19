@@ -80,7 +80,7 @@ export default class Dashboard extends Controller {
 
         try {
             const res = await fetch(
-                "/sap/opu/odata4/sap/zmachine_sb/srvd_a2x/sap/zmachine_sd/0001/Machine?$top=500&$orderby=Timestamp asc",
+                "/sap/opu/odata4/sap/zmachine_sb/srvd_a2x/sap/zmachine_sd/0001/Machine?$orderby=Timestamp asc",
                 {
                     method: "GET",
                     headers: {
