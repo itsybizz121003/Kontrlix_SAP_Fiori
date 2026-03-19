@@ -20,8 +20,8 @@ export default class LiveData extends Controller {
     if (!view) return;
 
     const liveModel = new JSONModel({
-      allMachines: [], // Raw data from API
-      machines: [],    // Filtered data shown in UI
+      allMachines: [],
+      machines: [],
       brands: [{ key: "all", text: "All Brands" }],
       filters: {
         plcBrand: "all",
@@ -182,98 +182,6 @@ export default class LiveData extends Controller {
   // DATA LOADING  ← MAIN FIX IS HERE
   // ─────────────────────────────────────────────────────────────
 
-  public onFilterChange(): void {
-    this.applyFilters();
-  }
-
-  public onResetFilters(): void {
-    const view = this.getView();
-    if (!view) return;
-    const model = view.getModel("live") as JSONModel;
-    model.setProperty("/filters", {
-      plcBrand: "all",
-      activeStatus: "all",
-      machineStatus: "all",
-      dateRange: "all"
-    });
-    this.applyFilters();
-  }
-
-  private applyFilters(): void {
-    const view = this.getView();
-    if (!view) return;
-    const model = view.getModel("live") as JSONModel;
-    const allCards = model.getProperty("/allMachines") || [];
-    const filters = model.getProperty("/filters");
-
-    let filtered = allCards.filter((card: any) => {
-      // 1. PlcBrand Filter
-      if (filters.plcBrand !== "all" && card.plcBrand !== filters.plcBrand) {
-        return false;
-      }
-
-      // 2. Active/Inactive Filter
-      // (Assuming 'Active' means status is RUNNING or IDLE, 'Inactive' means STOPPED or UNKNOWN)
-      if (filters.activeStatus !== "all") {
-        const isActive = (card.status === "RUNNING" || card.status === "IDLE");
-        if (filters.activeStatus === "active" && !isActive) return false;
-        if (filters.activeStatus === "inactive" && isActive) return false;
-      }
-
-      // 3. Machine Status Filter
-      if (filters.machineStatus !== "all" && card.status !== filters.machineStatus) {
-        return false;
-      }
-
-      // 4. Date Range Filter
-      if (filters.dateRange !== "all") {
-        const cardDate = new Date(card.timestamp);
-        const now = new Date();
-        let minDate = new Date();
-
-        switch (filters.dateRange) {
-          case "today":
-            minDate.setHours(0, 0, 0, 0);
-            break;
-          case "yesterday":
-            minDate.setDate(now.getDate() - 1);
-            minDate.setHours(0, 0, 0, 0);
-            const maxDate = new Date(minDate);
-            maxDate.setHours(23, 59, 59, 999);
-            if (cardDate < minDate || cardDate > maxDate) return false;
-            return true; // Special case for yesterday range
-          case "thisWeek":
-            const day = now.getDay(); // 0 is Sunday
-            minDate.setDate(now.getDate() - day);
-            minDate.setHours(0, 0, 0, 0);
-            break;
-          case "thisMonth":
-            minDate = new Date(now.getFullYear(), now.getMonth(), 1);
-            break;
-          case "last3Months":
-            minDate.setMonth(now.getMonth() - 3);
-            break;
-        }
-        if (cardDate < minDate) return false;
-      }
-
-      return true;
-    });
-
-    // Update the UI model
-    model.setProperty("/machines", filtered);
-    model.setProperty("/totalMachines", String(filtered.length));
-    
-    // Update summary counts based on filtered data
-    const running = filtered.filter((c: any) => c.statusState === "Success").length;
-    const idle    = filtered.filter((c: any) => c.statusState === "Warning").length;
-    const faulted = filtered.filter((c: any) => c.statusState === "Error").length;
-    
-    model.setProperty("/runningCount", String(running));
-    model.setProperty("/idleCount", String(idle));
-    model.setProperty("/faultCount", String(faulted));
-  }
-
   private async loadLiveData(showToast = false): Promise<void> {
     const view = this.getView();
     if (!view) return;
@@ -288,32 +196,28 @@ export default class LiveData extends Controller {
     }
 
     try {
-      const response = await fetch(
-        "/sap/opu/odata4/sap/zmachine_sb/srvd_a2x/sap/zmachine_sd/0001/Machine",
-        {
-          method: "GET",
-          headers: {
-            Accept: "application/json",
-            Authorization: `Bearer ${authToken}`,
-          },
-        },
-      );
+      // ── Pehle saare DeviceIds fetch karo ─────────────────────────────────
+      // OData entity set = Machine (collection), $top=500 taaki saari milein
+      // $orderby=Timestamp desc taaki latest pehle aayein
+      const allRows = await this.fetchAllPages(authToken);
 
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      console.log("LiveData: Total rows fetched =", allRows.length);
+      const uniqueIds = [...new Set(allRows.map((r: any) => String(r.DeviceId || "?")))];
+      console.log("LiveData: Unique DeviceIds =", uniqueIds);
 
-      const payload = (await response.json()) as { value?: Array<Record<string, any>> };
-      const rows = payload.value || [];
-      const latestRows = this.getLatestRowsByDevice(rows);
+      // ── Har device ka sirf LATEST record rakho ────────────────────────────
+      const latestRows = this.getLatestRowsByDevice(allRows);
+      console.log("LiveData: Machines after dedup =", latestRows.length);
+
       const allCards = latestRows.map((row) => {
-        const card = this.toCardData(row);
-        // Ensure we store the raw brand for filtering
+        const card   = this.toCardData(row);
         card.plcBrand = String(row.PlcBrand || "Unknown");
         return card;
       });
 
-      // Update brand list dynamically
+      // Brand list dynamically build karo
       const brandsSet = new Set<string>();
-      allCards.forEach(c => brandsSet.add(c.plcBrand));
+      allCards.forEach((c: any) => brandsSet.add(c.plcBrand));
       const brandItems = [{ key: "all", text: "All Brands" }];
       Array.from(brandsSet).sort().forEach(b => brandItems.push({ key: b, text: b }));
       model.setProperty("/brands", brandItems);
@@ -321,7 +225,7 @@ export default class LiveData extends Controller {
       model.setProperty("/allMachines", allCards);
       this.applyFilters();
 
-      model.setProperty("/connectionStatusText", "ONLINE");
+      model.setProperty("/connectionStatusText",  "ONLINE");
       model.setProperty("/connectionStatusState", "Success");
       model.setProperty("/lastUpdated", new Date().toLocaleString());
 
