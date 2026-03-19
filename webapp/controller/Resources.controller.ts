@@ -22,9 +22,11 @@ export default class Resources extends BaseController {
             pageSize: 10,
             totalPages: 1,
             searchQuery: "",
+            isAdmin: false, // New property for UI visibility
             connectionStatusText: "OFFLINE",
             connectionStatusState: "Error",
             lastUpdated: "-",
+            brandList: [{ key: "", text: "Select PLC Brand" }],
             ui: {
                 mode: "ADD",
                 modalTitle: "Add New Resource",
@@ -40,7 +42,54 @@ export default class Resources extends BaseController {
         });
 
         view.setModel(resourcesModel, "res");
+
+        // Role check for UI visibility
+        const userStr = window.localStorage.getItem("user");
+        const user = userStr ? JSON.parse(userStr) : {};
+        const role = String(user.Role || user.role || "").toUpperCase();
+        resourcesModel.setProperty("/isAdmin", role === "ADMIN" || role === "SUPER ADMIN");
+
         void this.loadResources();
+        void this.loadPlcBrands();
+    }
+
+    private async loadPlcBrands(): Promise<void> {
+        const model = this.getView()?.getModel("res") as JSONModel;
+        const token = this.getAuthToken();
+
+        try {
+            const res = await fetch(
+                "/sap/opu/odata4/sap/zmachine_sb/srvd_a2x/sap/zmachine_sd/0001/Machine?$select=PlcBrand",
+                {
+                    method: "GET",
+                    headers: {
+                        "Accept": "application/json",
+                        "Authorization": `Bearer ${token}`
+                    }
+                }
+            );
+
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+            const payload = await res.json() as { value?: Array<Record<string, any>> };
+            const machines = payload.value || [];
+
+            // Unique brands nikaalo
+            const brandsSet = new Set<string>();
+            machines.forEach((m: any) => {
+                if (m.PlcBrand) brandsSet.add(String(m.PlcBrand));
+            });
+
+            const brandList = [{ key: "", text: "Select PLC Brand" }];
+            Array.from(brandsSet).sort().forEach(brand => {
+                brandList.push({ key: brand, text: brand });
+            });
+
+            model.setProperty("/brandList", brandList);
+
+        } catch (e) {
+            console.error("Failed to load PLC brands:", e);
+        }
     }
 
     public onOpenAddResource(): void {

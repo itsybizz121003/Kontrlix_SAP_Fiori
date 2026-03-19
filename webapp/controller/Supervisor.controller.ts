@@ -35,6 +35,7 @@ export default class Supervisor extends BaseController {
             pageSize: 10,
             totalPages: 1,
             searchQuery: "",
+            isAdmin: false, // New property for UI visibility
             form: {
                 SupervisorId: "",
                 FirstName: "",
@@ -58,6 +59,13 @@ export default class Supervisor extends BaseController {
         });
 
         view.setModel(supModel, "sup");
+
+        // Role check for UI visibility
+        const userStr = window.localStorage.getItem("user");
+        const user = userStr ? JSON.parse(userStr) : {};
+        const role = String(user.Role || user.role || "").toUpperCase();
+        supModel.setProperty("/isAdmin", role === "ADMIN" || role === "SUPER ADMIN");
+
         void this.initData();
     }
 

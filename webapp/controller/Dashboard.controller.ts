@@ -1,6 +1,7 @@
-import Controller from "sap/ui/core/mvc/Controller";
+import Controller from "./BaseController";
 import UIComponent from "sap/ui/core/UIComponent";
 import JSONModel from "sap/ui/model/json/JSONModel";
+import MessageToast from "sap/m/MessageToast";
 
 /**
  * @namespace ashu.ashu.controller
@@ -121,10 +122,24 @@ export default class Dashboard extends Controller {
         const role    = String(user.Role || user.role || "").toUpperCase();
         const userId  = String(user.SupervisorId || user.EmployeeId || user.userId || "");
 
-        // 1. Filter raw rows
-        const filteredRows = allRows.filter((row: any) => {
-            if (role === "EMPLOYEE") {
-                if (row.EmployeeId && String(row.EmployeeId) !== userId) return false;
+        // 1. Role-based filtering + UI Filters
+        let filteredRows = allRows.filter((row: any) => {
+            // Role Logic
+            if (role === "SUPERVISOR" || role === "EMPLOYEE") {
+                // Supervisor and Employee see data for assigned resources
+                const assignedResources = this.getAssignedResources();
+                const assignedResourceIds = assignedResources.map((r: any) => String(r.resourceId || r.ResourceId || "").trim().toUpperCase());
+                const assignedResourceNames = assignedResources.map((r: any) => String(r.name || r.ResName || "").trim().toUpperCase());
+                
+                const machineId = String(row.DeviceId || "").trim().toUpperCase();
+                const machineBrand = String(row.PlcBrand || "").trim().toUpperCase();
+
+                const matchesId = assignedResourceIds.includes(machineId);
+                const matchesBrand = assignedResourceNames.includes(machineBrand);
+
+                if (!matchesId && !matchesBrand) {
+                    return false;
+                }
             }
             if (filters.plcBrand !== "all" && String(row.PlcBrand) !== filters.plcBrand) return false;
             if (filters.dateRange !== "all") {
@@ -348,9 +363,7 @@ export default class Dashboard extends Controller {
     }
 
     public onLogout(): void {
-        window.localStorage.removeItem("machineApiToken");
-        window.localStorage.removeItem("appToken");
-        window.localStorage.removeItem("user");
+        window.localStorage.clear();
         (this.getOwnerComponent() as UIComponent).getRouter().navTo("login");
     }
 

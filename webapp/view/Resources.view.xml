@@ -15,7 +15,7 @@
                         </VBox>
                     </HBox>
                     <HBox alignItems="Center" class="supControls">
-                        <Button text="+ Add New Resource" type="Emphasized" press=".onOpenAddResource" />
+                        <Button text="+ Add New Resource" type="Emphasized" press=".onOpenAddResource" visible="{res>/isAdmin}" />
                         <Button text="Refresh" type="Default" press=".onRefreshResources" />
                     </HBox>
                 </HBox>
@@ -52,8 +52,8 @@
                                 <Text text="{res>Specification}" />
                                 <HBox>
                                     <Button icon="sap-icon://show" type="Transparent" press=".onViewResource" />
-                                    <Button icon="sap-icon://edit" type="Transparent" press=".onEditResource" />
-                                    <Button icon="sap-icon://delete" type="Transparent" press=".onDeleteResource" />
+                                    <Button icon="sap-icon://edit" type="Transparent" press=".onEditResource" visible="{res>/isAdmin}" />
+                                    <Button icon="sap-icon://delete" type="Transparent" press=".onDeleteResource" visible="{res>/isAdmin}" />
                                 </HBox>
                             </cells>
                         </ColumnListItem>
@@ -81,7 +81,11 @@
                         <Input value="{res>/form/ResourceId}" placeholder="e.g. RES001 (optional)" width="100%" editable="{= ${res>/ui/mode} === 'ADD' }" />
 
                         <Label text="Resource Name *" class="supFieldLabel" />
-                        <Input value="{res>/form/ResName}" placeholder="e.g. XYZ Manufacturing Ltd" width="100%" editable="{= ${res>/ui/mode} !== 'VIEW' }" />
+                        <Select items="{res>/brandList}" selectedKey="{res>/form/ResName}" width="100%" enabled="{= ${res>/ui/mode} !== 'VIEW' }">
+                            <items>
+                                <core:Item key="{res>key}" text="{res>text}" />
+                            </items>
+                        </Select>
 
                         <Label text="Resource Type *" class="supFieldLabel" />
                         <Select selectedKey="{res>/form/ResType}" width="100%" enabled="{= ${res>/ui/mode} !== 'VIEW' }">

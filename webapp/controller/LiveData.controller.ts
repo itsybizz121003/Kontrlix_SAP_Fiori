@@ -1,4 +1,4 @@
-import Controller from "sap/ui/core/mvc/Controller";
+import Controller from "./BaseController";
 import UIComponent from "sap/ui/core/UIComponent";
 import JSONModel from "sap/ui/model/json/JSONModel";
 import MessageToast from "sap/m/MessageToast";
@@ -147,11 +147,22 @@ export default class LiveData extends Controller {
     const role = String(user.Role || user.role || "").toUpperCase();
     const userId = String(user.SupervisorId || user.EmployeeId || user.userId || "");
 
-    const filtered = allCards.filter((card: any) => {
+    let filtered = allCards.filter((card: any) => {
       // Role-based filtering
-      if (role === "EMPLOYEE") {
-        // Employee sees only their assigned machine
-        if (card.employeeId && String(card.employeeId) !== userId) return false;
+      if (role === "SUPERVISOR" || role === "EMPLOYEE") {
+        const assignedResources = this.getAssignedResources();
+        const assignedResourceIds = assignedResources.map((r: any) => String(r.resourceId || r.ResourceId || "").trim().toUpperCase());
+        const assignedResourceNames = assignedResources.map((r: any) => String(r.name || r.ResName || "").trim().toUpperCase());
+
+        const machineId = String(card.deviceId || "").trim().toUpperCase();
+        const machineBrand = String(card.plcBrand || "").trim().toUpperCase();
+
+        const matchesId = assignedResourceIds.includes(machineId);
+        const matchesBrand = assignedResourceNames.includes(machineBrand);
+
+        if (!matchesId && !matchesBrand) {
+          return false;
+        }
       }
 
       if (filters.plcBrand !== "all" && card.plcBrand !== filters.plcBrand) return false;

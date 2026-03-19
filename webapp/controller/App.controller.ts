@@ -13,6 +13,9 @@ export default class App extends Controller {
     public onInit(): void {
         const oModel = new JSONModel({
             isLoggedIn: false,
+            isAdmin: false,
+            showSupervisorModule: true,
+            showEmployeesModule: true,
             userInitials: "",
             selectedKey: "dashboard"
         });
@@ -23,14 +26,32 @@ export default class App extends Controller {
             const sRouteName = oEvent.getParameter("name");
             if (sRouteName === "login") {
                 oModel.setProperty("/isLoggedIn", false);
+                oModel.setProperty("/isAdmin", false);
+                oModel.setProperty("/showSupervisorModule", true);
+                oModel.setProperty("/showEmployeesModule", true);
             } else {
                 oModel.setProperty("/isLoggedIn", true);
                 oModel.setProperty("/selectedKey", sRouteName);
                 
-                // Fetch initials from local storage if available
+                // Fetch initials and role from local storage if available
                 const user = JSON.parse(localStorage.getItem("user") || "{}");
-                if (user.FirstName) {
-                    oModel.setProperty("/userInitials", user.FirstName.charAt(0).toUpperCase());
+                const role = String(user.Role || user.role || "").toUpperCase();
+                
+                const isAdmin = role === "ADMIN" || role === "SUPER ADMIN";
+                const isSupervisor = role === "SUPERVISOR";
+                const isEmployee = role === "EMPLOYEE";
+
+                oModel.setProperty("/isAdmin", isAdmin);
+                
+                // Supervisor module: Hide for Supervisors, show for Admin and Employee (to see their supervisor)
+                oModel.setProperty("/showSupervisorModule", !isSupervisor);
+                
+                // Employees module: Hide for Employees, show for Admin and Supervisor
+                oModel.setProperty("/showEmployeesModule", !isEmployee);
+
+                if (user.FirstName || user.firstName) {
+                    const firstName = user.FirstName || user.firstName;
+                    oModel.setProperty("/userInitials", firstName.charAt(0).toUpperCase());
                 }
             }
         });
