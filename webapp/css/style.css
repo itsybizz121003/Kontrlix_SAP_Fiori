@@ -848,3 +848,76 @@
 .liveParamRow2 {
     margin-top: 0.5rem;
 }
+
+
+/* ── Summary Cards Row ──────────────────────────────────────────────────── */
+.dashSummaryCards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    padding: 16px 24px;
+}
+
+.dashSumCard {
+    flex: 1 1 calc(33% - 16px);
+    min-width: 180px;
+    border-radius: 16px;
+    padding: 20px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+/* Blue */
+.dashSumCard--blue   { background: linear-gradient(135deg, #dbeafe 0%, #eff6ff 100%); }
+/* Yellow */
+.dashSumCard--yellow { background: linear-gradient(135deg, #fef9c3 0%, #fffde7 100%); }
+/* Purple */
+.dashSumCard--purple { background: linear-gradient(135deg, #ede9fe 0%, #f5f3ff 100%); }
+/* Orange */
+.dashSumCard--orange { background: linear-gradient(135deg, #ffedd5 0%, #fff7ed 100%); }
+/* Green */
+.dashSumCard--green  { background: linear-gradient(135deg, #dcfce7 0%, #f0fdf4 100%); }
+/* Red */
+.dashSumCard--red    { background: linear-gradient(135deg, #fee2e2 0%, #fff5f5 100%); }
+
+.dashSumCardTitle {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: #555;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.dashSumCardValue {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    line-height: 1.1;
+}
+
+/* Blue value */
+.dashSumCard--blue   .dashSumCardValue { color: #1a73e8; }
+/* Yellow value */
+.dashSumCard--yellow .dashSumCardValue { color: #e65100; }
+/* Purple value */
+.dashSumCard--purple .dashSumCardValue { color: #6a1b9a; }
+/* Orange value */
+.dashSumCard--orange .dashSumCardValue { color: #e65100; }
+/* Green value */
+.dashSumCard--green  .dashSumCardValue { color: #2e7d32; }
+/* Red value */
+.dashSumCard--red    .dashSumCardValue { color: #c62828; }
+
+.dashSumCardSub {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 4px;
+}
+
+.dashSumCardSubText {
+    font-size: 0.75rem;
+    color: #777;
+}
