@@ -1,4 +1,4 @@
-import Controller from "sap/ui/core/mvc/Controller";
+import BaseController from "./BaseController";
 import UIComponent from "sap/ui/core/UIComponent";
 import MessageToast from "sap/m/MessageToast";
 import MessageBox from "sap/m/MessageBox";
@@ -8,7 +8,7 @@ import JSONModel from "sap/ui/model/json/JSONModel";
 /**
  * @namespace ashu.ashu.controller
  */
-export default class Employees extends Controller {
+export default class Employees extends BaseController {
 
     public onInit(): void {
         const view = this.getView();
@@ -52,15 +52,6 @@ export default class Employees extends Controller {
     }
 
   
-
-    public onLogout(): void {
-        const router = (this.getOwnerComponent() as UIComponent).getRouter();
-        router.navTo("login");
-    }
-
-    public onSignOut(): void {
-        this.onLogout();
-    }
 
     public onOpenAddEmployee(): void {
         const model = this.getView()?.getModel("emp") as JSONModel;
@@ -376,115 +367,91 @@ export default class Employees extends Controller {
         }
     }
 
-    private async getCSRFToken(): Promise<string> {
-    const token = this.getAuthToken();
-    try {
-        const res = await fetch(
-            "/sap/opu/odata4/sap/zkontrolix_user_sb/srvd_a2x/sap/zkontrolix_user_sd/0001/User",
-            {
-                method: "GET",
-                headers: {
-                    "x-csrf-token": "fetch",
-                    "Authorization": `Bearer ${token}`
-                }
-            }
-        );
-        return res.headers.get("x-csrf-token") || "";
-    } catch {
-        return "";
-    }
-}
-
-    private getAuthToken(): string {
-    return window.localStorage.getItem("machineApiToken") || "";
-}
-
-private async loadEmployees(showToast = false): Promise<void> {
-    const view = this.getView();
-    if (!view) return;
-    
-    const model = view.getModel("emp") as JSONModel;
-    const token = this.getAuthToken();
-
-    try {
-        const res = await fetch(
-            "/sap/opu/odata4/sap/zkontrolix_user_sb/srvd_a2x/sap/zkontrolix_user_sd/0001/User?$top=500",
-            {
-                method: "GET",
-                headers: {
-                    "Accept": "application/json",
-                    "Authorization": `Bearer ${token}`  // ← Yeh add karo
-                }
-            }
-        );
-
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-
-        const payload = await res.json() as { value?: Array<Record<string, any>> };
-        const filterData = payload.value?.filter((item) => (item.IsSuper === 0 && item.IsSupervisor === 0)) || [];
-      
-        const rows = filterData || [];
-        model.setProperty("/allRows", rows);
-        this.applyFiltersAndPagination();
+    private async loadEmployees(showToast = false): Promise<void> {
+        const view = this.getView();
+        if (!view) return;
         
-        model.setProperty("/connectionStatusText", "ONLINE");
-        model.setProperty("/connectionStatusState", "Success");
-        model.setProperty("/lastUpdated", new Date().toLocaleString());
+        const model = view.getModel("emp") as JSONModel;
+        const token = this.getAuthToken();
 
-        if (showToast) MessageToast.show(`Loaded ${rows.length} employees`);
+        try {
+            const res = await fetch(
+                "/sap/opu/odata4/sap/zkontrolix_user_sb/srvd_a2x/sap/zkontrolix_user_sd/0001/User?$top=500",
+                {
+                    method: "GET",
+                    headers: {
+                        "Accept": "application/json",
+                        "Authorization": `Bearer ${token}`
+                    }
+                }
+            );
 
-    } catch (e) {
-        model.setProperty("/connectionStatusText", "OFFLINE");
-        model.setProperty("/connectionStatusState", "Error");
-        if (showToast) MessageToast.show("Failed to load employees");
-        console.error("Employees API error:", e);
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+            const payload = await res.json() as { value?: Array<Record<string, any>> };
+            let allRows = payload.value?.filter((item) => (item.IsSuper === 0 && item.IsSupervisor === 0)) || [];
+
+            // Debug logging
+            console.log("DEBUG: Raw employees from API:", payload.value);
+            console.log("DEBUG: Filtered employees (only non-super, non-supervisor):", allRows);
+
+            // Filter employees based on assigned employees for non-super users
+            const userStr = window.localStorage.getItem("user");
+            console.log("DEBUG: User data from localStorage:", userStr);
+            
+            if (userStr) {
+                try {
+                    const user = JSON.parse(userStr);
+                    const isSuper = Number(user.isSuper || 0);
+                    const role = (user.role || "").toLowerCase();
+                    console.log("DEBUG: User isSuper:", isSuper, "User role:", role, "User:", user);
+                    
+                    // Check if user is admin (multiple ways: isSuper flag or role string)
+                    const isAdmin = isSuper === 1 || role === 'admin' || role === 'super admin' || role === 'administrator';
+                    console.log("DEBUG: Is admin user:", isAdmin);
+                    
+                    if (!isAdmin) {
+                        const assignedEmployees = this.getAssignedEmployees();
+                        console.log("DEBUG: Assigned employees from localStorage:", assignedEmployees);
+                        
+                        const assignedEmployeeIds = assignedEmployees.map((e: any) => e.employeeId).filter(id => id);
+                        console.log("DEBUG: Assigned employee IDs:", assignedEmployeeIds);
+                        
+                        console.log("DEBUG: Employees before filtering:", allRows.length, allRows.map(e => ({UserId: e.UserId, FirstName: e.FirstName, LastName: e.LastName})));
+                        
+                        if (assignedEmployeeIds.length > 0) {
+                            allRows = allRows.filter((row: any) => 
+                                assignedEmployeeIds.includes(row.UserId)
+                            );
+                        } else {
+                            console.log("DEBUG: No assigned employees found, showing empty list");
+                            allRows = [];
+                        }
+                        
+                        console.log("DEBUG: Employees after filtering:", allRows.length, allRows.map(e => ({UserId: e.UserId, FirstName: e.FirstName, LastName: e.LastName})));
+                    } else {
+                        console.log("DEBUG: Admin user - showing all employees");
+                    }
+                } catch (e) {
+                    console.error("Error filtering employees:", e);
+                }
+            }
+          
+            model.setProperty("/allRows", allRows);
+            this.applyFiltersAndPagination();
+            
+            model.setProperty("/connectionStatusText", "ONLINE");
+            model.setProperty("/connectionStatusState", "Success");
+            model.setProperty("/lastUpdated", new Date().toLocaleString());
+
+            if (showToast) MessageToast.show(`Loaded ${allRows.length} employees`);
+
+        } catch (e) {
+            model.setProperty("/connectionStatusText", "OFFLINE");
+            model.setProperty("/connectionStatusState", "Error");
+            if (showToast) MessageToast.show("Failed to load employees");
+            console.error("Employees API error:", e);
+        }
     }
-}
-    // private async loadEmployees(showToast = false): Promise<void> {
-    //     const view = this.getView();
-    //     if (!view) {
-    //         return;
-    //     }
-    //     const model = view.getModel("emp") as JSONModel;
-
-    //     try {
-    //         const res = await fetch(
-    //             "/sap/opu/odata4/sap/zkontrolix_user_sb/srvd_a2x/sap/zkontrolix_user_sd/0001/User?$top=500",
-    //             {
-    //                 method: "GET",
-    //                 headers: {
-    //                     "Accept": "application/json"
-    //                 }
-    //             }
-    //         );
-
-    //         if (!res.ok) {
-    //             throw new Error(`HTTP ${res.status}`);
-    //         }
-
-    //         const payload = await res.json() as {
-    //             value?: Array<Record<string, any>>;
-    //         };
-
-    //         const rows = payload.value || [];
-    //         model.setProperty("/rows", rows);
-    //         model.setProperty("/rowCount", rows.length);
-    //         model.setProperty("/connectionStatusText", "ONLINE");
-    //         model.setProperty("/connectionStatusState", "Success");
-    //         model.setProperty("/lastUpdated", new Date().toLocaleString());
-
-    //         if (showToast) {
-    //             MessageToast.show(`Loaded ${rows.length} employees`);
-    //         }
-    //     } catch (e) {
-    //         model.setProperty("/connectionStatusText", "OFFLINE");
-    //         model.setProperty("/connectionStatusState", "Error");
-    //         if (showToast) {
-    //             MessageToast.show("Failed to load employees");
-    //         }
-    //         // eslint-disable-next-line no-console
-    //         console.error("Employees API error:", e);
-    //     }
-    // }
 }
 
