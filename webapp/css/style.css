@@ -981,11 +981,63 @@
 }
 
 
-/* ── Stoppage Info Cards Row ───────────────────────────────────────────── */
+/* ═══════════════════════════════════════════════════════════════════════════
+   STOPPAGE INFO — RESPONSIVE STYLES
+   Breakpoints:
+     Desktop  : > 1024px  → 3 cards ek row mein
+     Tablet   : 600-1024px → 2 cards per row (stop time neeche)
+     Mobile   : < 600px   → 1 card per row (sab stack)
+═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Dashboard layout full screen ───────────────────────────────────────── */
+.dashboardPage,
+.dashboardPage > .sapMPageEnableScrolling,
+.dashboardPage .sapMScrollContainerHorizontal {
+    width: 100% !important;
+    overflow-x: hidden;
+}
+
+.dashboardLayout {
+    width: 100%;
+    min-height: 100vh;
+    flex-wrap: nowrap;
+}
+
+.dashMainArea {
+    flex: 1;
+    min-width: 0;
+    overflow-x: hidden;
+    padding: 0;
+}
+
+/* ── Side nav — hide on mobile ───────────────────────────────────────────── */
+.dashSideNav {
+    width: 220px;
+    min-width: 220px;
+    flex-shrink: 0;
+    transition: width 0.3s ease;
+}
+
+/* ── Top bar responsive ─────────────────────────────────────────────────── */
+.mhTopBar {
+    padding: 16px 24px;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.mhControls {
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   SUMMARY CARDS ROW
+═══════════════════════════════════════════════════════════════════════════ */
 .stpCardsRow {
     display: flex;
     flex-direction: row;
-    gap: 20px;
+    flex-wrap: wrap;                /* tablet/mobile pe wrap hoga */
+    gap: 16px;
     padding: 16px 24px;
     width: 100%;
     box-sizing: border-box;
@@ -993,7 +1045,7 @@
 
 /* Base card */
 .stpCard {
-    flex: 1;                      /* teeno cards equally fill the row */
+    flex: 1 1 250px;               /* min 250px, grow karo available space mein */
     border-radius: 16px;
     padding: 20px 24px;
     display: flex;
@@ -1001,6 +1053,11 @@
     gap: 10px;
     box-sizing: border-box;
     min-width: 0;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.stpCard:hover {
+    transform: translateY(-3px);
 }
 
 /* ── Green — Run Time ──────────────────────────────────────────────────── */
@@ -1009,8 +1066,9 @@
     border: 1.5px solid #86efac;
     box-shadow: 0 4px 16px rgba(34, 197, 94, 0.15);
 }
-.stpCardIcon--green  { color: #16a34a !important; font-size: 1.4rem; }
-.stpCardValue--green { color: #15803d !important; }
+.stpCard--green:hover { box-shadow: 0 8px 24px rgba(34, 197, 94, 0.25); }
+.stpCardIcon--green   { color: #16a34a !important; font-size: 1.4rem; }
+.stpCardValue--green  { color: #15803d !important; }
 
 /* ── Blue — Ideal Time ─────────────────────────────────────────────────── */
 .stpCard--blue {
@@ -1018,8 +1076,9 @@
     border: 1.5px solid #93c5fd;
     box-shadow: 0 4px 16px rgba(59, 130, 246, 0.15);
 }
-.stpCardIcon--blue  { color: #1d4ed8 !important; font-size: 1.4rem; }
-.stpCardValue--blue { color: #1e40af !important; }
+.stpCard--blue:hover  { box-shadow: 0 8px 24px rgba(59, 130, 246, 0.25); }
+.stpCardIcon--blue    { color: #1d4ed8 !important; font-size: 1.4rem; }
+.stpCardValue--blue   { color: #1e40af !important; }
 
 /* ── Red — Stop Time ───────────────────────────────────────────────────── */
 .stpCard--red {
@@ -1027,8 +1086,9 @@
     border: 1.5px solid #fca5a5;
     box-shadow: 0 4px 16px rgba(239, 68, 68, 0.15);
 }
-.stpCardIcon--red  { color: #dc2626 !important; font-size: 1.4rem; }
-.stpCardValue--red { color: #b91c1c !important; }
+.stpCard--red:hover   { box-shadow: 0 8px 24px rgba(239, 68, 68, 0.25); }
+.stpCardIcon--red     { color: #dc2626 !important; font-size: 1.4rem; }
+.stpCardValue--red    { color: #b91c1c !important; }
 
 /* ── Shared text styles ────────────────────────────────────────────────── */
 .stpCardLabel {
@@ -1055,4 +1115,472 @@
 .stpCardSubText {
     font-size: 0.75rem;
     color: #9ca3af;
+}
+
+/* ── Section title ─────────────────────────────────────────────────────── */
+.mhSectionTitle {
+    padding: 8px 24px 4px;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #374151;
+}
+
+/* ── Table responsive ──────────────────────────────────────────────────── */
+.mhTable {
+    width: 100%;
+    overflow-x: auto;
+}
+
+/* ── Pager ─────────────────────────────────────────────────────────────── */
+.mhPager {
+    padding: 16px;
+    gap: 8px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   RESPONSIVE BREAKPOINTS
+═══════════════════════════════════════════════════════════════════════════ */
+
+/* Tablet — 600px to 1024px: 2 cards per row */
+@media (max-width: 1024px) {
+    .stpCard {
+        flex: 1 1 calc(50% - 16px);   /* 2 per row */
+    }
+
+    .dashSideNav {
+        width: 180px;
+        min-width: 180px;
+    }
+
+    .stpCardValue {
+        font-size: 1.8rem;
+    }
+
+    .mhTopBar {
+        padding: 12px 16px;
+    }
+
+    .stpCardsRow {
+        padding: 12px 16px;
+    }
+}
+
+/* Mobile — less than 600px: 1 card per row, side nav hidden */
+@media (max-width: 600px) {
+    .stpCard {
+        flex: 1 1 100%;               /* 1 per row — full width */
+    }
+
+    .dashSideNav {
+        display: none !important;     /* mobile pe side nav chhupa do */
+    }
+
+    .dashMainArea {
+        width: 100% !important;
+    }
+
+    .stpCardValue {
+        font-size: 1.6rem;
+    }
+
+    .stpCardsRow {
+        padding: 12px;
+        gap: 12px;
+    }
+
+    .mhTopBar {
+        padding: 12px;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .mhControls {
+        width: 100%;
+        justify-content: flex-start;
+    }
+
+    .mhSectionTitle {
+        padding: 8px 12px 4px;
+    }
+
+    /* Table horizontal scroll on mobile */
+    .mhTable .sapMListTbl {
+        min-width: 600px;
+    }
+
+    .mhTable {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+}
+
+/* Very small screens — less than 400px */
+@media (max-width: 400px) {
+    .stpCardValue {
+        font-size: 1.4rem;
+    }
+
+    .stpCard {
+        padding: 14px 16px;
+    }
+}/* ═══════════════════════════════════════════════════════════════════════
+   REQUESTS PAGE — UI + RESPONSIVE STYLES
+═══════════════════════════════════════════════════════════════════════ */
+
+/* ── Page Header ──────────────────────────────────────────────────────── */
+.reqMainArea {
+    flex: 1;
+    min-width: 0;
+    background: #f8fafc;
+    overflow-x: hidden;
+}
+
+.reqPageHeader {
+    padding: 24px 28px 16px;
+    background: #ffffff;
+    border-bottom: 1px solid #e2e8f0;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.reqPageTitle {
+    font-size: 1.5rem !important;
+    font-weight: 700 !important;
+    color: #0f172a !important;
+    line-height: 1.2 !important;
+}
+
+.reqPageSubtitle {
+    color: #64748b !important;
+    font-size: 0.875rem !important;
+    margin-top: 2px;
+}
+
+.reqHeaderActions {
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.reqConnectionStatus {
+    font-size: 0.8rem;
+}
+
+.reqRefreshBtn {
+    border-radius: 8px !important;
+}
+
+/* ── Summary Cards ────────────────────────────────────────────────────── */
+.reqCardsRow {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 14px;
+    padding: 20px 28px;
+    background: #f8fafc;
+}
+
+.reqCard {
+    flex: 1 1 160px;
+    border-radius: 14px;
+    padding: 18px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    box-sizing: border-box;
+    min-width: 0;
+    cursor: default;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.reqCard:hover {
+    transform: translateY(-3px);
+}
+
+/* Total — Slate */
+.reqCard--total {
+    background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+    border: 1.5px solid #cbd5e1;
+    box-shadow: 0 2px 12px rgba(15,23,42,0.08);
+}
+.reqCard--total:hover    { box-shadow: 0 6px 20px rgba(15,23,42,0.14); }
+.reqCardIcon--total      { color: #475569 !important; font-size: 1.3rem; }
+.reqCardValue--total     { color: #0f172a !important; }
+
+/* Pending — Amber */
+.reqCard--pending {
+    background: linear-gradient(135deg, #fef9c3 0%, #fefce8 100%);
+    border: 1.5px solid #fde047;
+    box-shadow: 0 2px 12px rgba(234,179,8,0.12);
+}
+.reqCard--pending:hover  { box-shadow: 0 6px 20px rgba(234,179,8,0.22); }
+.reqCardIcon--pending    { color: #ca8a04 !important; font-size: 1.3rem; }
+.reqCardValue--pending   { color: #92400e !important; }
+
+/* Sup Approved — Violet */
+.reqCard--supapproved {
+    background: linear-gradient(135deg, #ede9fe 0%, #f5f3ff 100%);
+    border: 1.5px solid #c4b5fd;
+    box-shadow: 0 2px 12px rgba(139,92,246,0.12);
+}
+.reqCard--supapproved:hover  { box-shadow: 0 6px 20px rgba(139,92,246,0.22); }
+.reqCardIcon--supapproved    { color: #7c3aed !important; font-size: 1.3rem; }
+.reqCardValue--supapproved   { color: #5b21b6 !important; }
+
+/* Approved — Green */
+.reqCard--approved {
+    background: linear-gradient(135deg, #dcfce7 0%, #f0fdf4 100%);
+    border: 1.5px solid #86efac;
+    box-shadow: 0 2px 12px rgba(34,197,94,0.12);
+}
+.reqCard--approved:hover { box-shadow: 0 6px 20px rgba(34,197,94,0.22); }
+.reqCardIcon--approved   { color: #16a34a !important; font-size: 1.3rem; }
+.reqCardValue--approved  { color: #15803d !important; }
+
+/* Rejected — Red */
+.reqCard--rejected {
+    background: linear-gradient(135deg, #fee2e2 0%, #fff5f5 100%);
+    border: 1.5px solid #fca5a5;
+    box-shadow: 0 2px 12px rgba(239,68,68,0.12);
+}
+.reqCard--rejected:hover { box-shadow: 0 6px 20px rgba(239,68,68,0.22); }
+.reqCardIcon--rejected   { color: #dc2626 !important; font-size: 1.3rem; }
+.reqCardValue--rejected  { color: #b91c1c !important; }
+
+/* Shared card text */
+.reqCardLabel {
+    font-size: 0.7rem !important;
+    font-weight: 700 !important;
+    color: #64748b !important;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+}
+
+.reqCardValue {
+    font-size: 2rem !important;
+    font-weight: 800 !important;
+    line-height: 1 !important;
+}
+
+.reqCardSub {
+    font-size: 0.72rem !important;
+    color: #94a3b8 !important;
+    margin-top: 2px;
+}
+
+/* ── Filter Bar ───────────────────────────────────────────────────────── */
+.reqFilterBar {
+    padding: 12px 28px;
+    background: #ffffff;
+    border-bottom: 1px solid #e2e8f0;
+    border-top: 1px solid #e2e8f0;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.reqSearchField {
+    border-radius: 10px !important;
+}
+
+.reqFilterRight {
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.reqStatusFilter {
+    border-radius: 8px !important;
+}
+
+.reqLastUpdated {
+    font-size: 0.75rem !important;
+    color: #94a3b8 !important;
+    white-space: nowrap;
+}
+
+/* ── Table ────────────────────────────────────────────────────────────── */
+.reqTableWrapper {
+    padding: 16px 28px 28px;
+    overflow-x: auto;
+}
+
+.reqTable {
+    width: 100%;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 1px 8px rgba(15,23,42,0.07);
+    background: #ffffff;
+}
+
+.reqTableRow:hover {
+    background: #f8fafc !important;
+}
+
+.reqEmpCell {
+    gap: 2px;
+}
+
+.reqEmpName {
+    font-weight: 600 !important;
+    font-size: 0.875rem !important;
+    color: #1e293b !important;
+}
+
+.reqEmpEmail {
+    font-size: 0.75rem !important;
+    color: #94a3b8 !important;
+}
+
+.reqReasonText {
+    font-size: 0.8rem !important;
+    color: #475569 !important;
+    max-width: 200px;
+}
+
+.reqDateText {
+    font-size: 0.78rem !important;
+    color: #64748b !important;
+}
+
+.reqActionBtns {
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.reqApproveBtn {
+    border-radius: 8px !important;
+    font-size: 0.8rem !important;
+}
+
+.reqRejectBtn {
+    border-radius: 8px !important;
+    font-size: 0.8rem !important;
+}
+
+.reqDoneStatus {
+    font-size: 0.8rem !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   RESPONSIVE BREAKPOINTS
+═══════════════════════════════════════════════════════════════════════ */
+
+/* Tablet — 768px to 1200px */
+@media (max-width: 1200px) {
+    .reqCard {
+        flex: 1 1 calc(33% - 14px);
+    }
+
+    .reqCardValue {
+        font-size: 1.7rem !important;
+    }
+
+    .reqPageHeader {
+        padding: 18px 20px 14px;
+    }
+
+    .reqCardsRow {
+        padding: 16px 20px;
+    }
+
+    .reqFilterBar {
+        padding: 10px 20px;
+    }
+
+    .reqTableWrapper {
+        padding: 12px 20px 20px;
+    }
+
+    .reqSearchField {
+        width: 50% !important;
+    }
+}
+
+/* Small Tablet — 600px to 768px */
+@media (max-width: 768px) {
+    .dashSideNav {
+        width: 160px;
+        min-width: 160px;
+    }
+
+    .reqCard {
+        flex: 1 1 calc(50% - 14px);   /* 2 per row */
+    }
+
+    .reqCardValue {
+        font-size: 1.5rem !important;
+    }
+
+    .reqFilterBar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    .reqSearchField {
+        width: 100% !important;
+    }
+
+    .reqFilterRight {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    /* Table horizontal scroll */
+    .reqTableWrapper {
+        padding: 12px 12px 20px;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .reqTable .sapMListTbl {
+        min-width: 700px;
+    }
+}
+
+/* Mobile — less than 600px */
+@media (max-width: 600px) {
+    .dashSideNav {
+        display: none !important;
+    }
+
+    .dashMainArea {
+        width: 100% !important;
+    }
+
+    .reqCard {
+        flex: 1 1 100%;                /* 1 per row — full width */
+    }
+
+    .reqCardValue {
+        font-size: 1.8rem !important;
+    }
+
+    .reqPageHeader {
+        padding: 14px;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .reqHeaderActions {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .reqCardsRow {
+        padding: 12px;
+        gap: 10px;
+    }
+
+    .reqFilterBar {
+        padding: 10px 12px;
+    }
+
+    .reqTableWrapper {
+        padding: 8px;
+    }
+
+    .reqActionBtns {
+        flex-direction: column;
+        align-items: flex-start;
+    }
 }

@@ -14,12 +14,12 @@ export default class Requests extends Controller {
 
         const requestModel = new JSONModel({
             rows: [],
-            rowCount: 0,
-            pendingCount: 0,
+            rowCount:        0,
+            pendingCount:    0,
             supApprovedCount: 0,
-            approvedCount: 0,
-            rejectedCount: 0,
-            connectionStatusText: "OFFLINE",
+            approvedCount:   0,
+            rejectedCount:   0,
+            connectionStatusText:  "OFFLINE",
             connectionStatusState: "Error",
             lastUpdated: "-"
         });
@@ -29,35 +29,37 @@ export default class Requests extends Controller {
     }
 
     public onSideItemPress(oEvent: any): void {
-        const item = oEvent.getParameter("listItem") as any;
+        const item  = oEvent.getParameter("listItem") as any;
         const title = item.getTitle && item.getTitle();
         const router = (this.getOwnerComponent() as UIComponent).getRouter();
 
-        if (title === "Monitoring-Dashboard") router.navTo("dashboard");
-        else if (title === "Live Data") router.navTo("liveData");
-        else if (title === "Supervisor") router.navTo("supervisor");
-        else if (title === "Employees") router.navTo("employees");
-        else if (title === "Machine History") router.navTo("machineHistory");
-        else if (title === "Resources") router.navTo("resources");
-        else if (title === "Machine Info") router.navTo("machineInfo");
-        else if (title === "Stoppage Info") router.navTo("stoppageInfo");
-        else if (title === "Requests") router.navTo("requests");
-        else if (title === "Kontrolix-AI") router.navTo("kontrolixAI");
-        else if (title === "My Profile") router.navTo("myProfile");
+        const routeMap: Record<string, string> = {
+            "Monitoring-Dashboard": "dashboard",
+            "Live Data":            "liveData",
+            "Supervisor":           "supervisor",
+            "Employees":            "employees",
+            "Machine History":      "machineHistory",
+            "Resources":            "resources",
+            "Machine Info":         "machineInfo",
+            "Stoppage Info":        "stoppageInfo",
+            "Requests":             "requests",
+            "Kontrolix-AI":         "kontrolixAI",
+            "My Profile":           "myProfile"
+        };
+        const route = routeMap[title];
+        if (route) router.navTo(route);
     }
 
     public onLogout(): void {
-        const router = (this.getOwnerComponent() as UIComponent).getRouter();
-        router.navTo("login");
+        window.localStorage.removeItem("machineApiToken");
+        window.localStorage.removeItem("appToken");
+        window.localStorage.removeItem("user");
+        (this.getOwnerComponent() as UIComponent).getRouter().navTo("login");
     }
 
-    public onSignOut(): void {
-        this.onLogout();
-    }
+    public onSignOut(): void { this.onLogout(); }
 
-    public onRefreshRequests(): void {
-        void this.loadRequests(true);
-    }
+    public onRefreshRequests(): void { void this.loadRequests(true); }
 
     public async onApproveRequest(oEvent: any): Promise<void> {
         const ctx = oEvent.getSource().getBindingContext("req");
@@ -72,7 +74,7 @@ export default class Requests extends Controller {
     }
 
     private async updateRequestStatus(requestId: string, status: string): Promise<void> {
-        const token = this.getAuthToken();
+        const token     = this.getAuthToken();
         const csrfToken = await this.getCSRFToken();
 
         try {
@@ -81,21 +83,20 @@ export default class Requests extends Controller {
                 {
                     method: "PATCH",
                     headers: {
-                        "Accept": "application/json",
-                        "Content-Type": "application/json",
+                        "Accept":        "application/json",
+                        "Content-Type":  "application/json",
                         "Authorization": `Bearer ${token}`,
-                        "x-csrf-token": csrfToken
+                        "x-csrf-token":  csrfToken
                     },
                     body: JSON.stringify({
                         AdminApprovalStatus: status,
-                        AdminApprovedAt: new Date().toISOString(),
-                        Status: status
+                        AdminApprovedAt:     new Date().toISOString(),
+                        Status:              status
                     })
                 }
             );
 
             if (!res.ok) throw new Error(`HTTP ${res.status}`);
-
             MessageToast.show(`Request ${status} successfully!`);
             await this.loadRequests();
 
@@ -118,7 +119,7 @@ export default class Requests extends Controller {
                 {
                     method: "GET",
                     headers: {
-                        "Accept": "application/json",
+                        "Accept":        "application/json",
                         "Authorization": `Bearer ${token}`
                     }
                 }
@@ -127,13 +128,12 @@ export default class Requests extends Controller {
             if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
             const payload = await res.json() as { value?: Array<Record<string, any>> };
-            const rows = payload.value || [];
+            const rows    = payload.value || [];
 
-            // ── Count calculate karo Status field se ────────────────────────
-            const pendingCount     = rows.filter(r => String(r.AdminApprovalStatus || "").toLowerCase() === "pending").length;
-            const supApprovedCount = rows.filter(r => String(r.SupervisorApprovalStatus || "").toLowerCase() === "approved").length;
-            const approvedCount    = rows.filter(r => String(r.AdminApprovalStatus || "").toLowerCase() === "approved").length;
-            const rejectedCount    = rows.filter(r => String(r.AdminApprovalStatus || "").toLowerCase() === "rejected").length;
+            const pendingCount     = rows.filter(r => String(r.AdminApprovalStatus       || "").toLowerCase() === "pending" ).length;
+            const supApprovedCount = rows.filter(r => String(r.SupervisorApprovalStatus  || "").toLowerCase() === "approved").length;
+            const approvedCount    = rows.filter(r => String(r.AdminApprovalStatus       || "").toLowerCase() === "approved").length;
+            const rejectedCount    = rows.filter(r => String(r.AdminApprovalStatus       || "").toLowerCase() === "rejected").length;
 
             model.setProperty("/rows",                rows);
             model.setProperty("/rowCount",            rows.length);
@@ -143,7 +143,7 @@ export default class Requests extends Controller {
             model.setProperty("/rejectedCount",       rejectedCount);
             model.setProperty("/connectionStatusText",  "ONLINE");
             model.setProperty("/connectionStatusState", "Success");
-            model.setProperty("/lastUpdated", new Date().toLocaleString());
+            model.setProperty("/lastUpdated",           new Date().toLocaleString());
 
             if (showToast) MessageToast.show(`Loaded ${rows.length} requests`);
 
@@ -167,7 +167,7 @@ export default class Requests extends Controller {
                 {
                     method: "GET",
                     headers: {
-                        "x-csrf-token": "fetch",
+                        "x-csrf-token":  "fetch",
                         "Authorization": `Bearer ${token}`
                     }
                 }
