@@ -22,22 +22,43 @@
                 </HBox>
 
                 <!-- Filters -->
-                <HBox class="dashFilterRow" alignItems="Center" justifyContent="SpaceBetween">
-                    <HBox class="dashFilterGroup">
-                        <Select width="10rem">
-                            <items><core:Item key="allBrands" text="All Brands" /></items>
-                        </Select>
-                        <Select width="10rem">
-                            <items><core:Item key="allStatus" text="All Status" /></items>
-                        </Select>
-                        <Select width="10rem">
-                            <items><core:Item key="runAll" text="All Status" /></items>
-                        </Select>
-                        <Select width="10rem">
-                            <items><core:Item key="allTime" text="All Time" /></items>
-                        </Select>
+                <HBox class="dashFilterRow" alignItems="End" justifyContent="SpaceBetween">
+                    <HBox class="dashFilterGroup" alignItems="End">
+                        <!-- Machine Filter -->
+                        <VBox>
+                            <Label text="Machine" class="dashFilterLabel" />
+                            <Select width="10rem" items="{dash>/brands}" change=".onFilterChange" selectedKey="{dash>/filters/plcBrand}">
+                                <core:Item key="{dash>key}" text="{dash>text}" />
+                            </Select>
+                        </VBox>
+
+                        <!-- Running Status Filter -->
+                        <VBox>
+                            <Label text="Running Status" class="dashFilterLabel" />
+                            <Select width="10rem" change=".onFilterChange" selectedKey="{dash>/filters/machineStatus}">
+                                <core:Item key="all" text="All Status" />
+                                <core:Item key="RUNNING" text="Running" />
+                                <core:Item key="IDLE" text="Ideal" />
+                                <core:Item key="STOPPED" text="Stopped" />
+                            </Select>
+                        </VBox>
+
+                        <!-- Date Range Filter -->
+                        <VBox>
+                            <Label text="Date Range" class="dashFilterLabel" />
+                            <Select width="10rem" change=".onFilterChange" selectedKey="{dash>/filters/dateRange}">
+                                <core:Item key="all" text="All Time" />
+                                <core:Item key="today" text="Today" />
+                                <core:Item key="yesterday" text="Yesterday" />
+                                <core:Item key="thisWeek" text="This Week" />
+                                <core:Item key="thisMonth" text="This Month" />
+                                <core:Item key="last3Months" text="Last 3 Months" />
+                            </Select>
+                        </VBox>
                     </HBox>
-                    <Button text="Reset" type="Emphasized" press=".onResetFilters" />
+
+                    <!-- Reset Button -->
+                    <Button text="Reset" type="Emphasized" press=".onResetFilters" class="dashFilterResetBtn" />
                 </HBox>
 
                 <!-- ═══════════════════════════════════════════════════════ -->
