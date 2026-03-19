@@ -142,7 +142,18 @@ export default class LiveData extends Controller {
     const allCards = model.getProperty("/allMachines") || [];
     const filters  = model.getProperty("/filters");
 
+    const userStr = window.localStorage.getItem("user");
+    const user = userStr ? JSON.parse(userStr) as Record<string, any> : {};
+    const role = String(user.Role || user.role || "").toUpperCase();
+    const userId = String(user.SupervisorId || user.EmployeeId || user.userId || "");
+
     const filtered = allCards.filter((card: any) => {
+      // Role-based filtering
+      if (role === "EMPLOYEE") {
+        // Employee sees only their assigned machine
+        if (card.employeeId && String(card.employeeId) !== userId) return false;
+      }
+
       if (filters.plcBrand !== "all" && card.plcBrand !== filters.plcBrand) return false;
       if (filters.activeStatus !== "all") {
         const isActive = card.status === "RUNNING" || card.status === "IDLE";

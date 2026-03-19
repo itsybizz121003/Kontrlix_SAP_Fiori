@@ -335,42 +335,25 @@ export default class Resources extends BaseController {
         // Debug logging
         console.log("DEBUG: Raw resources from API:", allRows);
 
-        // Filter resources based on assigned resources for non-super users
-        const userStr = window.localStorage.getItem("assignedResources");
-        console.log("DEBUG: User data from localStorage:", userStr);
-        
+        // Filter resources based on role
+        const userStr = window.localStorage.getItem("user");
         if (userStr) {
             try {
                 const user = JSON.parse(userStr);
-                const isSuper = Number(user.isSuper || 0);
-                const role = (user.role || "").toLowerCase();
-                console.log("DEBUG: User isSuper:", isSuper, "User role:", role, "User:", user);
-                
-                // Check if user is admin (multiple ways: isSuper flag or role string)
-                const isAdmin = isSuper === 1 || role === 'admin' || role === 'super admin' || role === 'administrator';
-                console.log("DEBUG: Is admin user:", isAdmin);
-                
+                const role = String(user.Role || user.role || "").toUpperCase();
+                const isAdmin = role === "ADMIN" || role === "SUPER ADMIN";
+
                 if (!isAdmin) {
                     const assignedResources = this.getAssignedResources();
-                    console.log("DEBUG: Assigned resources from localStorage:", assignedResources);
-                    
                     const assignedResourceIds = assignedResources.map((r: any) => r.resourceId);
-                    console.log("DEBUG: Assigned resource IDs:", assignedResourceIds);
-                    
-                    console.log("DEBUG: Resources before filtering:", allRows.length, allRows.map(r => ({ResourceId: r.ResourceId, ResName: r.ResName})));
                     
                     if (assignedResourceIds.length > 0) {
                         allRows = allRows.filter((row: any) => 
                             assignedResourceIds.includes(row.ResourceId)
                         );
                     } else {
-                        console.log("DEBUG: No assigned resources found, showing empty list");
                         allRows = [];
                     }
-                    
-                    console.log("DEBUG: Resources after filtering:", allRows.length, allRows.map(r => ({ResourceId: r.ResourceId, ResName: r.ResName})));
-                } else {
-                    console.log("DEBUG: Admin user - showing all resources");
                 }
             } catch (e) {
                 console.error("Error filtering resources:", e);

@@ -510,6 +510,11 @@ export default class Supervisor extends BaseController {
         const model = view.getModel("sup") as JSONModel;
         const token = this.getAuthToken();
 
+        const userStr = window.localStorage.getItem("user");
+        const user = userStr ? JSON.parse(userStr) as Record<string, any> : {};
+        const role = String(user.Role || user.role || "").toUpperCase();
+        const userId = String(user.SupervisorId || user.EmployeeId || user.userId || "");
+
         try {
             const res = await fetch(
                 "/sap/opu/odata4/sap/zrsrc_sb/srvd_a2x/sap/zrsrc_sd/0001/Supervisor",
@@ -518,7 +523,21 @@ export default class Supervisor extends BaseController {
             if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
             const payload = await res.json() as { value?: Array<Record<string, any>> };
-            const rows = payload.value || [];
+            let rows = payload.value || [];
+
+            // Role-based filtering
+            if (role === "SUPERVISOR") {
+                // Supervisor only sees themselves
+                rows = rows.filter((r: any) => String(r.SupervisorId) === userId);
+            } else if (role === "EMPLOYEE") {
+                // Employee only sees their assigned supervisor
+                rows = rows.filter((r: any) => {
+                    try {
+                        const assignedEmps = JSON.parse(r.AssignedEmployees || "[]");
+                        return assignedEmps.some((emp: any) => String(emp.employeeId) === userId);
+                    } catch (e) { return false; }
+                });
+            }
 
             model.setProperty("/allRows", rows);
             this.applyFiltersAndPagination();

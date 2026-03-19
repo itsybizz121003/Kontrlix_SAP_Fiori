@@ -143,8 +143,24 @@ export default class Dashboard extends Controller {
         const allRows = model.getProperty("/allRows") || [];
         const filters = model.getProperty("/filters");
 
-        // 1. Filter raw rows
+        const userStr = window.localStorage.getItem("user");
+        const user = userStr ? JSON.parse(userStr) as Record<string, any> : {};
+        const role = String(user.Role || user.role || "").toUpperCase();
+        const userId = String(user.SupervisorId || user.EmployeeId || user.userId || "");
+
+        // 1. Role-based filtering + UI Filters
         let filteredRows = allRows.filter((row: any) => {
+            // Role Logic
+            if (role === "SUPERVISOR") {
+                // Supervisor sees data for assigned resources or machines they manage
+                // For now, if PlcBrand matches their ID or they are linked via another mapping
+                // But typically, supervisors see assigned employees' machines.
+                // Assuming we check if the row's DeviceId or PlcBrand is in their managed list
+            } else if (role === "EMPLOYEE") {
+                // Employee only sees their own machine data
+                if (row.EmployeeId && String(row.EmployeeId) !== userId) return false;
+            }
+
             // PlcBrand Filter
             if (filters.plcBrand !== "all" && String(row.PlcBrand) !== filters.plcBrand) return false;
 
