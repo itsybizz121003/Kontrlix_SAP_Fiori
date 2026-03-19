@@ -36,8 +36,8 @@ export default class Dashboard extends Controller {
             totalMachines: 0,
             runningCount: 0,
             stoppedCount: 0,
-            totalProduction: 0,
-            uniqueParameters: 0,
+            totalProduction: 0,      // ← naya
+            uniqueParameters: 0,     // ← naya
             runTime: "0m",
             stopTime: "0m",
             runPercent: "0%",
@@ -80,7 +80,7 @@ export default class Dashboard extends Controller {
 
         try {
             const res = await fetch(
-                "/sap/opu/odata4/sap/zmachine_sb/srvd_a2x/sap/zmachine_sd/0001/Machine?$top=500&$orderby=Timestamp asc",
+                "/sap/opu/odata4/sap/zmachine_sb/srvd_a2x/sap/zmachine_sd/0001/Machine?$orderby=Timestamp asc",
                 {
                     method: "GET",
                     headers: {
@@ -108,6 +108,7 @@ export default class Dashboard extends Controller {
             const stoppageRows: Array<Record<string, any>> = [];
             const historyRows: Array<Record<string, any>> = [];
 
+            // Har device ke liye calculate karo — RUN/STOP TIME LOGIC UNCHANGED
             Object.keys(deviceMap).forEach((deviceId) => {
                 const deviceRows = deviceMap[deviceId];
 
@@ -150,69 +151,65 @@ export default class Dashboard extends Controller {
                 }
             });
 
-            // ── Har device ka SIRF LAST record use karo ─────────────────────
-            // Production = last record ka PRODUCTION_COUNT ka sum across devices
-            // Running/Stopped = last record ka Status dekho per device
+            // ── NAYA: Har device ka sirf LAST record se calculate karo ───────
             let totalProduction = 0;
             let runningCount    = 0;
             let stoppedCount    = 0;
             const paramKeySet   = new Set<string>();
 
             Object.keys(deviceMap).forEach((devId) => {
-                const deviceRows = deviceMap[devId];
-                const lastRow    = deviceRows[deviceRows.length - 1]; // sirf last record
+                const lastRow = deviceMap[devId][deviceMap[devId].length - 1];
                 if (!lastRow) return;
 
-                // Production — sirf last row ka count
                 let params: Record<string, any> = {};
                 try { params = JSON.parse(String(lastRow.Parameters || "{}")); } catch { params = {}; }
+
+                // Production: sirf last record ka count
                 totalProduction += Number(params.PRODUCTION_COUNT ?? lastRow.ProductionCount ?? 0);
 
-                // Unique param keys
+                // Unique param keys collect karo
                 Object.keys(params).forEach((k) => paramKeySet.add(k));
 
-                // Running / Stopped — last status dekho
+                // Running/Stopped: last status se decide
                 const lastStatus = String(lastRow.Status || "").toUpperCase();
-                if (lastStatus === "RUNNING") {
-                    runningCount++;
-                } else if (lastStatus === "STOPPED") {
-                    stoppedCount++;
-                }
+                if      (lastStatus === "RUNNING") runningCount++;
+                else if (lastStatus === "STOPPED") stoppedCount++;
             });
+            // ─────────────────────────────────────────────────────────────────
 
-            // Format
-            const runTimeStr  = this.formatDuration(totalRunMs);
+            // Format — UNCHANGED
+            const runTimeStr = this.formatDuration(totalRunMs);
             const stopTimeStr = this.formatDuration(totalStopMs);
-            const totalMs     = totalRunMs + totalStopMs;
-            const runPct      = totalMs > 0 ? Math.round((totalRunMs  / totalMs) * 100) : 0;
-            const stopPct     = totalMs > 0 ? Math.round((totalStopMs / totalMs) * 100) : 0;
+            const totalMs = totalRunMs + totalStopMs;
+            const runPct = totalMs > 0 ? Math.round((totalRunMs / totalMs) * 100) : 0;
+            const stopPct = totalMs > 0 ? Math.round((totalStopMs / totalMs) * 100) : 0;
 
             // Model update
-            model.setProperty("/totalMachines",   Object.keys(deviceMap).length);
-            model.setProperty("/runningCount",    runningCount);
-            model.setProperty("/stoppedCount",    stoppedCount);
-            model.setProperty("/totalProduction", totalProduction);
-            model.setProperty("/uniqueParameters", paramKeySet.size);
-            model.setProperty("/runTime",         runTimeStr);
-            model.setProperty("/stopTime",        stopTimeStr);
-            model.setProperty("/totalTime",       this.formatDuration(totalMs));
-            model.setProperty("/runPercent",      `${runPct}%`);
-            model.setProperty("/stopPercent",     `${stopPct}%`);
-            model.setProperty("/stoppageRows",    stoppageRows.slice(0, 5));
-            model.setProperty("/historyRows",     historyRows.slice(0, 5));
+            model.setProperty("/totalMachines",    Object.keys(deviceMap).length);
+            model.setProperty("/runningCount",     runningCount);       // ← last status se
+            model.setProperty("/stoppedCount",     stoppedCount);       // ← last status se
+            model.setProperty("/totalProduction",  totalProduction);    // ← naya
+            model.setProperty("/uniqueParameters", paramKeySet.size);   // ← naya
+            model.setProperty("/runTime",          runTimeStr);
+            model.setProperty("/stopTime",         stopTimeStr);
+            model.setProperty("/totalTime",        this.formatDuration(totalMs));
+            model.setProperty("/runPercent",       `${runPct}%`);
+            model.setProperty("/stopPercent",      `${stopPct}%`);
+            model.setProperty("/stoppageRows",     stoppageRows.slice(0, 5));
+            model.setProperty("/historyRows",      historyRows.slice(0, 5));
             model.setProperty("/connectionStatus", "ONLINE");
             model.setProperty("/connectionState",  "Success");
             model.setProperty("/lastUpdated",      new Date().toLocaleTimeString());
 
-            // Time Donut Chart Data
-            const runMinutes  = Math.floor(totalRunMs  / 60000);
+            // Time Donut Chart Data — UNCHANGED
+            const runMinutes = Math.floor(totalRunMs / 60000);
             const stopMinutes = Math.floor(totalStopMs / 60000);
             model.setProperty("/timeChartData", [
-                { type: "Run Time",  minutes: runMinutes  > 0 ? runMinutes  : 0.1 },
+                { type: "Run Time", minutes: runMinutes > 0 ? runMinutes : 0.1 },
                 { type: "Stop Time", minutes: stopMinutes > 0 ? stopMinutes : 0.1 }
             ]);
 
-            // Bar Chart Data
+            // Bar Chart Data — UNCHANGED
             const latestPerDevice: Array<Record<string, any>> = [];
             Object.keys(deviceMap).forEach((id) => {
                 const deviceRows = deviceMap[id];
@@ -222,18 +219,22 @@ export default class Dashboard extends Controller {
 
             const chartData = latestPerDevice.map((r) => {
                 let params: Record<string, any> = {};
-                try { params = JSON.parse(String(r.Parameters || "{}")); } catch { params = {}; }
+                try {
+                    params = JSON.parse(String(r.Parameters || "{}")) as Record<string, any>;
+                } catch {
+                    params = {};
+                }
                 return {
-                    label:       String(r.DeviceId || ""),
-                    temperature: Number(params.TEMPERATURE      ?? r.Temperature      ?? 0),
-                    production:  Number(params.PRODUCTION_COUNT ?? r.ProductionCount  ?? 0),
-                    rpm:         Number(params.RPM              ?? r.Rpm              ?? 0),
-                    pressure:    Number(params.PRESSURE         ?? r.Pressure         ?? 0)
+                    label: String(r.DeviceId || ""),
+                    temperature: Number(params.TEMPERATURE ?? r.Temperature ?? 0),
+                    production: Number(params.PRODUCTION_COUNT ?? r.ProductionCount ?? 0),
+                    rpm: Number(params.RPM ?? r.Rpm ?? 0),
+                    pressure: Number(params.PRESSURE ?? r.Pressure ?? 0)
                 };
             });
             model.setProperty("/chartData", chartData);
 
-            // Chart Properties
+            // Chart Properties — UNCHANGED
             setTimeout(() => {
                 const timeSummaryChart = this.byId("timeSummaryChart") as any;
                 if (timeSummaryChart) {
@@ -257,7 +258,7 @@ export default class Dashboard extends Controller {
                             colorPalette: ["#5899DA", "#E8743B"],
                             dataLabel: { visible: true, formatString: "#,##0.#" }
                         },
-                        valueAxis:  { title: { text: "Production" } },
+                        valueAxis: { title: { text: "Production" } },
                         valueAxis2: { title: { text: "Temperature (°C)" } }
                     });
                 }
@@ -271,7 +272,7 @@ export default class Dashboard extends Controller {
                             colorPalette: ["#19A979", "#945ECF"],
                             dataLabel: { visible: true, formatString: "#,##0.#" }
                         },
-                        valueAxis:  { title: { text: "RPM" } },
+                        valueAxis: { title: { text: "RPM" } },
                         valueAxis2: { title: { text: "Pressure (bar)" } }
                     });
                 }
@@ -279,7 +280,7 @@ export default class Dashboard extends Controller {
 
         } catch (e) {
             model.setProperty("/connectionStatus", "OFFLINE");
-            model.setProperty("/connectionState",  "Error");
+            model.setProperty("/connectionState", "Error");
             console.error("Dashboard API error:", e);
         }
     }
@@ -289,24 +290,26 @@ export default class Dashboard extends Controller {
         try {
             let cleaned = ts.trim();
             cleaned = cleaned.replace(" UTC", "Z");
-            cleaned = cleaned.replace(" UT",  "Z");
+            cleaned = cleaned.replace(" UT", "Z");
             if (cleaned.includes(" ") && !cleaned.includes("T")) {
                 cleaned = cleaned.replace(" ", "T");
             }
             const d = new Date(cleaned);
             return isNaN(d.getTime()) ? null : d;
-        } catch { return null; }
+        } catch {
+            return null;
+        }
     }
 
     private formatDuration(ms: number): string {
         if (ms <= 0) return "0m";
         const totalSeconds = Math.floor(ms / 1000);
-        const hours   = Math.floor(totalSeconds / 3600);
+        const hours = Math.floor(totalSeconds / 3600);
         const minutes = Math.floor((totalSeconds % 3600) / 60);
         const seconds = totalSeconds % 60;
-        if (hours   > 0) return `${hours}h ${minutes}m`;
-        if (minutes > 0) return `${minutes}m ${seconds}s`;
-        return `${seconds}s`;
+        if (hours > 0) return `${hours}h ${minutes}m`;
+        else if (minutes > 0) return `${minutes}m ${seconds}s`;
+        else return `${seconds}s`;
     }
 
     public onLogout(): void {
