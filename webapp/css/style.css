@@ -193,17 +193,6 @@
 }
 
 .dashFilterRow {
-<<<<<<< HEAD
-  background-color: #ffffff;
-  padding: 0.75rem 1rem;
-  border-radius: 16px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-  margin-bottom: 1rem;
-}
-
-.dashFilterGroup > .sapMHBoxChild {
-  margin-right: 0.75rem;
-=======
     background: #ffffff;
     padding: 16px 24px !important;
     border-radius: 12px !important;
@@ -235,7 +224,6 @@
 .dashFilterResetBtn:hover {
     background-color: #1d4ed8 !important;
     border-color: #1d4ed8 !important;
->>>>>>> 26921279b8bf202f19a3fb645c8b01d50736fe19
 }
 
 .dashCardsRow {
@@ -375,15 +363,9 @@
 /* GREEN - RUNNING */
 .liveCard.runningCard,
 .sapMVBox.runningCard {
-<<<<<<< HEAD
-  background-color: #1e7438 !important;
-  border: 2.5px solid #22c55e !important;
-  box-shadow: 0 4px 16px rgba(34, 197, 94, 0.25) !important;
-=======
     background-color: #dcfce7 !important; /* Light Green Background */
     border: 2.5px solid #16a34a !important; /* Strong Green Border */
     box-shadow: 0 4px 16px rgba(34, 197, 94, 0.25) !important;
->>>>>>> 26921279b8bf202f19a3fb645c8b01d50736fe19
 }
 
 .runningCard .liveCardMachine,
@@ -399,15 +381,9 @@
 /* RED - STOPPED / FAULTED */
 .liveCard.stoppedCard,
 .sapMVBox.stoppedCard {
-<<<<<<< HEAD
-  background-color: #fef2f2 !important;
-  border: 2.5px solid #ef4444 !important;
-  box-shadow: 0 4px 16px rgba(239, 68, 68, 0.25) !important;
-=======
     background-color: #fee2e2 !important; /* Light Red Background */
     border: 2.5px solid #dc2626 !important; /* Strong Red Border */
     box-shadow: 0 4px 16px rgba(239, 68, 68, 0.25) !important;
->>>>>>> 26921279b8bf202f19a3fb645c8b01d50736fe19
 }
 
 .stoppedCard .liveCardMachine,
