@@ -22,6 +22,7 @@ export default class Resources extends BaseController {
             pageSize: 10,
             totalPages: 1,
             searchQuery: "",
+            isAdmin: false, // New property for UI visibility
             connectionStatusText: "OFFLINE",
             connectionStatusState: "Error",
             lastUpdated: "-",
@@ -41,6 +42,13 @@ export default class Resources extends BaseController {
         });
 
         view.setModel(resourcesModel, "res");
+
+        // Role check for UI visibility
+        const userStr = window.localStorage.getItem("user");
+        const user = userStr ? JSON.parse(userStr) : {};
+        const role = String(user.Role || user.role || "").toUpperCase();
+        resourcesModel.setProperty("/isAdmin", role === "ADMIN" || role === "SUPER ADMIN");
+
         void this.loadResources();
         void this.loadPlcBrands();
     }

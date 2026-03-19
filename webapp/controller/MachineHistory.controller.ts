@@ -1,4 +1,4 @@
-import Controller from "sap/ui/core/mvc/Controller";
+import Controller from "./BaseController";
 import UIComponent from "sap/ui/core/UIComponent";
 import JSONModel from "sap/ui/model/json/JSONModel";
 import MessageToast from "sap/m/MessageToast";
@@ -260,9 +260,30 @@ export default class MachineHistory extends Controller {
                 }
             }
 
-            model.setProperty("/allRows", allRows);
+            const userStr = window.localStorage.getItem("user");
+            const user = userStr ? JSON.parse(userStr) : {};
+            const role = String(user.Role || user.role || "").toUpperCase();
+            const userId = String(user.SupervisorId || user.EmployeeId || user.userId || "");
+
+            // Role-based filtering
+            let filteredAllRows = allRows;
+            if (role === "SUPERVISOR" || role === "EMPLOYEE") {
+                const assignedResources = this.getAssignedResources();
+                const assignedResourceIds = assignedResources.map((r: any) => String(r.resourceId || r.ResourceId || "").trim().toUpperCase());
+                const assignedResourceNames = assignedResources.map((r: any) => String(r.name || r.ResName || "").trim().toUpperCase());
+
+                filteredAllRows = allRows.filter((row: any) => {
+                    const machineId = String(row.DeviceId || "").trim().toUpperCase();
+                    const machineBrand = String(row.PlcBrand || "").trim().toUpperCase();
+                    const matchesId = assignedResourceIds.includes(machineId);
+                    const matchesBrand = assignedResourceNames.includes(machineBrand);
+                    return matchesId || matchesBrand;
+                });
+            }
+
+            model.setProperty("/allRows", filteredAllRows);
             this.applyPagination();
-            
+
             model.setProperty("/connectionStatusText", "ONLINE");
             model.setProperty("/connectionStatusState", "Success");
             model.setProperty("/lastUpdated", new Date().toLocaleString());

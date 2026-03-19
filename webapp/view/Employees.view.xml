@@ -15,7 +15,7 @@
                         </VBox>
                     </HBox>
                     <HBox alignItems="Center" class="supControls">
-                        <Button text="+ Add New Employee" type="Emphasized" press=".onOpenAddEmployee" />
+                        <Button text="+ Add New Employee" type="Emphasized" press=".onOpenAddEmployee" visible="{emp>/isAdmin}" />
                         <Button text="Refresh" type="Default" press=".onRefreshEmployees" />
                     </HBox>
                 </HBox>
@@ -64,8 +64,8 @@
                                     state="{= ${emp>IsActive} === 1 ? 'Success' : 'Error' }" />
                                 <HBox>
                                     <Button icon="sap-icon://show" type="Transparent" press=".onViewEmployee" />
-                                    <Button icon="sap-icon://edit" type="Transparent" press=".onEditEmployee" />
-                                    <Button icon="sap-icon://delete" type="Transparent" press=".onDeleteEmployee" />
+                                    <Button icon="sap-icon://edit" type="Transparent" press=".onEditEmployee" visible="{emp>/isAdmin}" />
+                                    <Button icon="sap-icon://delete" type="Transparent" press=".onDeleteEmployee" visible="{emp>/isAdmin}" />
                                 </HBox>
                             </cells>
                         </ColumnListItem>

@@ -24,6 +24,7 @@ export default class Employees extends BaseController {
             pageSize: 10,
             totalPages: 1,
             searchQuery: "",
+            isAdmin: false, // New property for UI visibility
             connectionStatusText: "OFFLINE",
             connectionStatusState: "Error",
             lastUpdated: "-",
@@ -48,6 +49,13 @@ export default class Employees extends BaseController {
         });
 
         view.setModel(employeesModel, "emp");
+
+        // Role check for UI visibility
+        const userStr = window.localStorage.getItem("user");
+        const user = userStr ? JSON.parse(userStr) : {};
+        const role = String(user.Role || user.role || "").toUpperCase();
+        employeesModel.setProperty("/isAdmin", role === "ADMIN" || role === "SUPER ADMIN");
+
         void this.loadEmployees();
     }
 

@@ -15,7 +15,7 @@
                         </VBox>
                     </HBox>
                     <HBox alignItems="Center" class="supControls">
-                        <Button text="+ Add New Supervisor" type="Emphasized" press=".onOpenAddSupervisor" />
+                        <Button text="+ Add New Supervisor" type="Emphasized" press=".onOpenAddSupervisor" visible="{sup>/isAdmin}" />
                         <Button text="Refresh" type="Default" press=".onRefreshSupervisors" />
                     </HBox>
                 </HBox>
@@ -57,8 +57,8 @@
                                 <Text text="{path: 'sup>AssignedEmployees', formatter: '.formatAssignedEmployees'}" />
                                 <HBox>
                                     <Button icon="sap-icon://show" type="Transparent" press=".onViewSupervisor" />
-                                    <Button icon="sap-icon://edit" type="Transparent" press=".onEditSupervisor" />
-                                    <Button icon="sap-icon://delete" type="Transparent" press=".onDeleteSupervisor" />
+                                    <Button icon="sap-icon://edit" type="Transparent" press=".onEditSupervisor" visible="{sup>/isAdmin}" />
+                                    <Button icon="sap-icon://delete" type="Transparent" press=".onDeleteSupervisor" visible="{sup>/isAdmin}" />
                                 </HBox>
                             </cells>
                         </ColumnListItem>

@@ -34,8 +34,8 @@
                     <tnt:NavigationList>
                         <tnt:NavigationListItem text="Monitoring-Dashboard" icon="sap-icon://home" key="dashboard" />
                         <tnt:NavigationListItem text="Live Data" icon="sap-icon://activity-individual" key="liveData" />
-                        <tnt:NavigationListItem text="Supervisor" icon="sap-icon://group-2" key="supervisor" />
-                        <tnt:NavigationListItem text="Employees" icon="sap-icon://employee" key="employees" />
+                        <tnt:NavigationListItem text="Supervisor" icon="sap-icon://group-2" key="supervisor" visible="{appModel>/showSupervisorModule}" />
+                        <tnt:NavigationListItem text="Employees" icon="sap-icon://employee" key="employees" visible="{appModel>/showEmployeesModule}" />
                         <tnt:NavigationListItem text="Machine History" icon="sap-icon://history" key="machineHistory" />
                         <tnt:NavigationListItem text="Resources" icon="sap-icon://database" key="resources" />
                         <tnt:NavigationListItem text="Machine Info" icon="sap-icon://settings" key="machineInfo" />

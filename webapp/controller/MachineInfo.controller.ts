@@ -1,4 +1,4 @@
-import Controller from "sap/ui/core/mvc/Controller";
+import Controller from "./BaseController";
 import UIComponent from "sap/ui/core/UIComponent";
 import JSONModel from "sap/ui/model/json/JSONModel";
 
@@ -47,7 +47,28 @@ export default class MachineInfo extends Controller {
             if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
             const payload = await res.json() as { value?: Array<Record<string, any>> };
-            const rows = payload.value || [];
+            const allRows = payload.value || [];
+
+            const userStr = window.localStorage.getItem("user");
+            const user = userStr ? JSON.parse(userStr) : {};
+            const role = String(user.Role || user.role || "").toUpperCase();
+            const userId = String(user.SupervisorId || user.EmployeeId || user.userId || "");
+
+            // Role-based filtering
+            let rows = allRows;
+            if (role === "SUPERVISOR" || role === "EMPLOYEE") {
+                const assignedResources = this.getAssignedResources();
+                const assignedResourceIds = assignedResources.map((r: any) => String(r.resourceId || r.ResourceId || "").trim().toUpperCase());
+                const assignedResourceNames = assignedResources.map((r: any) => String(r.name || r.ResName || "").trim().toUpperCase());
+
+                rows = allRows.filter((row: any) => {
+                    const machineId = String(row.DeviceId || "").trim().toUpperCase();
+                    const machineBrand = String(row.PlcBrand || "").trim().toUpperCase();
+                    const matchesId = assignedResourceIds.includes(machineId);
+                    const matchesBrand = assignedResourceNames.includes(machineBrand);
+                    return matchesId || matchesBrand;
+                });
+            }
 
             // Group rows by DeviceId — same as Dashboard
             const deviceMap: Record<string, Array<Record<string, any>>> = {};

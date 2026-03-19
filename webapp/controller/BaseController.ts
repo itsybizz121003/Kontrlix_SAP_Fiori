@@ -26,9 +26,7 @@ export default class BaseController extends Controller {
     }
 
     public onLogout(): void {
-        window.localStorage.removeItem("machineApiToken");
-        window.localStorage.removeItem("appToken");
-        window.localStorage.removeItem("user");
+        window.localStorage.clear();
         MessageToast.show("Logged out successfully!");
         const router = (this.getOwnerComponent() as UIComponent).getRouter();
         router.navTo("login");
