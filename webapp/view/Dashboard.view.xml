@@ -10,12 +10,12 @@
         <content>
             <VBox class="dashMainArea">
                 <!-- Header -->
-                <HBox justifyContent="SpaceBetween" alignItems="Center" class="dashTopBar">
+                <!-- <HBox justifyContent="SpaceBetween" alignItems="Center" class="dashTopBar">
                     <VBox>
                         <Text text="{dash>/greeting}" class="dashGreeting" />
                         <Text text="{dash>/date}" class="dashDate" />
                     </VBox>
-                </HBox>
+                </HBox> -->
 
                 <!-- Title row -->
                 <HBox justifyContent="SpaceBetween" alignItems="Center" class="dashTitleRow">
