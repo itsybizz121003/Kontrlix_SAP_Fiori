@@ -40,29 +40,43 @@
                     </HBox>
 
                     <!-- Filters -->
-                    <HBox class="dashFilterRow" alignItems="Center" justifyContent="SpaceBetween">
-                        <HBox class="dashFilterGroup">
-                            <Select width="10rem">
-                                <items>
-                                    <core:Item key="allBrands" text="All Brands" />
-                                </items>
-                            </Select>
-                            <Select width="10rem">
-                                <items>
-                                    <core:Item key="prodAll" text="All" />
-                                </items>
-                            </Select>
-                            <Select width="10rem">
-                                <items>
-                                    <core:Item key="runAll" text="All Status" />
-                                </items>
-                            </Select>
-                            <Select width="10rem">
-                                <items>
-                                    <core:Item key="allTime" text="All Time" />
-                                </items>
-                            </Select>
+                    <HBox class="dashFilterRow" alignItems="End" justifyContent="SpaceBetween">
+                        <HBox class="dashFilterGroup" alignItems="End">
+                            <!-- Machine Filter -->
+                            <VBox>
+                                <Label text="Machine" class="dashFilterLabel" />
+                                <Select width="10rem" items="{live>/brands}" change=".onFilterChange" selectedKey="{live>/filters/plcBrand}">
+                                    <core:Item key="{live>key}" text="{live>text}" />
+                                </Select>
+                            </VBox>
+
+                            <!-- Running Status Filter -->
+                            <VBox>
+                                <Label text="Running Status" class="dashFilterLabel" />
+                                <Select width="10rem" change=".onFilterChange" selectedKey="{live>/filters/machineStatus}">
+                                    <core:Item key="all" text="All Status" />
+                                    <core:Item key="RUNNING" text="Running" />
+                                    <core:Item key="IDLE" text="Ideal" />
+                                    <core:Item key="STOPPED" text="Stopped" />
+                                </Select>
+                            </VBox>
+
+                            <!-- Date Range Filter -->
+                            <VBox>
+                                <Label text="Date Range" class="dashFilterLabel" />
+                                <Select width="10rem" change=".onFilterChange" selectedKey="{live>/filters/dateRange}">
+                                    <core:Item key="all" text="All Time" />
+                                    <core:Item key="today" text="Today" />
+                                    <core:Item key="yesterday" text="Yesterday" />
+                                    <core:Item key="thisWeek" text="This Week" />
+                                    <core:Item key="thisMonth" text="This Month" />
+                                    <core:Item key="last3Months" text="Last 3 Months" />
+                                </Select>
+                            </VBox>
                         </HBox>
+
+                        <!-- Reset Button -->
+                        <!-- <Button text="Reset" type="Emphasized" press=".onResetFilters" class="dashFilterResetBtn" /> -->
                     </HBox>
 
                     <HBox class="liveTokenRow" alignItems="Center" justifyContent="SpaceBetween">
@@ -75,21 +89,19 @@
                     <!-- Cards row (API driven) -->
                   <HBox class="liveCardsRow" items="{live>/machines}">
     <items>
-        <VBox class="{
-            = ${live>status} === 'RUNNING' ? 'liveCard runningCard' :
-              ${live>status} === 'STOPPED' ? 'liveCard stoppedCard' :
-              'liveCard'
-        }">
+        <VBox
+            class="{path: 'live>statusState', formatter: '.formatCardClass'}">
 
             <!-- HEADER -->
             <HBox justifyContent="SpaceBetween" alignItems="Center">
                 <VBox>
                     <Text text="{live>deviceId}" class="liveCardMachine" />
-                    <Text text="{live>company} - {live>plant} - {live>line}" class="liveCardSub" />
+                    <Text text="{live>subLine}" class="liveCardSub" />
+                    <Text text="{live>MachineBrand}" class="liveCardSub" />
                    
                 </VBox>
                 <ObjectStatus text="{live>status}" 
-                    state="{= ${live>status} === 'RUNNING' ? 'Success' : ${live>status} === 'STOPPED' ? 'Error' : 'None' }" 
+                    state="{live>statusState}" 
                     class="liveStatusBadge" />
             </HBox>
 
@@ -144,8 +156,9 @@
                     <VBox>
                         <Text text="Machine Status" class="liveLabel" />
                         <Text text="{live>status}" class="{
-                            = ${live>status} === 'RUNNING' ? 'liveStatusRunning' :
-                              ${live>status} === 'STOPPED' ? 'liveStatusStopped' :
+                            = ${live>statusState} === 'Success' ? 'liveStatusRunning' :
+                              ${live>statusState} === 'Error' ? 'liveStatusStopped' :
+                              ${live>statusState} === 'Warning' ? 'liveStatusIdle' :
                               ''
                         }" />
                     </VBox>
@@ -173,4 +186,3 @@
         </content>
     </Page>
 </mvc:View>
-

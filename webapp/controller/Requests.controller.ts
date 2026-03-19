@@ -15,6 +15,10 @@ export default class Requests extends Controller {
         const requestModel = new JSONModel({
             rows: [],
             rowCount: 0,
+            pendingCount: 0,
+            supApprovedCount: 0,
+            approvedCount: 0,
+            rejectedCount: 0,
             connectionStatusText: "OFFLINE",
             connectionStatusState: "Error",
             lastUpdated: "-"
@@ -125,16 +129,26 @@ export default class Requests extends Controller {
             const payload = await res.json() as { value?: Array<Record<string, any>> };
             const rows = payload.value || [];
 
-            model.setProperty("/rows", rows);
-            model.setProperty("/rowCount", rows.length);
-            model.setProperty("/connectionStatusText", "ONLINE");
+            // ── Count calculate karo Status field se ────────────────────────
+            const pendingCount     = rows.filter(r => String(r.AdminApprovalStatus || "").toLowerCase() === "pending").length;
+            const supApprovedCount = rows.filter(r => String(r.SupervisorApprovalStatus || "").toLowerCase() === "approved").length;
+            const approvedCount    = rows.filter(r => String(r.AdminApprovalStatus || "").toLowerCase() === "approved").length;
+            const rejectedCount    = rows.filter(r => String(r.AdminApprovalStatus || "").toLowerCase() === "rejected").length;
+
+            model.setProperty("/rows",                rows);
+            model.setProperty("/rowCount",            rows.length);
+            model.setProperty("/pendingCount",        pendingCount);
+            model.setProperty("/supApprovedCount",    supApprovedCount);
+            model.setProperty("/approvedCount",       approvedCount);
+            model.setProperty("/rejectedCount",       rejectedCount);
+            model.setProperty("/connectionStatusText",  "ONLINE");
             model.setProperty("/connectionStatusState", "Success");
             model.setProperty("/lastUpdated", new Date().toLocaleString());
 
             if (showToast) MessageToast.show(`Loaded ${rows.length} requests`);
 
         } catch (e) {
-            model.setProperty("/connectionStatusText", "OFFLINE");
+            model.setProperty("/connectionStatusText",  "OFFLINE");
             model.setProperty("/connectionStatusState", "Error");
             if (showToast) MessageToast.show("Failed to load requests");
             console.error("Requests API error:", e);

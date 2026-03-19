@@ -1,123 +1,122 @@
 /* Login page background */
 .loginPage {
-    background-image: linear-gradient(
-            to bottom,
-            rgba(0, 0, 0, 0.28),
-            rgba(0, 0, 0, 0.55)
-        ),
-        url("../img/login-bg.svg");
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
+  background-image:
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.28), rgba(0, 0, 0, 0.55)),
+    url("../img/login-bg.svg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 .loginLayout {
-    height: 100%;
-    padding: 2rem 4rem;
-    box-sizing: border-box;
+  height: 100%;
+  padding: 2rem 4rem;
+  box-sizing: border-box;
 }
 
 /* Left column */
 .loginBenefits {
-    color: #ffffff;
-    gap: 1rem;
+  color: #ffffff;
+  gap: 1rem;
 }
 
 .loginBrand {
-    color: #ffffff;
-    font-size: 2.2rem;
-    letter-spacing: 0.08em;
+  color: #ffffff;
+  font-size: 2.2rem;
+  letter-spacing: 0.08em;
 }
-
+#header-shellArea {
+  display: none !important;
+}
 .loginSubtitle {
-    font-size: 1rem;
-    opacity: 0.85;
-    max-width: 26rem;
-    color: #ffffff;
+  font-size: 1rem;
+  opacity: 0.85;
+  max-width: 26rem;
+  color: #ffffff;
 }
 
 .loginBenefitsList {
-    margin-top: 1.5rem;
-    gap: 0.9rem;
+  margin-top: 1.5rem;
+  gap: 0.9rem;
 }
 
 .loginBenefitItem {
-    gap: 0.6rem;
+  gap: 0.6rem;
 }
 
 .loginBenefitItem .sapMText {
-    color: #ffffff;
+  color: #ffffff;
 }
 
 .loginBenefitIcon {
-    color: #00c853;
+  color: #00c853;
 }
 
 /* Right login card */
 .loginCardWrapper {
-    max-width: 420px;
+  max-width: 420px;
 }
 
 .loginCard {
-    background: rgba(10, 14, 25, 0.88);
-    backdrop-filter: blur(14px);
-    border-radius: 16px;
-    padding: 2rem;
-    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
-    gap: 1.5rem;
+  background: rgba(10, 14, 25, 0.88);
+  backdrop-filter: blur(14px);
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
+  gap: 1.5rem;
 }
 
 .loginLogoWrapper {
-    margin-bottom: 0.5rem;
+  margin-bottom: 0.5rem;
 }
 
 .loginLogo {
-    background: #1d4ed8;
-    color: #ffffff;
+  background: #1d4ed8;
+  color: #ffffff;
 }
 
 .loginLogo .sapFAvatarInitialsHolder {
-    color: #ffffff;
+  color: #ffffff;
 }
 
 .loginForm {
-    gap: 0.75rem;
+  gap: 0.75rem;
 }
 
 .loginPasswordLabel {
-    margin-top: 0.5rem;
+  margin-top: 0.5rem;
 }
 
 .loginMetaRow {
-    margin-top: 0.5rem;
+  margin-top: 0.5rem;
 }
 
 .loginMetaText {
-    color: #9e9e9e;
+  color: #9e9e9e;
 }
 
 .loginButton {
-    margin-top: 1rem;
+  margin-top: 1rem;
 }
 
 /* Responsive tweaks for login */
 @media (max-width: 960px) {
-    .loginLayout {
-        flex-direction: column;
-        justify-content: center;
-        align-items: stretch;
-        padding: 2rem;
-        gap: 2rem;
-    }
+  .loginLayout {
+    flex-direction: column;
+    justify-content: center;
+    align-items: stretch;
+    padding: 2rem;
+    gap: 2rem;
+  }
 
-    .loginBenefits {
-        width: 100%;
-    }
+  .loginBenefits {
+    width: 100%;
+  }
 
-    .loginCardWrapper {
-        width: 100%;
-        max-width: 100%;
-    }
+  .loginCardWrapper {
+    width: 100%;
+    max-width: 100%;
+  }
 }
 
 /* ================================
@@ -125,123 +124,145 @@
    ================================ */
 
 .dashboardPage {
-    background-color: #f5f7fb;
+  background-color: #f5f7fb;
 }
 
 .dashboardLayout {
-    height: 100%;
+  height: 100%;
 }
 
 /* Sidebar removal and ToolPage styles */
 .dashSideNav {
-    display: none;
+  display: none;
 }
 
 /* Ensure ToolHeader looks good */
 .sapTntToolHeader {
-    background-color: #ffffff !important;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-    border-bottom: 1px solid #e5e7eb;
+  background-color: #ffffff !important;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  border-bottom: 1px solid #e5e7eb;
 }
 
 .sapTntToolHeader .sapMTitle {
-    color: #1e40af !important;
-    font-weight: 700 !important;
+  color: #1e40af !important;
+  font-weight: 700 !important;
 }
 
 /* User Info in Header */
 .dashUserInfo {
-    background-color: #eff6ff;
-    border-radius: 20px;
-    padding: 2px 12px;
-    margin-right: 10px;
-    border: 1px solid #dbeafe;
+  background-color: #eff6ff;
+  border-radius: 20px;
+  padding: 2px 12px;
+  margin-right: 10px;
+  border: 1px solid #dbeafe;
 }
 
 .dashUserInfo .sapMText {
-    font-weight: 600;
-    color: #1e40af;
-    margin-right: 8px;
+  font-weight: 600;
+  color: #1e40af;
+  margin-right: 8px;
 }
 
 /* Responsive Main Area */
 .dashMainArea {
-    padding: 1rem !important;
-    width: 100%;
-    box-sizing: border-box;
+  padding: 1rem !important;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 /* Mobile responsive adjustments */
 @media (max-width: 600px) {
-    .dashMainArea {
-        padding: 0.5rem !important;
-    }
-    
-    .supTopBar {
-        flex-direction: column;
-        align-items: flex-start !important;
-        gap: 1rem;
-    }
+  .dashMainArea {
+    padding: 0.5rem !important;
+  }
+
+  .supTopBar {
+    flex-direction: column;
+    align-items: flex-start !important;
+    gap: 1rem;
+  }
 }
 
 .dashTitleRow {
-    margin-bottom: 1rem;
+  margin-bottom: 1rem;
 }
 
 .dashStatusOffline {
-    color: #b91c1c;
-    font-weight: 600;
+  color: #b91c1c;
+  font-weight: 600;
 }
 
 .dashFilterRow {
-    background-color: #ffffff;
-    padding: 0.75rem 1rem;
-    border-radius: 16px;
+    background: #ffffff;
+    padding: 16px 24px !important;
+    border-radius: 12px !important;
+    border: 1px solid #e2e8f0;
+    margin-bottom: 24px !important;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-    margin-bottom: 1rem;
 }
 
-.dashFilterGroup > .sapMHBoxChild {
-    margin-right: 0.75rem;
+.dashFilterGroup {
+    gap: 1.5rem;
+}
+
+.dashFilterLabel {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #1e293b;
+    margin-bottom: 0.4rem;
+}
+
+.dashFilterResetBtn {
+    background-color: #2563eb !important;
+    border-color: #2563eb !important;
+    color: #ffffff !important;
+    border-radius: 8px !important;
+    padding: 0 1.5rem !important;
+    font-weight: 600 !important;
+}
+
+.dashFilterResetBtn:hover {
+    background-color: #1d4ed8 !important;
+    border-color: #1d4ed8 !important;
 }
 
 .dashCardsRow {
-    gap: 1rem;
+  gap: 1rem;
 }
 
 .dashCard {
-    flex: 1;
-    padding: 1rem 1.25rem;
-    border-radius: 18px;
-    box-shadow: 0 6px 18px rgba(15, 23, 42, 0.08);
-    background: #ffffff;
+  flex: 1;
+  padding: 1rem 1.25rem;
+  border-radius: 18px;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.08);
+  background: #ffffff;
 }
 
 .dashCardBlue {
-    background: linear-gradient(135deg, #e0f2fe, #eff6ff);
+  background: linear-gradient(135deg, #e0f2fe, #eff6ff);
 }
 
 .dashCardYellow {
-    background: linear-gradient(135deg, #fef9c3, #fffbeb);
+  background: linear-gradient(135deg, #fef9c3, #fffbeb);
 }
 
 .dashCardPurple {
-    background: linear-gradient(135deg, #e9d5ff, #f5f3ff);
+  background: linear-gradient(135deg, #e9d5ff, #f5f3ff);
 }
 
 .dashCardTitle {
-    font-size: 0.9rem;
-    opacity: 0.7;
+  font-size: 0.9rem;
+  opacity: 0.7;
 }
 
 .dashCardValue {
-    font-size: 1.6rem;
-    font-weight: 700;
+  font-size: 1.6rem;
+  font-weight: 700;
 }
 
 .dashCardSub {
-    font-size: 0.8rem;
-    opacity: 0.7;
+  font-size: 0.8rem;
+  opacity: 0.7;
 }
 
 /* ================================
@@ -249,213 +270,241 @@
    ================================ */
 
 .liveHeader {
-    margin-bottom: 1rem;
+  margin-bottom: 1rem;
 }
 
 .liveLastUpdated {
-    font-size: 0.85rem;
-    opacity: 0.7;
+  font-size: 0.85rem;
+  opacity: 0.7;
 }
 
 .liveSectionTitle {
-    margin: 1rem 0 0.5rem 0;
-    font-weight: 600;
+  margin: 1rem 0 0.5rem 0;
+  font-weight: 600;
 }
 
 .liveTokenRow {
-    margin-top: 0.75rem;
-    gap: 0.75rem;
+  margin-top: 0.75rem;
+  gap: 0.75rem;
 }
 
 .liveTokenInput {
-    width: 100%;
-    max-width: 38rem;
+  width: 100%;
+  max-width: 38rem;
 }
 
 .liveTokenActions {
-    flex-shrink: 0;
+  flex-shrink: 0;
 }
 
 .liveCardsRow {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
-    justify-content: flex-start;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: flex-start;
 }
 
 .liveCard {
-    width: 320px;
-    background-color: #ffffff;
-    border-radius: 18px;
-    padding: 1rem 1.2rem;
-    box-shadow: 0 6px 18px rgba(15, 23, 42, 0.08);
-    transition: all 0.3s ease;
+  width: 320px;
+  background-color: #ffffff;
+  border-radius: 18px;
+  padding: 1rem 1.2rem;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.08);
+  transition: all 0.3s ease;
 }
 
 .liveCard:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 10px 24px rgba(0,0,0,0.12);
+  transform: translateY(-4px);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.12);
 }
 
 .liveCardMachine {
-    font-weight: 700;
-    font-size: 1.1rem;
+  font-weight: 700;
+  font-size: 1.1rem;
 }
 
 .liveCardSub {
-    font-size: 0.8rem;
-    opacity: 0.7;
+  font-size: 0.8rem;
+  opacity: 0.7;
 }
 
 .liveCardBody {
-    margin-top: 0.5rem;
-    font-size: 0.85rem;
+  margin-top: 0.5rem;
+  font-size: 0.85rem;
 }
 
 .liveDetailText {
-    font-size: 0.85rem;
-    margin: 0.2rem 0;
+  font-size: 0.85rem;
+  margin: 0.2rem 0;
 }
 
 .liveDetailLabel {
-    font-size: 0.85rem;
-    font-weight: 600;
-    margin-right: 0.3rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-right: 0.3rem;
 }
 
 .liveStatusBadge .sapMObjStatusText {
-    font-weight: 600;
-    font-size: 0.8rem;
+  font-weight: 600;
+  font-size: 0.8rem;
 }
 
 /* DEBUG TEXT STYLES */
 .debugRedText {
-    color: red !important;
-    font-size: 0.7rem !important;
-    font-weight: bold !important;
+  color: red !important;
+  font-size: 0.7rem !important;
+  font-weight: bold !important;
 }
+
+/* ================================
+   MACHINE CARD STATUS COLORS
+   ================================ */
 
 /* GREEN - RUNNING */
-.liveCard.runningCard {
-    background-color: #e8f5e9 !important;
-    border: 2px solid #4caf50 !important;
+.liveCard.runningCard,
+.sapMVBox.runningCard {
+    background-color: #dcfce7 !important; /* Light Green Background */
+    border: 2.5px solid #16a34a !important; /* Strong Green Border */
+    box-shadow: 0 4px 16px rgba(34, 197, 94, 0.25) !important;
 }
 
-.liveCard.runningCard .liveCardMachine {
-    color: #2e7d32;
+.runningCard .liveCardMachine,
+.runningCard .sapMText.liveCardMachine {
+  color: #15803d !important;
 }
 
 .liveStatusRunning {
-    color: #2e7d32 !important;
-    font-weight: 600;
+  color: #15803d !important;
+  font-weight: 700;
 }
 
-/* RED - STOPPED */
-.liveCard.stoppedCard {
-    background-color: #fdecea !important;
-    border: 2px solid #f44336 !important;
+/* RED - STOPPED / FAULTED */
+.liveCard.stoppedCard,
+.sapMVBox.stoppedCard {
+    background-color: #fee2e2 !important; /* Light Red Background */
+    border: 2.5px solid #dc2626 !important; /* Strong Red Border */
+    box-shadow: 0 4px 16px rgba(239, 68, 68, 0.25) !important;
 }
 
-.liveCard.stoppedCard .liveCardMachine {
-    color: #c62828;
+.stoppedCard .liveCardMachine,
+.stoppedCard .sapMText.liveCardMachine {
+  color: #b91c1c !important;
 }
 
 .liveStatusStopped {
-    color: #c62828 !important;
-    font-weight: 600;
+  color: #b91c1c !important;
+  font-weight: 700;
 }
 
-/* AMBER - IDLE/WARNING */
-.liveCard.idleCard {
-    background-color: #fff3e0 !important;
-    border: 2px solid #ff9800 !important;
+/* AMBER - IDLE / WARNING */
+.liveCard.idleCard,
+.sapMVBox.idleCard {
+  background-color: #fffbeb !important;
+  border: 2.5px solid #f59e0b !important;
+  box-shadow: 0 4px 16px rgba(245, 158, 11, 0.25) !important;
 }
 
-.liveCard.idleCard .liveCardMachine {
-    color: #e65100;
+.idleCard .liveCardMachine,
+.idleCard .sapMText.liveCardMachine {
+  color: #b45309 !important;
 }
 
 .liveStatusIdle {
-    color: #e65100 !important;
-    font-weight: 600;
+  color: #b45309 !important;
+  font-weight: 700;
+}
+.sapMVBox.idleCard {
+    background-color: #fffbeb !important;
+    border: 2.5px solid #f59e0b !important;
+    box-shadow: 0 4px 16px rgba(245, 158, 11, 0.25) !important;
+}
+
+.idleCard .liveCardMachine,
+.idleCard .sapMText.liveCardMachine {
+    color: #b45309 !important;
+}
+
+.liveStatusIdle {
+    color: #b45309 !important;
+    font-weight: 700;
 }
 
 /* ALARM COLORS */
 .liveAlarmOk {
-    color: #16a34a;
-    font-weight: 600;
+  color: #16a34a;
+  font-weight: 600;
 }
 
 .liveAlarmWarn {
-    color: #f97316;
-    font-weight: 600;
+  color: #f97316;
+  font-weight: 600;
 }
 
 .liveAlarmError {
-    color: #dc2626;
-    font-weight: 600;
+  color: #dc2626;
+  font-weight: 600;
 }
 
 /* STATS */
 .liveStatsRow {
-    margin-top: 1rem;
-    padding: 0.8rem 0;
-    border-top: 1px solid rgba(0,0,0,0.06);
-    border-bottom: 1px solid rgba(0,0,0,0.06);
+  margin-top: 1rem;
+  padding: 0.8rem 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
 }
 
 .liveLabel {
-    font-size: 0.7rem;
-    opacity: 0.6;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+  font-size: 0.7rem;
+  opacity: 0.6;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .liveBigValue {
-    font-size: 1.4rem;
-    font-weight: 700;
-    margin-top: 0.2rem;
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin-top: 0.2rem;
 }
 
 /* PARAMETERS BOX */
 .liveParamBox {
-    margin-top: 1rem;
-    padding: 0.8rem;
-    border-radius: 12px;
-    background: rgba(0,0,0,0.03);
+  margin-top: 1rem;
+  padding: 0.8rem;
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.03);
 }
 
 .liveParamTitle {
-    font-weight: 600;
-    font-size: 0.9rem;
-    margin-bottom: 0.8rem;
-    color: #374151;
+  font-weight: 600;
+  font-size: 0.9rem;
+  margin-bottom: 0.8rem;
+  color: #374151;
 }
 
 .liveParamRow2 {
-    margin-top: 0.8rem;
+  margin-top: 0.8rem;
 }
 
 .liveParamBox .sapMText {
-    font-size: 0.85rem;
+  font-size: 0.85rem;
 }
 
 .liveParamBox .liveLabel {
-    font-size: 0.65rem;
-    margin-bottom: 0.3rem;
+  font-size: 0.65rem;
+  margin-bottom: 0.3rem;
 }
 
 /* SYNC ROW */
 .liveSyncRow {
-    margin-top: 0.8rem;
-    padding-top: 0.5rem;
-    border-top: 1px solid rgba(0,0,0,0.06);
+  margin-top: 0.8rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
 }
 
 .liveSyncText {
-    font-size: 0.75rem;
-    opacity: 0.6;
-    font-style: italic;
+  font-size: 0.75rem;
+  opacity: 0.6;
+  font-style: italic;
 }
 
 /* ================================
@@ -463,37 +512,37 @@
    ================================ */
 
 .mhTopBar {
-    background-color: #ffffff;
-    padding: 1rem 1.25rem;
-    border-radius: 16px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-    margin-bottom: 1rem;
+  background-color: #ffffff;
+  padding: 1rem 1.25rem;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  margin-bottom: 1rem;
 }
 
 .mhIcon {
-    margin-right: 0.8rem;
-    background: linear-gradient(135deg, #2563eb, #4f46e5);
+  margin-right: 0.8rem;
+  background: linear-gradient(135deg, #2563eb, #4f46e5);
 }
 
 .mhControls > .sapMHBoxChild {
-    margin-left: 0.5rem;
+  margin-left: 0.5rem;
 }
 
 .mhSectionTitle {
-    margin: 1rem 0 0.5rem 0;
-    font-weight: 600;
+  margin: 1rem 0 0.5rem 0;
+  font-weight: 600;
 }
 
 .mhTable {
-    background-color: #ffffff;
-    border-radius: 16px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-    overflow: hidden;
+  background-color: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  overflow: hidden;
 }
 
 .mhPager {
-    margin-top: 1rem;
-    gap: 0.5rem;
+  margin-top: 1rem;
+  gap: 0.5rem;
 }
 
 /* ================================
@@ -501,97 +550,97 @@
    ================================ */
 
 .supTopBar {
-    background-color: #ffffff;
-    padding: 1rem 1.25rem;
-    border-radius: 16px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-    margin-bottom: 1rem;
+  background-color: #ffffff;
+  padding: 1rem 1.25rem;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  margin-bottom: 1rem;
 }
 
 .supIcon {
-    margin-right: 0.8rem;
-    background: linear-gradient(135deg, #2563eb, #4f46e5);
+  margin-right: 0.8rem;
+  background: linear-gradient(135deg, #aeb1b8, #918ec4);
 }
 
 .supControls > .sapMHBoxChild {
-    margin-left: 0.5rem;
+  margin-left: 0.5rem;
 }
 
 .supSearchBox {
-    background-color: #ffffff;
-    padding: 0.75rem 1rem 1rem 1rem;
-    border-radius: 16px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-    margin: 0.75rem 0 1rem 0;
+  background-color: #ffffff;
+  padding: 0.75rem 1rem 1rem 1rem;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  margin: 0.75rem 0 1rem 0;
 }
 
 .supDirHeader {
-    margin-bottom: 0.5rem;
+  margin-bottom: 0.5rem;
 }
 
 .supDirTitle {
-    font-weight: 600;
+  font-weight: 600;
 }
 
 .supTable {
-    background-color: #ffffff;
-    border-radius: 16px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  background-color: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 }
 
 .supModalOverlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(15, 23, 42, 0.12);
-    z-index: 20;
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.12);
+  z-index: 20;
 }
 
 .supDrawer {
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    width: 360px;
-    height: auto;
-    background: #f7f8fa;
-    box-shadow: -6px 0 20px rgba(15, 23, 42, 0.18);
-    display: flex;
-    flex-direction: column;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 360px;
+  height: auto;
+  background: #f7f8fa;
+  box-shadow: -6px 0 20px rgba(15, 23, 42, 0.18);
+  display: flex;
+  flex-direction: column;
 }
 
 .supDrawerHeader {
-    padding: 1rem 1rem 0.9rem 1rem;
-    background: #ffffff;
-    border-bottom: 1px solid #e5e7eb;
+  padding: 1rem 1rem 0.9rem 1rem;
+  background: #ffffff;
+  border-bottom: 1px solid #e5e7eb;
 }
 
 .supDrawerClose {
-    background: #eef0f3;
-    border-radius: 8px;
+  background: #eef0f3;
+  border-radius: 8px;
 }
 
 .supDrawerBody {
-    flex: 1;
-    overflow: auto;
-    padding: 1rem;
-    gap: 0.5rem;
+  flex: 1;
+  overflow: auto;
+  padding: 1rem;
+  gap: 0.5rem;
 }
 
 .supFieldLabel {
-    margin-top: 0.5rem;
-    font-weight: 600;
-    color: #1f2937;
+  margin-top: 0.5rem;
+  font-weight: 600;
+  color: #1f2937;
 }
 
 .supHelpText {
-    font-size: 0.75rem;
-    color: #6b7280;
-    margin-top: 0.2rem;
-    margin-bottom: 0.3rem;
+  font-size: 0.75rem;
+  color: #6b7280;
+  margin-top: 0.2rem;
+  margin-bottom: 0.3rem;
 }
 
 .supCreateBtn {
-    margin: 0.8rem 1rem 1rem 1rem;
+  margin: 0.8rem 1rem 1rem 1rem;
 }
 
 /* ================================
@@ -599,99 +648,99 @@
    ================================ */
 
 .dashSectionCard {
-    background-color: #ffffff;
-    border-radius: 18px;
-    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.06);
-    padding: 1.5rem 1.75rem;
-    margin-top: 1.25rem;
+  background-color: #ffffff;
+  border-radius: 18px;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.06);
+  padding: 1.5rem 1.75rem;
+  margin-top: 1.25rem;
 }
 
 .dashSectionTitle {
-    font-weight: 600;
-    margin-bottom: 0.75rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
 }
 
 .mtsDonutWrapper {
-    width: 50%;
+  width: 50%;
 }
 
 .mtsDonut {
-    width: 220px;
-    height: 220px;
-    border-radius: 50%;
-    border: 16px solid #e5e7eb;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 1rem;
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  border: 16px solid #e5e7eb;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
 }
 
 .mtsDonutLabel {
-    font-size: 0.8rem;
-    opacity: 0.7;
+  font-size: 0.8rem;
+  opacity: 0.7;
 }
 
 .mtsDonutValue {
-    font-size: 2rem;
-    font-weight: 700;
+  font-size: 2rem;
+  font-weight: 700;
 }
 
 .mtsLegend {
-    display: flex;
-    gap: 1.5rem;
+  display: flex;
+  gap: 1.5rem;
 }
 
 .mtsSideCards {
-    width: 40%;
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-    align-items: flex-end;
+  width: 40%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  align-items: flex-end;
 }
 
 .mtsSideCard {
-    width: 220px;
-    border-radius: 16px;
-    padding: 0.9rem 1.1rem;
-    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+  width: 220px;
+  border-radius: 16px;
+  padding: 0.9rem 1.1rem;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
 }
 
 .mtsRun {
-    background: #ecfdf3;
+  background: #ecfdf3;
 }
 
 .mtsStop {
-    background: #fef2f2;
+  background: #fef2f2;
 }
 
 .mtsViewAll {
-    margin-top: 0.5rem;
+  margin-top: 0.5rem;
 }
 
 .daoRow {
-    display: flex;
-    gap: 1rem;
+  display: flex;
+  gap: 1rem;
 }
 
 .daoChartCard {
-    flex: 1;
+  flex: 1;
 }
 
 .daoDonutPlaceholder,
 .daoEmpty,
 .mpChartPlaceholder {
-    height: 220px;
-    border-radius: 16px;
-    background-color: #f3f4f6;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  height: 220px;
+  border-radius: 16px;
+  background-color: #f3f4f6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .mpChartCard {
-    flex: 1;
-    margin-right: 1rem;
+  flex: 1;
+  margin-right: 1rem;
 }
 
 /* ================================
@@ -699,63 +748,63 @@
    ================================ */
 
 .aiMainArea {
-    flex: 1;
-    padding: 1.5rem 2rem;
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
+  flex: 1;
+  padding: 1.5rem 2rem;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
 .aiHeader {
-    margin-bottom: 0.5rem;
+  margin-bottom: 0.5rem;
 }
 
 .aiCard {
-    background-color: #ffffff;
-    border-radius: 18px;
-    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.06);
-    padding: 1.5rem;
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    max-height: 60vh;
-    overflow-y: auto;
+  background-color: #ffffff;
+  border-radius: 18px;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.06);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-height: 60vh;
+  overflow-y: auto;
 }
 
 .aiSectionHeader {
-    gap: 0.5rem;
-    margin-bottom: 0.25rem;
+  gap: 0.5rem;
+  margin-bottom: 0.25rem;
 }
 
 .aiSectionTitle {
-    font-weight: 600;
+  font-weight: 600;
 }
 
 .aiInsightsHeader {
-    margin-top: 0.75rem;
+  margin-top: 0.75rem;
 }
 
 .aiMessage {
-    padding-left: 2rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
+  padding-left: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
 }
 
 .aiInputRow {
-    margin-top: 1rem;
-    gap: 0.5rem;
+  margin-top: 1rem;
+  gap: 0.5rem;
 }
 
 .aiSendButton {
-    margin-left: 0.5rem;
+  margin-left: 0.5rem;
 }
 
 .aiDisclaimer {
-    font-size: 0.75rem;
-    opacity: 0.7;
-    margin-top: 0.25rem;
+  font-size: 0.75rem;
+  opacity: 0.7;
+  margin-top: 0.25rem;
 }
 
 /* ================================
@@ -763,177 +812,170 @@
    ================================ */
 
 .profileMainArea {
-    flex: 1;
-    padding: 1.5rem 2rem;
-    box-sizing: border-box;
+  flex: 1;
+  padding: 1.5rem 2rem;
+  box-sizing: border-box;
 }
 
 .profileHeader {
-    background: linear-gradient(90deg, #6d28d9, #2563eb);
-    border-radius: 16px;
-    padding: 1.25rem 1.5rem;
-    color: #ffffff;
-    margin-bottom: 1.25rem;
+  background: linear-gradient(90deg, #6d28d9, #2563eb);
+  border-radius: 16px;
+  padding: 1.25rem 1.5rem;
+  color: #ffffff;
+  margin-bottom: 1.25rem;
 }
 
 .profileAvatar {
-    margin-right: 1rem;
-    background: #bbf7d0;
-    color: #111827;
+  margin-right: 1rem;
+  background: #bbf7d0;
+  color: #111827;
 }
 
 .profileName {
-    color: #ffffff;
+  color: #ffffff;
 }
 
 .profileEmail {
-    color: rgba(255, 255, 255, 0.9);
+  color: rgba(255, 255, 255, 0.9);
 }
 
 .profileUpdated {
-    color: rgba(255, 255, 255, 0.9);
-    font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.8rem;
 }
 
 .profileContentRow {
-    gap: 1rem;
-    align-items: stretch;
+  gap: 1rem;
+  align-items: stretch;
 }
 
 .profileSummaryCard,
 .profileEditCard {
-    background-color: #ffffff;
-    border-radius: 16px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-    padding: 1rem;
+  background-color: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  padding: 1rem;
 }
 
 .profileSummaryCard {
-    width: 36%;
+  width: 36%;
 }
 
 .profileEditCard {
-    width: 64%;
+  width: 64%;
 }
 
 .profileLabel {
-    margin-top: 0.75rem;
-    color: #6b7280;
-    font-size: 0.85rem;
+  margin-top: 0.75rem;
+  color: #6b7280;
+  font-size: 0.85rem;
 }
 
 .profileValue {
-    font-weight: 600;
+  font-weight: 600;
 }
 
 .profileActionRow {
-    margin-top: 1rem;
-}
-
-
-/* .liveCard {
-    padding: 1rem;
-    border-radius: 12px;
-    border: 1px solid #ddd;
-    transition: 0.3s ease;
-} */
-
-/* GREEN - RUNNING */
-.runningCard {
-    background-color: #e8f5e9;
-    border: 1px solid #4caf50;
-}
-
-.runningCard .liveCardMachine {
-    color: #2e7d32;
-    font-weight: bold;
-}
-
-/* RED - STOPPED */
-.stoppedCard {
-    background-color: #fdecea;
-    border: 1px solid #f44336;
-}
-
-.stoppedCard .liveCardMachine {
-    color: #c62828;
-    font-weight: bold;
-}
-
-
-.stoppedCard {
-    background-color: #fdecea;
-    border: 1px solid #f44336;
-}
-
-.liveCardsRow {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
-}
-
-.liveCard {
-    width: 340px;
-    padding: 1rem;
-    border-radius: 16px;
-    background: #ffffff;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
-    transition: 0.3s;
-}
-
-/* HOVER EFFECT */
-.liveCard:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 26px rgba(0,0,0,0.12);
-}
-
-/* RUNNING */
-.runningCard {
-    background-color: #e8f5e9;
-    border: 1px solid #4caf50;
-}
-
-/* STOPPED */
-.stoppedCard {
-    background-color: #fdecea;
-    border: 1px solid #f44336;
-}
-
-/* TEXT */
-.liveCardMachine {
-    font-weight: 700;
-    font-size: 1rem;
-}
-
-.liveCardSub {
-    font-size: 0.8rem;
-    opacity: 0.7;
-}
-
-/* STATS */
-.liveStatsRow {
-    margin-top: 1rem;
-}
-
-.liveLabel {
-    font-size: 0.7rem;
-    opacity: 0.6;
-}
-
-.liveBigValue {
-    font-size: 1.4rem;
-    font-weight: 700;
+  margin-top: 1rem;
 }
 
 /* PARAM BOX */
-.liveParamBox {
-    margin-top: 1rem;
-    padding: 0.8rem;
-    border-radius: 12px;
-    background: rgba(0,0,0,0.03);
-}
-
 .liveParamRow2 {
-    margin-top: 0.5rem;
+  margin-top: 0.5rem;
 }
 
+/* ── Summary Cards Row ──────────────────────────────────────────────────── */
+.dashSummaryCards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 16px 24px;
+}
+
+.dashSumCard {
+  flex: 1 1 calc(33% - 16px);
+  min-width: 180px;
+  border-radius: 16px;
+  padding: 20px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+/* Blue */
+.dashSumCard--blue {
+  background: linear-gradient(135deg, #dbeafe 0%, #eff6ff 100%);
+}
+/* Yellow */
+.dashSumCard--yellow {
+  background: linear-gradient(135deg, #fef9c3 0%, #fffde7 100%);
+}
+/* Purple */
+.dashSumCard--purple {
+  background: linear-gradient(135deg, #ede9fe 0%, #f5f3ff 100%);
+}
+/* Orange */
+.dashSumCard--orange {
+  background: linear-gradient(135deg, #ffedd5 0%, #fff7ed 100%);
+}
+/* Green */
+.dashSumCard--green {
+  background: linear-gradient(135deg, #dcfce7 0%, #f0fdf4 100%);
+}
+/* Red */
+.dashSumCard--red {
+  background: linear-gradient(135deg, #fee2e2 0%, #fff5f5 100%);
+}
+
+.dashSumCardTitle {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: #555;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.dashSumCardValue {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1a1a2e;
+  line-height: 1.1;
+}
+
+/* Blue value */
+.dashSumCard--blue .dashSumCardValue {
+  color: #1a73e8;
+}
+/* Yellow value */
+.dashSumCard--yellow .dashSumCardValue {
+  color: #e65100;
+}
+/* Purple value */
+.dashSumCard--purple .dashSumCardValue {
+  color: #6a1b9a;
+}
+/* Orange value */
+.dashSumCard--orange .dashSumCardValue {
+  color: #e65100;
+}
+/* Green value */
+.dashSumCard--green .dashSumCardValue {
+  color: #2e7d32;
+}
+/* Red value */
+.dashSumCard--red .dashSumCardValue {
+  color: #c62828;
+}
+
+.dashSumCardSub {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+.dashSumCardSubText {
+  font-size: 0.75rem;
+  color: #777;
+}

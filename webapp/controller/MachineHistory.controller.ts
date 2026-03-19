@@ -213,7 +213,7 @@ export default class MachineHistory extends Controller {
         }
 
         const basePath = "/sap/opu/odata4/sap/zmachine_sb/srvd_a2x/sap/zmachine_sd/0001/";
-        let nextUrl = `${basePath}Machine`;
+        let nextUrl = `${basePath}Machine?$orderby=Timestamp desc`;
         const allRows: Array<Record<string, any>> = [];
 
         try {

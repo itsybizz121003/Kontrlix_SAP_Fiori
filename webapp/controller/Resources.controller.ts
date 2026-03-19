@@ -1,4 +1,4 @@
-import Controller from "sap/ui/core/mvc/Controller";
+import BaseController from "./BaseController";
 import UIComponent from "sap/ui/core/UIComponent";
 import MessageToast from "sap/m/MessageToast";
 import MessageBox from "sap/m/MessageBox";
@@ -8,7 +8,7 @@ import JSONModel from "sap/ui/model/json/JSONModel";
 /**
  * @namespace ashu.ashu.controller
  */
-export default class Resources extends Controller {
+export default class Resources extends BaseController {
 
     public onInit(): void {
         const view = this.getView();
@@ -41,33 +41,6 @@ export default class Resources extends Controller {
 
         view.setModel(resourcesModel, "res");
         void this.loadResources();
-    }
-
-    public onSideItemPress(oEvent: any): void {
-        const item = oEvent.getParameter("listItem") as any;
-        const title = item.getTitle && item.getTitle();
-        const router = (this.getOwnerComponent() as UIComponent).getRouter();
-
-        if (title === "Monitoring-Dashboard") router.navTo("dashboard");
-        else if (title === "Live Data") router.navTo("liveData");
-        else if (title === "Supervisor") router.navTo("supervisor");
-        else if (title === "Employees") router.navTo("employees");
-        else if (title === "Machine History") router.navTo("machineHistory");
-        else if (title === "Resources") router.navTo("resources");
-        else if (title === "Machine Info") router.navTo("machineInfo");
-        else if (title === "Stoppage Info") router.navTo("stoppageInfo");
-        else if (title === "Requests") router.navTo("requests");
-        else if (title === "Kontrolix-AI") router.navTo("kontrolixAI");
-        else if (title === "My Profile") router.navTo("myProfile");
-    }
-
-    public onLogout(): void {
-        const router = (this.getOwnerComponent() as UIComponent).getRouter();
-        router.navTo("login");
-    }
-
-    public onSignOut(): void {
-        this.onLogout();
     }
 
     public onOpenAddResource(): void {
@@ -351,51 +324,62 @@ export default class Resources extends Controller {
                         "Accept": "application/json",
                         "Authorization": `Bearer ${token}`
                     }
+            }
+        );
+
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+        const payload = await res.json() as { value?: Array<Record<string, any>> };
+        let allRows = payload.value || [];
+
+        // Debug logging
+        console.log("DEBUG: Raw resources from API:", allRows);
+
+        // Filter resources based on role
+        const userStr = window.localStorage.getItem("user");
+        if (userStr) {
+            try {
+                const user = JSON.parse(userStr);
+                const role = String(user.Role || user.role || "").toUpperCase();
+                const isAdmin = role === "ADMIN" || role === "SUPER ADMIN";
+
+                if (!isAdmin) {
+                    const assignedResources = this.getAssignedResources();
+                    const assignedResourceIds = assignedResources.map((r: any) => r.resourceId);
+                    
+                    if (assignedResourceIds.length > 0) {
+                        allRows = allRows.filter((row: any) => 
+                            assignedResourceIds.includes(row.ResourceId)
+                        );
+                    } else {
+                        allRows = [];
+                    }
                 }
-            );
+            } catch (e) {
+                console.error("Error filtering resources:", e);
+            }
+        }
 
-            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        model.setProperty("/allRows", allRows);
+        this.applyFiltersAndPagination();
 
-            const payload = await res.json() as { value?: Array<Record<string, any>> };
-            const rows = payload.value || [];
+        this.updateConnectionStatus(model, showToast, allRows.length);
+    } catch (e) {
+        this.updateConnectionStatus(model, showToast, 0, true);
+        console.error("Resources API error:", e);
+    }
+}
 
-            model.setProperty("/allRows", rows);
-            this.applyFiltersAndPagination();
-
-            model.setProperty("/connectionStatusText", "ONLINE");
-            model.setProperty("/connectionStatusState", "Success");
-            model.setProperty("/lastUpdated", new Date().toLocaleString());
-
-            if (showToast) MessageToast.show(`Loaded ${rows.length} resources`);
-
-        } catch (e) {
+    private updateConnectionStatus(model: JSONModel, showToast: boolean, resourcesLength: number, isError: boolean = false): void {
+        if (isError) {
             model.setProperty("/connectionStatusText", "OFFLINE");
             model.setProperty("/connectionStatusState", "Error");
             if (showToast) MessageToast.show("Failed to load resources");
-            console.error("Resources API error:", e);
-        }
-    }
-
-    private getAuthToken(): string {
-        return window.localStorage.getItem("machineApiToken") || "";
-    }
-
-    private async getCSRFToken(): Promise<string> {
-        const token = this.getAuthToken();
-        try {
-            const res = await fetch(
-                "/sap/opu/odata4/sap/zkontrolix_sb/srvd_a2x/sap/zkontrolix_sd/0001/Resource",
-                {
-                    method: "GET",
-                    headers: {
-                        "x-csrf-token": "fetch",
-                        "Authorization": `Bearer ${token}`
-                    }
-                }
-            );
-            return res.headers.get("x-csrf-token") || "";
-        } catch {
-            return "";
+        } else {
+            model.setProperty("/connectionStatusText", "ONLINE");
+            model.setProperty("/connectionStatusState", "Success");
+            model.setProperty("/lastUpdated", new Date().toLocaleString());
+            if (showToast) MessageToast.show(`Loaded ${resourcesLength} resources`);
         }
     }
 }

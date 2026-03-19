@@ -42,6 +42,24 @@ export default class BaseController extends Controller {
         return window.localStorage.getItem("machineApiToken") || "";
     }
 
+    public getAssignedResources(): Array<any> {
+        try {
+            const resources = window.localStorage.getItem("assignedResources");
+            return resources ? JSON.parse(resources) : [];
+        } catch {
+            return [];
+        }
+    }
+
+    public getAssignedEmployees(): Array<any> {
+        try {
+            const employees = window.localStorage.getItem("assignedEmployees");
+            return employees ? JSON.parse(employees) : [];
+        } catch {
+            return [];
+        }
+    }
+
     public async getCSRFToken(isSupervisor = false): Promise<string> {
         const token = this.getAuthToken();
         try {
