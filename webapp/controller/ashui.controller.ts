@@ -63,6 +63,14 @@ export default class ashui extends Controller {
                     isSuper?: number;
                     isSupervisor?: number;
                 };
+                assignedResources?: Array<{
+                    resourceId?: string;
+                    name?: string;
+                }>;
+                assignedEmployees?: Array<{
+                    employeeId?: string;
+                    firstName?: string;
+                }>;
             };
 
             if (loginData.success && loginData.token) {
@@ -70,6 +78,14 @@ export default class ashui extends Controller {
                 window.localStorage.setItem("machineApiToken", sapToken);
                 window.localStorage.setItem("appToken", String(loginData.token));
                 window.localStorage.setItem("user", JSON.stringify(loginData.user));
+                
+                // Store assigned resources and employees
+                if (loginData.assignedResources) {
+                    window.localStorage.setItem("assignedResources", JSON.stringify(loginData.assignedResources));
+                }
+                if (loginData.assignedEmployees) {
+                    window.localStorage.setItem("assignedEmployees", JSON.stringify(loginData.assignedEmployees));
+                }
 
                 MessageToast.show(`Welcome ${String(loginData.user?.firstName || "")}!`);
 

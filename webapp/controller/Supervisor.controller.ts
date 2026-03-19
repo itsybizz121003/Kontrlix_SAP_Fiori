@@ -88,25 +88,28 @@ export default class Supervisor extends BaseController {
         const allResources = model.getProperty("/allResources") || [];
         const allSupervisors = model.getProperty("/rows") || [];
 
-        // Identify all currently assigned employee IDs across all OTHER supervisors
-        const assignedEmployeeIds = new Set<string>();
+        console.log("DEBUG: Updating dropdowns with all employees:", allEmployees.length, "employees");
+
+        // For employees: Show ALL available employees (no filtering) so user can select any
+        // For resources: Still filter to avoid duplicate assignments
         const assignedResourceIds = new Set<string>();
 
         allSupervisors.forEach((sup: any) => {
             if (currentSupervisorId && sup.SupervisorId === currentSupervisorId) return;
 
             try {
-                const empJson = JSON.parse(sup.AssignedEmployees || "[]");
-                empJson.forEach((e: any) => assignedEmployeeIds.add(e.employeeId));
-
                 const resJson = JSON.parse(sup.AssignedResources || "[]");
                 resJson.forEach((r: any) => assignedResourceIds.add(r.resourceId));
             } catch (e) { /* ignore */ }
         });
 
-        // Filter master lists
-        const availableEmployees = allEmployees.filter((emp: any) => !assignedEmployeeIds.has(emp.UserId));
+        // Show ALL employees for selection
+        const availableEmployees = allEmployees;
+        // Filter only resources to avoid duplicates
         const availableResources = allResources.filter((res: any) => !assignedResourceIds.has(res.ResourceId));
+
+        console.log("DEBUG: Available employees for dropdown:", availableEmployees.length);
+        console.log("DEBUG: Available resources for dropdown:", availableResources.length);
 
         model.setProperty("/employeesList", availableEmployees);
         model.setProperty("/resourcesList", availableResources);
@@ -159,7 +162,7 @@ export default class Supervisor extends BaseController {
         const token = this.getAuthToken();
         try {
             const res = await fetch(
-                "/sap/opu/odata4/sap/zrsrc_sb/srvd_a2x/sap/zrsrc_sd/0001/User",
+                "/sap/opu/odata4/sap/zkontrolix_user_sb/srvd_a2x/sap/zkontrolix_user_sd/0001/User?$top=500",
                 {
                     method: "GET",
                     headers: {
@@ -174,6 +177,8 @@ export default class Supervisor extends BaseController {
             const payload = await res.json() as { value?: Array<Record<string, any>> };
             // Filter to only include actual employees (not supers or supervisors)
             const employees = payload.value?.filter((item) => (item.IsSuper === 0 && item.IsSupervisor === 0)) || [];
+            
+            console.log("DEBUG: All employees loaded for dropdown:", employees);
             
             const model = this.getView()?.getModel("sup") as JSONModel;
             model.setProperty("/allEmployees", employees);
