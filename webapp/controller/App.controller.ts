@@ -30,7 +30,7 @@ export default class App extends Controller {
                 oModel.setProperty("/showSupervisorModule", true);
                 oModel.setProperty("/showEmployeesModule", true);
             } else {
-                oModel.setProperty("/isLoggedIn", true);
+                oModel.setProperty("/isLoggedIn", !!localStorage.getItem("machineApiToken"));
                 oModel.setProperty("/selectedKey", sRouteName);
                 
                 // Fetch initials and role from local storage if available

@@ -30,7 +30,8 @@ export default class Component extends BaseComponent {
             
             // If token is missing and we are not on login page, redirect
             if (!sToken && sRouteName !== "login") {
-                window.location.href = "http://localhost:8080/test/flp.html?sap-ui-xx-viewCache=false#app-preview";
+                // Use router instead of window.location for internal navigation to avoid full reload/popup
+                this.getRouter().navTo("login");
             }
         });
 	}

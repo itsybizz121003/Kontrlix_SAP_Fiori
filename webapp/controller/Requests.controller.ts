@@ -329,7 +329,8 @@ export default class Requests extends Controller {
                     method: "GET",
                     headers: {
                         "Accept":        "application/json",
-                        "Authorization": `Bearer ${token}`
+                        "Authorization": `Bearer ${token}`,
+                        "X-Requested-With": "XMLHttpRequest"
                     }
                 }
             );
@@ -379,7 +380,8 @@ export default class Requests extends Controller {
                     method: "GET",
                     headers: {
                         "x-csrf-token":  "fetch",
-                        "Authorization": `Bearer ${token}`
+                        "Authorization": `Bearer ${token}`,
+                        "X-Requested-With": "XMLHttpRequest"
                     }
                 }
             );
