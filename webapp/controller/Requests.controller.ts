@@ -286,6 +286,7 @@ export default class Requests extends Controller {
             // If Supervisor rejects, it's final (optional, based on requirements)
             // But if Admin approves, Supervisor approval is not needed
             if (status === "rejected") {
+                payload.AdminApprovalStatus = "sup rejected"
                 payload.Status = "rejected";
             }
         }

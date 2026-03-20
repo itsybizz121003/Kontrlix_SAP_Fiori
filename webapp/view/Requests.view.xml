@@ -199,13 +199,13 @@
 
                                             <!-- Admin Approve/Reject -->
                                             <Button
-                                                text="Admin Approve"
+                                                text="Approve"
                                                 type="Accept"
                                                 class="reqApproveBtn"
                                                 visible="{= ${req>/isAdmin} &amp;&amp; ${req>AdminApprovalStatus} === 'pending'}"
                                                 press=".onApproveRequest" />
                                             <Button
-                                                text="Admin Reject"
+                                                text="Reject"
                                                 type="Reject"
                                                 class="reqRejectBtn"
                                                 visible="{= ${req>/isAdmin} &amp;&amp; ${req>AdminApprovalStatus} === 'pending'}"
