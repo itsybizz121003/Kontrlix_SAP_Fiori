@@ -1,4 +1,4 @@
-import Controller from "./BaseController";
+import Controller from "sap/ui/core/mvc/Controller";
 import UIComponent from "sap/ui/core/UIComponent";
 import JSONModel from "sap/ui/model/json/JSONModel";
 import MessageToast from "sap/m/MessageToast";
@@ -47,12 +47,11 @@ export default class LiveData extends Controller {
   // ─────────────────────────────────────────────────────────────
 
   public formatCardClass(sStatusState: string): string {
-    const base = "liveCard";
     switch (sStatusState) {
-      case "Success": return `${base} runningCard`;
-      case "Warning": return `${base} idleCard`;
-      case "Error":   return `${base} stoppedCard`;
-      default:        return base;
+      case "Success": return "liveCard runningCard";
+      case "Warning": return "liveCard idleCard";
+      case "Error":   return "liveCard stoppedCard";
+      default:        return "liveCard";
     }
   }
 
@@ -142,29 +141,7 @@ export default class LiveData extends Controller {
     const allCards = model.getProperty("/allMachines") || [];
     const filters  = model.getProperty("/filters");
 
-    const userStr = window.localStorage.getItem("user");
-    const user = userStr ? JSON.parse(userStr) as Record<string, any> : {};
-    const role = String(user.Role || user.role || "").toUpperCase();
-    const userId = String(user.SupervisorId || user.EmployeeId || user.userId || "");
-
-    let filtered = allCards.filter((card: any) => {
-      // Role-based filtering
-      if (role === "SUPERVISOR" || role === "EMPLOYEE") {
-        const assignedResources = this.getAssignedResources();
-        const assignedResourceIds = assignedResources.map((r: any) => String(r.resourceId || r.ResourceId || "").trim().toUpperCase());
-        const assignedResourceNames = assignedResources.map((r: any) => String(r.name || r.ResName || "").trim().toUpperCase());
-
-        const machineId = String(card.deviceId || "").trim().toUpperCase();
-        const machineBrand = String(card.plcBrand || "").trim().toUpperCase();
-
-        const matchesId = assignedResourceIds.includes(machineId);
-        const matchesBrand = assignedResourceNames.includes(machineBrand);
-
-        if (!matchesId && !matchesBrand) {
-          return false;
-        }
-      }
-
+    const filtered = allCards.filter((card: any) => {
       if (filters.plcBrand !== "all" && card.plcBrand !== filters.plcBrand) return false;
       if (filters.activeStatus !== "all") {
         const isActive = card.status === "RUNNING" || card.status === "IDLE";
@@ -419,6 +396,13 @@ export default class LiveData extends Controller {
       pressure,
       MachineBrand:    String(row.MachineBrand || "-"),
     };
+  }
+
+  private getAssignedResources(): Array<Record<string, any>> {
+    try {
+      const str = window.localStorage.getItem("assignedResources") || "[]";
+      return JSON.parse(str) as Array<Record<string, any>>;
+    } catch { return []; }
   }
 
   public onSideItemPress(oEvent: any): void {

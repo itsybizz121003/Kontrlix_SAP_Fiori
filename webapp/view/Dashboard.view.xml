@@ -2,278 +2,378 @@
     xmlns:mvc="sap.ui.core.mvc"
     xmlns="sap.m"
     xmlns:core="sap.ui.core"
-    xmlns:tnt="sap.tnt"
     xmlns:viz="sap.viz.ui5.controls"
     xmlns:feeds="sap.viz.ui5.controls.common.feeds"
     xmlns:data="sap.viz.ui5.data">
-    <Page id="dashboardPage" title="Machine Monitoring Dashboard" showHeader="false" class="dashboardPage">
+    <Page id="dashboardPage" showHeader="false" class="dashPage">
         <content>
-            <VBox class="dashMainArea">
+            <HBox fitContainer="true" class="dashLayout">
 
-                <!-- Title row -->
-                <HBox justifyContent="SpaceBetween" alignItems="Center" class="dashTitleRow">
-                    <VBox>
-                        <Title text="Machine Monitoring Dashboard" level="H3" />
-                        <Text text="Monitor real-time machine performance and status" />
-                    </VBox>
-                    <ObjectStatus
-                        text="{dash>/connectionStatus}"
-                        state="{dash>/connectionState}" />
-                </HBox>
-
-                <!-- Filters -->
-                <HBox class="dashFilterRow" alignItems="End" justifyContent="SpaceBetween">
-                    <HBox class="dashFilterGroup" alignItems="End">
-                        <!-- Machine Filter -->
-                        <VBox>
-                            <Label text="Machine" class="dashFilterLabel" />
-                            <Select width="10rem" items="{dash>/brands}" change=".onFilterChange" selectedKey="{dash>/filters/plcBrand}">
-                                <core:Item key="{dash>key}" text="{dash>text}" />
-                            </Select>
-                        </VBox>
-
-                        <!-- Running Status Filter -->
-                        <VBox>
-                            <Label text="Running Status" class="dashFilterLabel" />
-                            <Select width="10rem" change=".onFilterChange" selectedKey="{dash>/filters/machineStatus}">
-                                <core:Item key="all" text="All Status" />
-                                <core:Item key="RUNNING" text="Running" />
-                                <core:Item key="IDLE" text="Ideal" />
-                                <core:Item key="STOPPED" text="Stopped" />
-                            </Select>
-                        </VBox>
-
-                        <!-- Date Range Filter -->
-                        <VBox>
-                            <Label text="Date Range" class="dashFilterLabel" />
-                            <Select width="10rem" change=".onFilterChange" selectedKey="{dash>/filters/dateRange}">
-                                <core:Item key="all" text="All Time" />
-                                <core:Item key="today" text="Today" />
-                                <core:Item key="yesterday" text="Yesterday" />
-                                <core:Item key="thisWeek" text="This Week" />
-                                <core:Item key="thisMonth" text="This Month" />
-                                <core:Item key="last3Months" text="Last 3 Months" />
-                            </Select>
-                        </VBox>
+                <!-- ══════════════════════════════════════════════ -->
+                <!-- SIDE NAVIGATION                                -->
+                <!-- ══════════════════════════════════════════════ -->
+                <VBox class="dashSideNav">
+                    <HBox class="dashLogoRow" justifyContent="Start" alignItems="Center">
+                        <core:Icon src="sap-icon://factory" class="dashLogoIcon" />
+                        <Text text="ITSYBIZZ" class="dashLogoText" />
                     </HBox>
-
-                    <!-- Reset Button -->
-                    <Button text="Reset" type="Emphasized" press=".onResetFilters" class="dashFilterResetBtn" />
-                </HBox>
-
-                <!-- ═══════════════════════════════════════════════════════ -->
-                <!-- SUMMARY CARDS ROW — image jaisi style                  -->
-                <!-- ═══════════════════════════════════════════════════════ -->
-                <HBox class="dashSummaryCards" justifyContent="SpaceBetween">
-
-                    <!-- Card 1: Total Production — blue -->
-                    <VBox class="dashSumCard dashSumCard--blue">
-                        <Text text="Total Production" class="dashSumCardTitle" />
-                        <Text text="{dash>/totalProduction}" class="dashSumCardValue" />
-                        <HBox alignItems="Center" class="dashSumCardSub">
-                            <core:Icon src="sap-icon://arrow-top" color="#1a73e8" />
-                            <Text text="All Records" class="dashSumCardSubText" />
-                        </HBox>
-                    </VBox>
-
-                    <!-- Card 2: Stop Time — yellow -->
-                    <VBox class="dashSumCard dashSumCard--yellow">
-                        <Text text="Ideal Time (Idle)" class="dashSumCardTitle" />
-                        <Text text="{dash>/stopTime}" class="dashSumCardValue" />
-                        <HBox alignItems="Center" class="dashSumCardSub">
-                            <core:Icon src="sap-icon://arrow-bottom" color="#e65100" />
-                            <Text text="Stoppage Time" class="dashSumCardSubText" />
-                        </HBox>
-                    </VBox>
-
-                    <!-- Card 3: Total Machines — purple -->
-                    <VBox class="dashSumCard dashSumCard--purple">
-                        <Text text="Total Machines" class="dashSumCardTitle" />
-                        <Text text="{dash>/totalMachines}" class="dashSumCardValue" />
-                        <HBox alignItems="Center" class="dashSumCardSub">
-                            <core:Icon src="sap-icon://arrow-top" color="#6a1b9a" />
-                            <Text text="Active Devices" class="dashSumCardSubText" />
-                        </HBox>
-                    </VBox>
-
-                    <!-- Card 4: Unique Parameters — orange -->
-                    <VBox class="dashSumCard dashSumCard--orange">
-                        <Text text="Total Unique Parameters" class="dashSumCardTitle" />
-                        <Text text="{dash>/uniqueParameters}" class="dashSumCardValue" />
-                        <HBox alignItems="Center" class="dashSumCardSub">
-                            <core:Icon src="sap-icon://arrow-top" color="#e65100" />
-                            <Text text="Unique Parameters" class="dashSumCardSubText" />
-                        </HBox>
-                    </VBox>
-
-                    <!-- Card 5: Running — green -->
-                    <VBox class="dashSumCard dashSumCard--green">
-                        <Text text="Running" class="dashSumCardTitle" />
-                        <Text text="{dash>/runningCount}" class="dashSumCardValue" />
-                        <HBox alignItems="Center" class="dashSumCardSub">
-                            <core:Icon src="sap-icon://arrow-top" color="#2e7d32" />
-                            <Text text="Active Machines" class="dashSumCardSubText" />
-                        </HBox>
-                    </VBox>
-
-                    <!-- Card 6: Stopped — red -->
-                    <VBox class="dashSumCard dashSumCard--red">
-                        <Text text="Stopped" class="dashSumCardTitle" />
-                        <Text text="{dash>/stoppedCount}" class="dashSumCardValue" />
-                        <HBox alignItems="Center" class="dashSumCardSub">
-                            <core:Icon src="sap-icon://arrow-bottom" color="#c62828" />
-                            <Text text="Stopped Machines" class="dashSumCardSubText" />
-                        </HBox>
-                    </VBox>
-
-                </HBox>
-                <!-- ═══════════════════════════════════════════════════════ -->
-
-                <!-- Machine Time Summary -->
-                <HBox class="dashSectionCard" justifyContent="SpaceBetween" alignItems="Center">
-                    <VBox class="mtsDonutWrapper">
-                        <Text text="Machine Time Summary" class="dashSectionTitle" />
-                        <viz:VizFrame
-                            id="timeSummaryChart"
-                            vizType="donut"
-                            width="380px"
-                            height="350px"
-                            uiConfig="{applicationSet:'fiori'}">
-                            <viz:dataset>
-                                <data:FlattenedDataset data="{dash>/timeChartData}">
-                                    <data:dimensions>
-                                        <data:DimensionDefinition name="Type" value="{dash>type}" />
-                                    </data:dimensions>
-                                    <data:measures>
-                                        <data:MeasureDefinition name="Minutes" value="{dash>minutes}" />
-                                    </data:measures>
-                                </data:FlattenedDataset>
-                            </viz:dataset>
-                            <viz:feeds>
-                                <feeds:FeedItem uid="size"  type="Measure"    values="Minutes" />
-                                <feeds:FeedItem uid="color" type="Dimension"  values="Type" />
-                            </viz:feeds>
-                        </viz:VizFrame>
-                    </VBox>
-                    <VBox class="mtsSideCards">
-                        <VBox class="mtsSideCard mtsRun">
-                            <Text text="RUN TIME"  class="dashCardTitle" />
-                            <Text text="{dash>/runTime}"   class="dashCardValue" />
-                            <Text text="{dash>/runPercent}" class="dashCardSub" />
-                        </VBox>
-                        <VBox class="mtsSideCard mtsStop">
-                            <Text text="STOP TIME" class="dashCardTitle" />
-                            <Text text="{dash>/stopTime}"   class="dashCardValue" />
-                            <Text text="{dash>/stopPercent}" class="dashCardSub" />
-                        </VBox>
-                    </VBox>
-                </HBox>
-
-                <!-- Downtime Analysis Overview -->
-                <VBox class="dashSectionCard">
-                    <Text text="Downtime Analysis Overview" class="dashSectionTitle" />
-                    <HBox class="daoRow">
-                        <VBox class="daoChartCard">
-                            <Text text="Downtime Distribution by Case" class="daoTitle" />
-                            <ObjectStatus text="LIVE" state="Success" />
-                            <VBox class="daoDonutPlaceholder">
-                                <Text text="Scheduled Service" />
-                            </VBox>
-                        </VBox>
-                        <VBox class="daoChartCard">
-                            <Text text="Downtime by Machine / Station" class="daoTitle" />
-                            <ObjectStatus text="LIVE" state="Success" />
-                            <VBox class="daoEmpty">
-                                <Text text="No Data" />
-                            </VBox>
-                        </VBox>
-                    </HBox>
+                    <List mode="None" class="dashSideList" itemPress=".onSideItemPress">
+                        <StandardListItem title="Monitoring-Dashboard" icon="sap-icon://home"               type="Active" selected="true" />
+                        <StandardListItem title="Live Data"            icon="sap-icon://activity-individual" type="Active" />
+                        <StandardListItem title="Supervisor"           icon="sap-icon://group-2"             type="Active" />
+                        <StandardListItem title="Employees"            icon="sap-icon://employee"            type="Active" />
+                        <StandardListItem title="Machine History"      icon="sap-icon://history"             type="Active" />
+                        <StandardListItem title="Resources"            icon="sap-icon://database"            type="Active" />
+                        <StandardListItem title="Machine Info"         icon="sap-icon://settings"            type="Active" />
+                        <StandardListItem title="Stoppage Info"        icon="sap-icon://alert"               type="Active" />
+                        <StandardListItem title="Requests"             icon="sap-icon://inbox"               type="Active" />
+                        <StandardListItem title="Kontrolix-AI"         icon="sap-icon://physical-activity"   type="Active" />
+                        <StandardListItem title="My Profile"           icon="sap-icon://customer"            type="Active" />
+                    </List>
+                    <Button text="Log Out" icon="sap-icon://log" type="Transparent" class="dashLogout" press=".onLogout" />
                 </VBox>
 
-                <!-- Machine Performance & RPM Charts -->
-                <HBox class="dashSectionCard">
-                    <VBox width="50%" class="mpChartCard">
-                        <Text text="Machine Performance" class="dashSectionTitle" />
-                        <viz:VizFrame
-                            id="productionChart"
-                            vizType="dual_column"
-                            width="100%"
-                            height="300px"
-                            uiConfig="{applicationSet:'fiori'}">
-                            <viz:dataset>
-                                <data:FlattenedDataset data="{dash>/chartData}">
-                                    <data:dimensions>
-                                        <data:DimensionDefinition name="Machine" value="{dash>label}" />
-                                    </data:dimensions>
-                                    <data:measures>
-                                        <data:MeasureDefinition name="Production"       value="{dash>production}" />
-                                        <data:MeasureDefinition name="Temperature (°C)" value="{dash>temperature}" />
-                                    </data:measures>
-                                </data:FlattenedDataset>
-                            </viz:dataset>
-                            <viz:feeds>
-                                <feeds:FeedItem uid="valueAxis"    type="Measure"   values="Production" />
-                                <feeds:FeedItem uid="valueAxis2"   type="Measure"   values="Temperature (°C)" />
-                                <feeds:FeedItem uid="categoryAxis" type="Dimension" values="Machine" />
-                            </viz:feeds>
-                        </viz:VizFrame>
-                    </VBox>
+                <!-- ══════════════════════════════════════════════ -->
+                <!-- MAIN CONTENT                                   -->
+                <!-- ══════════════════════════════════════════════ -->
+                <VBox class="dashContent">
 
-                    <VBox width="50%" class="mpChartCard">
-                        <Text text="RPM &amp; Pressure" class="dashSectionTitle" />
-                        <viz:VizFrame
-                            id="rpmChart"
-                            vizType="dual_column"
-                            width="100%"
-                            height="300px"
-                            uiConfig="{applicationSet:'fiori'}">
-                            <viz:dataset>
-                                <data:FlattenedDataset data="{dash>/chartData}">
-                                    <data:dimensions>
-                                        <data:DimensionDefinition name="Machine" value="{dash>label}" />
-                                    </data:dimensions>
-                                    <data:measures>
-                                        <data:MeasureDefinition name="RPM"           value="{dash>rpm}" />
-                                        <data:MeasureDefinition name="Pressure (bar)" value="{dash>pressure}" />
-                                    </data:measures>
-                                </data:FlattenedDataset>
-                            </viz:dataset>
-                            <viz:feeds>
-                                <feeds:FeedItem uid="valueAxis"    type="Measure"   values="RPM" />
-                                <feeds:FeedItem uid="valueAxis2"   type="Measure"   values="Pressure (bar)" />
-                                <feeds:FeedItem uid="categoryAxis" type="Dimension" values="Machine" />
-                            </viz:feeds>
-                        </viz:VizFrame>
-                    </VBox>
-                </HBox>
-
-                <!-- Machine History Status Changes -->
-                <VBox class="dashSectionCard">
-                    <HBox justifyContent="SpaceBetween" alignItems="Center">
-                        <Text text="Machine History (Status Changes)" class="dashSectionTitle" />
-                        <Button text="View All" type="Emphasized" />
+                    <!-- ── Top Header Bar ─────────────────────── -->
+                    <HBox class="dashHeader" justifyContent="SpaceBetween" alignItems="Center">
+                        <VBox>
+                            <Title text="Machine Monitoring Dashboard" level="H2" class="dashHeaderTitle" />
+                            <Text text="Real-time performance monitoring across all machines" class="dashHeaderSub" />
+                        </VBox>
+                        <HBox alignItems="Center" class="dashHeaderRight">
+                            <VBox class="dashLastUpdatedBox" alignItems="End">
+                                <Text text="Last Updated" class="dashLastUpdatedLabel" />
+                                <Text text="{dash>/lastUpdated}" class="dashLastUpdatedVal" />
+                            </VBox>
+                            <ObjectStatus
+                                text="{dash>/connectionStatus}"
+                                state="{dash>/connectionState}"
+                                class="dashConnStatus"
+                                inverted="true" />
+                            <Button icon="sap-icon://synchronize" text="Refresh" type="Default" press=".onRefresh" class="dashRefreshBtn" />
+                        </HBox>
                     </HBox>
-                    <Table items="{dash>/historyRows}" class="mhTable" noDataText="No history found">
-                        <columns>
-                            <Column><Text text="TIMESTAMP" /></Column>
-                            <Column><Text text="MACHINE"   /></Column>
-                            <Column><Text text="PREVIOUS"  /></Column>
-                            <Column><Text text="CURRENT"   /></Column>
-                        </columns>
-                        <items>
-                            <ColumnListItem>
-                                <cells>
-                                    <Text text="{dash>timestamp}" />
-                                    <Text text="{dash>machine}"   />
-                                    <ObjectStatus text="{dash>previous}" state="None" />
-                                    <ObjectStatus text="{dash>current}"  state="{dash>currentState}" />
-                                </cells>
-                            </ColumnListItem>
-                        </items>
-                    </Table>
-                </VBox>
 
-            </VBox>
+                    <!-- ── Filter Bar ──────────────────────────── -->
+                    <HBox class="dashFilterBar" alignItems="End" justifyContent="SpaceBetween">
+                        <HBox class="dashFilterGroup" alignItems="End">
+                            <VBox class="dashFilterItem">
+                                <Label text="Brand / Machine" class="dashFilterLabel" />
+                                <Select width="11rem" items="{dash>/brands}" change=".onFilterChange" selectedKey="{dash>/filters/plcBrand}">
+                                    <core:Item key="{dash>key}" text="{dash>text}" />
+                                </Select>
+                            </VBox>
+                            <VBox class="dashFilterItem">
+                                <Label text="Run Status" class="dashFilterLabel" />
+                                <Select width="11rem" change=".onFilterChange" selectedKey="{dash>/filters/machineStatus}">
+                                    <core:Item key="all"     text="All Status" />
+                                    <core:Item key="RUNNING" text="Running"    />
+                                    <core:Item key="IDLE"    text="Idle"       />
+                                    <core:Item key="STOPPED" text="Stopped"    />
+                                </Select>
+                            </VBox>
+                            <VBox class="dashFilterItem">
+                                <Label text="Date Range" class="dashFilterLabel" />
+                                <Select width="11rem" change=".onFilterChange" selectedKey="{dash>/filters/dateRange}">
+                                    <core:Item key="all"         text="All Time"      />
+                                    <core:Item key="today"       text="Today"         />
+                                    <core:Item key="yesterday"   text="Yesterday"     />
+                                    <core:Item key="thisWeek"    text="This Week"     />
+                                    <core:Item key="thisMonth"   text="This Month"    />
+                                    <core:Item key="last3Months" text="Last 3 Months" />
+                                </Select>
+                            </VBox>
+                        </HBox>
+                        <Button text="Reset Filters" icon="sap-icon://clear-filter" type="Transparent" press=".onResetFilters" class="dashResetBtn" />
+                    </HBox>
+
+                    <!-- ── KPI Summary Cards ───────────────────── -->
+                    <HBox class="dashKpiRow">
+
+                        <VBox class="dashKpi dashKpi--blue">
+                            <HBox justifyContent="SpaceBetween" alignItems="Start">
+                                <VBox>
+                                    <Text text="TOTAL PRODUCTION" class="dashKpiLabel" />
+                                    <Text text="{dash>/totalProduction}" class="dashKpiValue dashKpiValue--blue" />
+                                </VBox>
+                                <VBox class="dashKpiIconBox dashKpiIconBox--blue">
+                                    <core:Icon src="sap-icon://factory" class="dashKpiIcon" />
+                                </VBox>
+                            </HBox>
+                            <HBox alignItems="Center" class="dashKpiFooter">
+                                <core:Icon src="sap-icon://trend-up" color="#2563eb" />
+                                <Text text="All Records" class="dashKpiSub" />
+                            </HBox>
+                        </VBox>
+
+                        <VBox class="dashKpi dashKpi--amber">
+                            <HBox justifyContent="SpaceBetween" alignItems="Start">
+                                <VBox>
+                                    <Text text="IDLE / STOP TIME" class="dashKpiLabel" />
+                                    <Text text="{dash>/stopTime}" class="dashKpiValue dashKpiValue--amber" />
+                                </VBox>
+                                <VBox class="dashKpiIconBox dashKpiIconBox--amber">
+                                    <core:Icon src="sap-icon://pause" class="dashKpiIcon" />
+                                </VBox>
+                            </HBox>
+                            <HBox alignItems="Center" class="dashKpiFooter">
+                                <core:Icon src="sap-icon://trend-down" color="#d97706" />
+                                <Text text="Downtime Duration" class="dashKpiSub" />
+                            </HBox>
+                        </VBox>
+
+                        <VBox class="dashKpi dashKpi--violet">
+                            <HBox justifyContent="SpaceBetween" alignItems="Start">
+                                <VBox>
+                                    <Text text="TOTAL MACHINES" class="dashKpiLabel" />
+                                    <Text text="{dash>/totalMachines}" class="dashKpiValue dashKpiValue--violet" />
+                                </VBox>
+                                <VBox class="dashKpiIconBox dashKpiIconBox--violet">
+                                    <core:Icon src="sap-icon://building" class="dashKpiIcon" />
+                                </VBox>
+                            </HBox>
+                            <HBox alignItems="Center" class="dashKpiFooter">
+                                <core:Icon src="sap-icon://trend-up" color="#7c3aed" />
+                                <Text text="Active Devices" class="dashKpiSub" />
+                            </HBox>
+                        </VBox>
+
+                        <VBox class="dashKpi dashKpi--teal">
+                            <HBox justifyContent="SpaceBetween" alignItems="Start">
+                                <VBox>
+                                    <Text text="UNIQUE PARAMETERS" class="dashKpiLabel" />
+                                    <Text text="{dash>/uniqueParameters}" class="dashKpiValue dashKpiValue--teal" />
+                                </VBox>
+                                <VBox class="dashKpiIconBox dashKpiIconBox--teal">
+                                    <core:Icon src="sap-icon://key-user-settings" class="dashKpiIcon" />
+                                </VBox>
+                            </HBox>
+                            <HBox alignItems="Center" class="dashKpiFooter">
+                                <core:Icon src="sap-icon://trend-up" color="#0d9488" />
+                                <Text text="Distinct Params" class="dashKpiSub" />
+                            </HBox>
+                        </VBox>
+
+                        <VBox class="dashKpi dashKpi--green">
+                            <HBox justifyContent="SpaceBetween" alignItems="Start">
+                                <VBox>
+                                    <Text text="RUNNING" class="dashKpiLabel" />
+                                    <Text text="{dash>/runningCount}" class="dashKpiValue dashKpiValue--green" />
+                                </VBox>
+                                <VBox class="dashKpiIconBox dashKpiIconBox--green">
+                                    <core:Icon src="sap-icon://play" class="dashKpiIcon" />
+                                </VBox>
+                            </HBox>
+                            <HBox alignItems="Center" class="dashKpiFooter">
+                                <core:Icon src="sap-icon://trend-up" color="#16a34a" />
+                                <Text text="Active Now" class="dashKpiSub" />
+                            </HBox>
+                        </VBox>
+
+                        <VBox class="dashKpi dashKpi--red">
+                            <HBox justifyContent="SpaceBetween" alignItems="Start">
+                                <VBox>
+                                    <Text text="STOPPED" class="dashKpiLabel" />
+                                    <Text text="{dash>/stoppedCount}" class="dashKpiValue dashKpiValue--red" />
+                                </VBox>
+                                <VBox class="dashKpiIconBox dashKpiIconBox--red">
+                                    <core:Icon src="sap-icon://stop" class="dashKpiIcon" />
+                                </VBox>
+                            </HBox>
+                            <HBox alignItems="Center" class="dashKpiFooter">
+                                <core:Icon src="sap-icon://trend-down" color="#dc2626" />
+                                <Text text="Down Now" class="dashKpiSub" />
+                            </HBox>
+                        </VBox>
+
+                    </HBox>
+
+                    <!-- ── ROW 1: One white card containing donut + stat cards ── -->
+                    <VBox class="dashChartsRow dashTimeSummaryCard">
+
+                        <!-- Card header -->
+                        <HBox justifyContent="SpaceBetween" alignItems="Center" class="dashChartCardHeader">
+                            <VBox>
+                                <Text text="Machine Time Summary" class="dashChartTitle" />
+                                <Text text="Run vs Stop time distribution" class="dashChartSub" />
+                            </VBox>
+                            <ObjectStatus text="LIVE" state="Success" inverted="true" />
+                        </HBox>
+
+                        <!-- Donut + cards in one row, inside the same card -->
+                        <HBox class="dashTimeSummaryInner" alignItems="Center">
+
+                            <!-- Donut chart -->
+                            <VBox class="dashDonutWrapper">
+                                <viz:VizFrame
+                                    id="timeSummaryChart"
+                                    vizType="donut"
+                                    width="100%"
+                                    height="380px"
+                                    uiConfig="{applicationSet:'fiori'}">
+                                    <viz:dataset>
+                                        <data:FlattenedDataset data="{dash>/timeChartData}">
+                                            <data:dimensions>
+                                                <data:DimensionDefinition name="Type" value="{dash>type}" />
+                                            </data:dimensions>
+                                            <data:measures>
+                                                <data:MeasureDefinition name="Minutes" value="{dash>minutes}" />
+                                            </data:measures>
+                                        </data:FlattenedDataset>
+                                    </viz:dataset>
+                                    <viz:feeds>
+                                        <feeds:FeedItem uid="size"  type="Measure"   values="Minutes" />
+                                        <feeds:FeedItem uid="color" type="Dimension" values="Type" />
+                                    </viz:feeds>
+                                </viz:VizFrame>
+                            </VBox>
+
+                            <!-- Stat cards stacked on right -->
+                            <VBox class="dashTimeStatStack" justifyContent="Center">
+
+                                <VBox class="dashTimeStatCard dashTimeStatCard--run">
+                                    <Text text="RUN TIME" class="dashTimeStatLabel" />
+                                    <Text text="{dash>/runTime}" class="dashTimeStatValue dashTimeStatValue--run" />
+                                    <HBox alignItems="Center" class="dashTimeStatFooter">
+                                        <core:Icon src="sap-icon://trend-up" color="#16a34a" />
+                                        <Text text="{dash>/runPercent}" class="dashTimeStatPct dashTimeStatPct--run" />
+                                        <Text text="of total time" class="dashTimeStatPctLabel" />
+                                    </HBox>
+                                </VBox>
+
+                                <VBox class="dashTimeStatCard dashTimeStatCard--stop">
+                                    <Text text="STOP TIME" class="dashTimeStatLabel" />
+                                    <Text text="{dash>/stopTime}" class="dashTimeStatValue dashTimeStatValue--stop" />
+                                    <HBox alignItems="Center" class="dashTimeStatFooter">
+                                        <core:Icon src="sap-icon://trend-down" color="#dc2626" />
+                                        <Text text="{dash>/stopPercent}" class="dashTimeStatPct dashTimeStatPct--stop" />
+                                        <Text text="of total time" class="dashTimeStatPctLabel" />
+                                    </HBox>
+                                </VBox>
+
+                                <VBox class="dashTimeStatCard dashTimeStatCard--total">
+                                    <Text text="TOTAL TIME" class="dashTimeStatLabel" />
+                                    <Text text="{dash>/totalTime}" class="dashTimeStatValue dashTimeStatValue--total" />
+                                    <HBox alignItems="Center" class="dashTimeStatFooter">
+                                        <core:Icon src="sap-icon://time-overtime" color="#475569" />
+                                        <Text text="Combined duration" class="dashTimeStatPctLabel" />
+                                    </HBox>
+                                </VBox>
+
+                            </VBox>
+
+                        </HBox>
+
+                    </VBox>
+
+                    <!-- ── ROW 2: Production + RPM side by side ── -->
+                    <HBox class="dashChartsRow dashChartsRow--bars">
+
+                        <!-- Production Chart -->
+                        <VBox class="dashChartCard">
+                            <HBox justifyContent="SpaceBetween" alignItems="Center" class="dashChartCardHeader">
+                                <VBox>
+                                    <Text text="Machine Performance" class="dashChartTitle" />
+                                    <Text text="Production &amp; Temperature per machine" class="dashChartSub" />
+                                </VBox>
+                                <ObjectStatus text="LIVE" state="Success" inverted="true" />
+                            </HBox>
+                            <viz:VizFrame
+                                id="productionChart"
+                                vizType="dual_column"
+                                width="100%"
+                                height="300px"
+                                uiConfig="{applicationSet:'fiori'}">
+                                <viz:dataset>
+                                    <data:FlattenedDataset data="{dash>/chartData}">
+                                        <data:dimensions>
+                                            <data:DimensionDefinition name="Machine" value="{dash>label}" />
+                                        </data:dimensions>
+                                        <data:measures>
+                                            <data:MeasureDefinition name="Production"       value="{dash>production}" />
+                                            <data:MeasureDefinition name="Temperature (°C)" value="{dash>temperature}" />
+                                        </data:measures>
+                                    </data:FlattenedDataset>
+                                </viz:dataset>
+                                <viz:feeds>
+                                    <feeds:FeedItem uid="valueAxis"    type="Measure"   values="Production" />
+                                    <feeds:FeedItem uid="valueAxis2"   type="Measure"   values="Temperature (°C)" />
+                                    <feeds:FeedItem uid="categoryAxis" type="Dimension" values="Machine" />
+                                </viz:feeds>
+                            </viz:VizFrame>
+                        </VBox>
+
+                        <!-- RPM Chart -->
+                        <VBox class="dashChartCard">
+                            <HBox justifyContent="SpaceBetween" alignItems="Center" class="dashChartCardHeader">
+                                <VBox>
+                                    <Text text="RPM &amp; Pressure" class="dashChartTitle" />
+                                    <Text text="Motor speed and pressure per machine" class="dashChartSub" />
+                                </VBox>
+                                <ObjectStatus text="LIVE" state="Success" inverted="true" />
+                            </HBox>
+                            <viz:VizFrame
+                                id="rpmChart"
+                                vizType="dual_column"
+                                width="100%"
+                                height="300px"
+                                uiConfig="{applicationSet:'fiori'}">
+                                <viz:dataset>
+                                    <data:FlattenedDataset data="{dash>/chartData}">
+                                        <data:dimensions>
+                                            <data:DimensionDefinition name="Machine" value="{dash>label}" />
+                                        </data:dimensions>
+                                        <data:measures>
+                                            <data:MeasureDefinition name="RPM"            value="{dash>rpm}" />
+                                            <data:MeasureDefinition name="Pressure (bar)" value="{dash>pressure}" />
+                                        </data:measures>
+                                    </data:FlattenedDataset>
+                                </viz:dataset>
+                                <viz:feeds>
+                                    <feeds:FeedItem uid="valueAxis"    type="Measure"   values="RPM" />
+                                    <feeds:FeedItem uid="valueAxis2"   type="Measure"   values="Pressure (bar)" />
+                                    <feeds:FeedItem uid="categoryAxis" type="Dimension" values="Machine" />
+                                </viz:feeds>
+                            </viz:VizFrame>
+                        </VBox>
+
+                    </HBox>
+
+                    <!-- ── Machine History Table ───────────────── -->
+                    <VBox class="dashTableCard">
+                        <HBox justifyContent="SpaceBetween" alignItems="Center" class="dashTableCardHeader">
+                            <VBox>
+                                <Text text="Machine Status History" class="dashChartTitle" />
+                                <Text text="Recent status change events" class="dashChartSub" />
+                            </VBox>
+                            <Button text="View All" icon="sap-icon://arrow-right" type="Transparent" press=".onViewAllHistory" class="dashViewAllBtn" />
+                        </HBox>
+                        <Table items="{dash>/historyRows}" class="dashHistoryTable" noDataText="No history found">
+                            <columns>
+                                <Column width="25%"><Text text="TIMESTAMP" /></Column>
+                                <Column width="25%"><Text text="MACHINE"   /></Column>
+                                <Column width="25%"><Text text="PREVIOUS"  /></Column>
+                                <Column width="25%"><Text text="CURRENT"   /></Column>
+                            </columns>
+                            <items>
+                                <ColumnListItem class="dashHistoryRow">
+                                    <cells>
+                                        <Text text="{dash>timestamp}" class="dashHistoryTs" />
+                                        <Text text="{dash>machine}"   class="dashHistoryMachine" />
+                                        <ObjectStatus text="{dash>previous}" state="None" />
+                                        <ObjectStatus text="{dash>current}"  state="{dash>currentState}" inverted="true" />
+                                    </cells>
+                                </ColumnListItem>
+                            </items>
+                        </Table>
+                    </VBox>
+
+                </VBox>
+            </HBox>
         </content>
     </Page>
 </mvc:View>

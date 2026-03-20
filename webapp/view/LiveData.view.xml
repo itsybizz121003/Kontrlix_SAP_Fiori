@@ -2,185 +2,207 @@
     xmlns:mvc="sap.ui.core.mvc"
     xmlns="sap.m"
     xmlns:core="sap.ui.core">
-    <Page id="liveDataPage" title="Machine Live Data" showHeader="false" class="dashboardPage">
+    <Page id="liveDataPage" showHeader="false" class="dashboardPage">
         <content>
             <HBox fitContainer="true" class="dashboardLayout">
-                <!-- Side navigation (same as dashboard) -->
+
+                <!-- Side Nav -->
                 <VBox class="dashSideNav">
                     <HBox class="dashLogoRow" justifyContent="Start" alignItems="Center">
-                        <Image src="" width="36px" />
+                        <core:Icon src="sap-icon://factory" class="dashLogoIcon" />
                         <Text text="ITSYBIZZ" class="dashLogoText" />
                     </HBox>
                     <List mode="None" class="dashSideList" itemPress=".onSideItemPress">
-                        <StandardListItem title="Monitoring-Dashboard" icon="sap-icon://home" type="Active" />
-                        <StandardListItem title="Live Data" icon="sap-icon://activity-individual" type="Active" selected="true" />
-                        <StandardListItem title="Supervisor" icon="sap-icon://group-2" type="Active" />
-                        <StandardListItem title="Employees" icon="sap-icon://employee" type="Active" />
-                        <StandardListItem title="Machine History" icon="sap-icon://history" type="Active" />
-                        <StandardListItem title="Resources" icon="sap-icon://database" type="Active" />
-                        <StandardListItem title="Machine Info" icon="sap-icon://settings" type="Active" />
-                        <StandardListItem title="Stoppage Info" icon="sap-icon://alert" type="Active" />
-                        <StandardListItem title="Requests" icon="sap-icon://inbox" type="Active" />
-                        <StandardListItem title="Kontrolix-AI" icon="sap-icon://physical-activity" type="Active" />
-                        <StandardListItem title="My Profile" icon="sap-icon://customer" type="Active" />
+                        <StandardListItem title="Monitoring-Dashboard" icon="sap-icon://home"               type="Active" />
+                        <StandardListItem title="Live Data"            icon="sap-icon://activity-individual" type="Active" selected="true" />
+                        <StandardListItem title="Supervisor"           icon="sap-icon://group-2"             type="Active" />
+                        <StandardListItem title="Employees"            icon="sap-icon://employee"            type="Active" />
+                        <StandardListItem title="Machine History"      icon="sap-icon://history"             type="Active" />
+                        <StandardListItem title="Resources"            icon="sap-icon://database"            type="Active" />
+                        <StandardListItem title="Machine Info"         icon="sap-icon://settings"            type="Active" />
+                        <StandardListItem title="Stoppage Info"        icon="sap-icon://alert"               type="Active" />
+                        <StandardListItem title="Requests"             icon="sap-icon://inbox"               type="Active" />
+                        <StandardListItem title="Kontrolix-AI"         icon="sap-icon://physical-activity"   type="Active" />
+                        <StandardListItem title="My Profile"           icon="sap-icon://customer"            type="Active" />
                     </List>
-                    <Button text="Log Out" type="Transparent" class="dashLogout" press=".onLogout" />
+                    <Button text="Log Out" icon="sap-icon://log" type="Transparent" class="dashLogout" press=".onLogout" />
                 </VBox>
 
-                <!-- Main area -->
-                <VBox class="dashMainArea">
-                    <!-- Header (same style as dashboard but title for Live Data) -->
-                    <HBox justifyContent="SpaceBetween" alignItems="Center" class="dashTopBar">
+                <!-- Main Area -->
+                <VBox class="dashMainArea liveMainArea">
+
+                    <!-- Header -->
+                    <HBox class="livePageHeader" justifyContent="SpaceBetween" alignItems="Center">
                         <VBox>
-                            <Text text="Machine Live Data" class="dashGreeting" />
-                            <Text text="Monitor real-time machine performance and status" class="liveHeader" />
-                            <Text text="{= 'Last updated: ' + ${live>/lastUpdated} }" class="liveLastUpdated" />
+                            <Title text="Machine Live Data" level="H2" class="livePageTitle" />
+                            <Text text="Real-time status of all connected machines" class="livePageSub" />
                         </VBox>
-                        <ObjectStatus text="{live>/connectionStatusText}" state="{live>/connectionStatusState}" />
+                        <HBox alignItems="Center" class="liveHeaderRight">
+                            <VBox alignItems="End">
+                                <Text text="Last Updated" class="liveLastUpdLabel" />
+                                <Text text="{live>/lastUpdated}" class="liveLastUpdVal" />
+                            </VBox>
+                            <ObjectStatus
+                                text="{live>/connectionStatusText}"
+                                state="{live>/connectionStatusState}"
+                                inverted="true" />
+                            <Button icon="sap-icon://synchronize" text="Refresh"
+                                type="Default" press=".onRefreshLiveData" />
+                        </HBox>
+                    </HBox>
+
+                    <!-- Summary Strip -->
+                    <HBox class="liveSummaryStrip" alignItems="Center">
+                        <VBox class="liveSummaryItem">
+                            <Text text="TOTAL" class="liveSummaryLabel" />
+                            <Text text="{live>/totalMachines}" class="liveSummaryValue" />
+                        </VBox>
+                        <VBox class="liveSummaryItem">
+                            <Text text="RUNNING" class="liveSummaryLabel" />
+                            <Text text="{live>/runningCount}" class="liveSummaryValue liveSummaryValue--run" />
+                        </VBox>
+                        <VBox class="liveSummaryItem">
+                            <Text text="IDLE" class="liveSummaryLabel" />
+                            <Text text="{live>/idleCount}" class="liveSummaryValue liveSummaryValue--idle" />
+                        </VBox>
+                        <VBox class="liveSummaryItem">
+                            <Text text="STOPPED" class="liveSummaryLabel" />
+                            <Text text="{live>/faultCount}" class="liveSummaryValue liveSummaryValue--stop" />
+                        </VBox>
                     </HBox>
 
                     <!-- Filters -->
-                    <HBox class="dashFilterRow" alignItems="End" justifyContent="SpaceBetween">
+                    <HBox class="liveFilterBar" alignItems="End" justifyContent="SpaceBetween">
                         <HBox class="dashFilterGroup" alignItems="End">
-                            <!-- Machine Filter -->
                             <VBox>
-                                <Label text="Machine" class="dashFilterLabel" />
+                                <Label text="Brand" class="dashFilterLabel" />
                                 <Select width="10rem" items="{live>/brands}" change=".onFilterChange" selectedKey="{live>/filters/plcBrand}">
                                     <core:Item key="{live>key}" text="{live>text}" />
                                 </Select>
                             </VBox>
-
-                            <!-- Running Status Filter -->
                             <VBox>
-                                <Label text="Running Status" class="dashFilterLabel" />
+                                <Label text="Status" class="dashFilterLabel" />
                                 <Select width="10rem" change=".onFilterChange" selectedKey="{live>/filters/machineStatus}">
-                                    <core:Item key="all" text="All Status" />
-                                    <core:Item key="RUNNING" text="Running" />
-                                    <core:Item key="IDLE" text="Ideal" />
-                                    <core:Item key="STOPPED" text="Stopped" />
+                                    <core:Item key="all"     text="All Status" />
+                                    <core:Item key="RUNNING" text="Running"    />
+                                    <core:Item key="IDLE"    text="Idle"       />
+                                    <core:Item key="STOPPED" text="Stopped"    />
                                 </Select>
                             </VBox>
-
-                            <!-- Date Range Filter -->
                             <VBox>
                                 <Label text="Date Range" class="dashFilterLabel" />
                                 <Select width="10rem" change=".onFilterChange" selectedKey="{live>/filters/dateRange}">
-                                    <core:Item key="all" text="All Time" />
-                                    <core:Item key="today" text="Today" />
-                                    <core:Item key="yesterday" text="Yesterday" />
-                                    <core:Item key="thisWeek" text="This Week" />
-                                    <core:Item key="thisMonth" text="This Month" />
+                                    <core:Item key="all"         text="All Time"      />
+                                    <core:Item key="today"       text="Today"         />
+                                    <core:Item key="yesterday"   text="Yesterday"     />
+                                    <core:Item key="thisWeek"    text="This Week"     />
+                                    <core:Item key="thisMonth"   text="This Month"    />
                                     <core:Item key="last3Months" text="Last 3 Months" />
                                 </Select>
                             </VBox>
                         </HBox>
-
-                        <!-- Reset Button -->
-                        <!-- <Button text="Reset" type="Emphasized" press=".onResetFilters" class="dashFilterResetBtn" /> -->
-                    </HBox>
-
-                    <HBox class="liveTokenRow" alignItems="Center" justifyContent="SpaceBetween">
-                        
+                        <Button text="Reset" icon="sap-icon://clear-filter" type="Transparent" press=".onResetFilters" class="dashResetBtn" />
                     </HBox>
 
                     <!-- Section title -->
-                    <Text text="Machine Data (Latest per Machine)" class="liveSectionTitle" />
+                    <HBox class="liveSectionHeader" justifyContent="SpaceBetween" alignItems="Center">
+                        <Text text="{= 'Machine Data (' + ${live>/totalMachines} + ' machines)'}" class="liveSectionTitle" />
+                    </HBox>
 
-                    <!-- Cards row (API driven) -->
-                  <HBox class="liveCardsRow" items="{live>/machines}">
-    <items>
-        <VBox
-            class="{path: 'live>statusState', formatter: '.formatCardClass'}">
+                    <!-- ── Cards Grid ── -->
+                    <HBox class="liveCardsGrid" items="{live>/machines}" wrap="Wrap">
+                        <items>
+                            <VBox class="{path: 'live>statusState', formatter: '.formatCardClass'}">
 
-            <!-- HEADER -->
-            <HBox justifyContent="SpaceBetween" alignItems="Center">
-                <VBox>
-                    <Text text="{live>deviceId}" class="liveCardMachine" />
-                    <Text text="{live>subLine}" class="liveCardSub" />
-                    <Text text="{live>MachineBrand}" class="liveCardSub" />
-                   
-                </VBox>
-                <ObjectStatus text="{live>status}" 
-                    state="{live>statusState}" 
-                    class="liveStatusBadge" />
-            </HBox>
+                                <!-- ── CARD HEADER: Device ID + Status Badge ── -->
+                                <HBox class="ldCardHead" justifyContent="SpaceBetween" alignItems="Center">
+                                    <VBox>
+                                        <Text text="{live>deviceId}" class="ldCardDeviceId" />
+                                        <Text text="{live>subLine}"  class="ldCardCompany"  />
+                                    </VBox>
+                                    <ObjectStatus
+                                        text="{live>status}"
+                                        state="{live>statusState}"
+                                        inverted="true"
+                                        class="ldCardBadge" />
+                                </HBox>
 
-            <!-- DETAILS -->
-            <VBox class="liveCardBody">
-                <Text text="Model: {live>model}" class="liveDetailText" />
-                <Text text="Part No: {live>partNo}" class="liveDetailText" />
-                <Text text="Material: {live>material}" class="liveDetailText" />
-                <Text text="Alarm: " class="liveDetailLabel" /><Text text="{live>alarm}" class="{
-                    = ${live>alarm} === 'NONE' ? 'liveAlarmOk' :
-                      ${live>alarm} === 'WARNING' ? 'liveAlarmWarn' :
-                      'liveAlarmError'
-                }" />
-                <Text text="Start time: {live>startTime}" class="liveCardSub" />
-            </VBox>
+                                <!-- ── MACHINE DETAILS ── -->
+                                <VBox class="ldCardDetails">
+                                    <Text text="Model: {live>model}"    class="ldCardDetailText" />
+                                    <Text text="Part No: {live>partNo}" class="ldCardDetailText" />
+                                    <Text text="Material: {live>material}" class="ldCardDetailText" />
+                                    <!-- Alarm -->
+                                    <HBox alignItems="Center" class="ldCardAlarmRow">
+                                        <Text text="Alarm: " class="ldCardDetailLabel" />
+                                        <Text text="{live>alarm}"
+                                            class="{= ${live>alarm} === 'NONE' ? 'ldAlarmOk' : 'ldAlarmErr'}" />
+                                    </HBox>
+                                </VBox>
 
-            <!-- STATS -->
-            <HBox class="liveStatsRow" justifyContent="SpaceBetween">
-                <VBox>
-                    <Text text="Production Count" class="liveLabel" />
-                    <Text text="{live>productionCount}" class="liveBigValue" />
-                </VBox>
-                <VBox>
-                    <Text text="RPM" class="liveLabel" />
-                    <Text text="{live>rpm}" class="liveBigValue" />
-                </VBox>
-            </HBox>
+                                <!-- ── START TIME ── -->
+                                <VBox class="ldCardStartBox">
+                                    <Text text="Start" class="ldCardMiniLabel" />
+                                    <Text text="{live>startTime}" class="ldCardStartTime" />
+                                </VBox>
 
-            <!-- PARAMETERS BOX -->
-            <VBox class="liveParamBox">
-                <Text text="Parameters" class="liveParamTitle" />
-                <HBox justifyContent="SpaceBetween">
-                    <VBox>
-                        <Text text="Temperature" class="liveLabel" />
-                        <Text text="{live>temperature}" />
-                    </VBox>
-                    <VBox>
-                        <Text text="Pressure" class="liveLabel" />
-                        <Text text="{live>pressure}" />
-                    </VBox>
-                    <VBox>
-                        <Text text="RPM" class="liveLabel" />
-                        <Text text="{live>rpm}" />
-                    </VBox>
-                </HBox>
+                                <!-- ── PRODUCTION + RPM BIG NUMBERS ── -->
+                                <HBox class="ldCardBigStats" justifyContent="SpaceBetween">
+                                    <VBox class="ldCardBigStat">
+                                        <Text text="PRODUCTION COUNT" class="ldCardBigLabel" />
+                                        <Text text="{live>productionCount}" class="ldCardBigValue" />
+                                    </VBox>
+                                    <VBox class="ldCardBigStat">
+                                        <Text text="RPM" class="ldCardBigLabel" />
+                                        <Text text="{live>rpm}" class="ldCardBigValue" />
+                                    </VBox>
+                                </HBox>
 
-                <HBox justifyContent="SpaceBetween" class="liveParamRow2">
-                    <VBox>
-                        <Text text="Production" class="liveLabel" />
-                        <Text text="{live>productionCount}" />
-                    </VBox>
-                    <VBox>
-                        <Text text="Machine Status" class="liveLabel" />
-                        <Text text="{live>status}" class="{
-                            = ${live>statusState} === 'Success' ? 'liveStatusRunning' :
-                              ${live>statusState} === 'Error' ? 'liveStatusStopped' :
-                              ${live>statusState} === 'Warning' ? 'liveStatusIdle' :
-                              ''
-                        }" />
-                    </VBox>
-                    <VBox>
-                        <Text text="Alarm" class="liveLabel" />
-                        <Text text="{live>alarm}" class="{
-                            = ${live>alarm} === 'NONE' ? 'liveAlarmOk' :
-                              ${live>alarm} === 'WARNING' ? 'liveAlarmWarn' :
-                              'liveAlarmError'
-                        }" />
-                    </VBox>
-                </HBox>
-            </VBox>
+                                <!-- ── PARAMETERS GRID ── -->
+                                <VBox class="ldCardParamSection">
+                                    <Text text="PARAMETERS" class="ldCardParamTitle" />
+                                    <HBox class="ldCardParamGrid" justifyContent="SpaceBetween">
+                                        <VBox class="ldCardParam">
+                                            <Text text="TEMPERATURE" class="ldCardParamLabel" />
+                                            <Text text="{live>temperature}" class="ldCardParamVal" />
+                                        </VBox>
+                                        <VBox class="ldCardParam">
+                                            <Text text="PRESSURE" class="ldCardParamLabel" />
+                                            <Text text="{live>pressure}" class="ldCardParamVal" />
+                                        </VBox>
+                                        <VBox class="ldCardParam">
+                                            <Text text="RPM" class="ldCardParamLabel" />
+                                            <Text text="{live>rpm}" class="ldCardParamVal" />
+                                        </VBox>
+                                    </HBox>
+                                    <HBox class="ldCardParamGrid ldCardParamGrid--2" justifyContent="SpaceBetween">
+                                        <VBox class="ldCardParam">
+                                            <Text text="PRODUCTION" class="ldCardParamLabel" />
+                                            <Text text="{live>productionCount}" class="ldCardParamVal" />
+                                        </VBox>
+                                        <VBox class="ldCardParam">
+                                            <Text text="MACHINE STATUS" class="ldCardParamLabel" />
+                                            <Text text="{live>status}"
+                                                class="{= ${live>statusState} === 'Success' ? 'ldParamRunning' : ${live>statusState} === 'Error' ? 'ldParamStopped' : 'ldParamIdle'}" />
+                                        </VBox>
+                                        <VBox class="ldCardParam">
+                                            <Text text="ALARM" class="ldCardParamLabel" />
+                                            <Text text="{live>alarm}"
+                                                class="{= ${live>alarm} === 'NONE' ? 'ldAlarmOk' : 'ldAlarmErr'}" />
+                                        </VBox>
+                                    </HBox>
+                                </VBox>
 
-            <!-- LAST SYNC -->
-            <HBox justifyContent="End" class="liveSyncRow">
-                <Text text="Last Sync time: {live>lastSyncTime}" class="liveSyncText" />
-            </HBox>
+                                <!-- ── FOOTER: Last Sync ── -->
+                                <HBox class="ldCardFooter" alignItems="Center">
+                                    <Text text="Last Sync" class="ldCardMiniLabel" />
+                                    <Text text="{live>timestamp}" class="ldCardFooterTs" />
+                                </HBox>
 
-        </VBox>
-    </items>
-</HBox>
+                            </VBox>
+                        </items>
+                    </HBox>
+
                 </VBox>
             </HBox>
         </content>

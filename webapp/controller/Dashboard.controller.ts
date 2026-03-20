@@ -74,6 +74,36 @@ export default class Dashboard extends Controller {
         (this.getOwnerComponent() as UIComponent).getRouter().navTo("machineHistory");
     }
 
+    // ── Side nav ──────────────────────────────────────────────────────────
+    public onSideItemPress(oEvent: any): void {
+        const item   = oEvent.getParameter("listItem") as any;
+        const title  = item.getTitle && item.getTitle();
+        const router = (this.getOwnerComponent() as UIComponent).getRouter();
+        const map: Record<string, string> = {
+            "Monitoring-Dashboard": "dashboard",
+            "Live Data":            "liveData",
+            "Supervisor":           "supervisor",
+            "Employees":            "employees",
+            "Machine History":      "machineHistory",
+            "Resources":            "resources",
+            "Machine Info":         "machineInfo",
+            "Stoppage Info":        "stoppageInfo",
+            "Requests":             "requests",
+            "Kontrolix-AI":         "kontrolixAI",
+            "My Profile":           "myProfile"
+        };
+        const route = map[title];
+        if (route) router.navTo(route);
+    }
+
+    // ── Helper: get assigned resources from localStorage ──────────────────
+    public getAssignedResources(): Array<Record<string, any>> {
+        try {
+            const str = window.localStorage.getItem("assignedResources") || "[]";
+            return JSON.parse(str) as Array<Record<string, any>>;
+        } catch { return []; }
+    }
+
     private async loadDashboardData(showToast = false): Promise<void> {
         const view = this.getView();
         if (!view) return;
@@ -102,6 +132,7 @@ export default class Dashboard extends Controller {
             model.setProperty("/lastUpdated", new Date().toLocaleString());
 
             this.applyFilters();
+            if (showToast) MessageToast.show("Dashboard refreshed");
 
         } catch (error) {
             model.setProperty("/connectionStatus", "OFFLINE");
@@ -120,28 +151,21 @@ export default class Dashboard extends Controller {
         const userStr = window.localStorage.getItem("user");
         const user    = userStr ? JSON.parse(userStr) as Record<string, any> : {};
         const role    = String(user.Role || user.role || "").toUpperCase();
-        const userId  = String(user.SupervisorId || user.EmployeeId || user.userId || "");
 
-        // 1. Role-based filtering + UI Filters
-        let filteredRows = allRows.filter((row: any) => {
-            // Role Logic
+        // 1. Filter rows
+        const filteredRows = allRows.filter((row: any) => {
+            // Role-based filter
             if (role === "SUPERVISOR" || role === "EMPLOYEE") {
-                // Supervisor and Employee see data for assigned resources
-                const assignedResources = this.getAssignedResources();
-                const assignedResourceIds = assignedResources.map((r: any) => String(r.resourceId || r.ResourceId || "").trim().toUpperCase());
+                const assignedResources    = this.getAssignedResources();
+                const assignedResourceIds  = assignedResources.map((r: any) => String(r.resourceId  || r.ResourceId  || "").trim().toUpperCase());
                 const assignedResourceNames = assignedResources.map((r: any) => String(r.name || r.ResName || "").trim().toUpperCase());
-                
-                const machineId = String(row.DeviceId || "").trim().toUpperCase();
+                const machineId   = String(row.DeviceId || "").trim().toUpperCase();
                 const machineBrand = String(row.PlcBrand || "").trim().toUpperCase();
-
-                const matchesId = assignedResourceIds.includes(machineId);
-                const matchesBrand = assignedResourceNames.includes(machineBrand);
-
-                if (!matchesId && !matchesBrand) {
-                    return false;
-                }
+                if (!assignedResourceIds.includes(machineId) && !assignedResourceNames.includes(machineBrand)) return false;
             }
+
             if (filters.plcBrand !== "all" && String(row.PlcBrand) !== filters.plcBrand) return false;
+
             if (filters.dateRange !== "all") {
                 const rowDate = this.parseTimestamp(String(row.Timestamp || ""));
                 if (!rowDate) return false;
@@ -172,20 +196,17 @@ export default class Dashboard extends Controller {
             deviceMap[id].push(row);
         });
 
-        // 3. Status filter on latest record per device
+        // 3. Status filter on latest record
         if (filters.machineStatus !== "all") {
             Object.keys(deviceMap).forEach((id) => {
-                const rows   = deviceMap[id];
+                const rows    = deviceMap[id];
                 const lastRow = rows[rows.length - 1];
-                if (String(lastRow.Status || "").toUpperCase() !== filters.machineStatus) {
-                    delete deviceMap[id];
-                }
+                if (String(lastRow.Status || "").toUpperCase() !== filters.machineStatus) delete deviceMap[id];
             });
         }
 
-        // 4. Run/Stop time calculation
-        let totalRunMs  = 0;
-        let totalStopMs = 0;
+        // 4. Run/Stop time
+        let totalRunMs = 0, totalStopMs = 0;
         const stoppageRows: Array<Record<string, any>> = [];
         const historyRows:  Array<Record<string, any>> = [];
 
@@ -194,43 +215,27 @@ export default class Dashboard extends Controller {
             for (let i = 0; i < deviceRows.length - 1; i++) {
                 const current = deviceRows[i];
                 const next    = deviceRows[i + 1];
-                const currentStatus = String(current.Status || "").toUpperCase();
-                const nextStatus    = String(next.Status    || "").toUpperCase();
-                const currentTime   = this.parseTimestamp(String(current.Timestamp || ""));
-                const nextTime      = this.parseTimestamp(String(next.Timestamp    || ""));
-
-                if (currentTime && nextTime) {
-                    const diffMs = nextTime.getTime() - currentTime.getTime();
-                    if (currentStatus === "RUNNING") {
-                        totalRunMs += diffMs;
-                    } else if (currentStatus === "STOPPED") {
+                const cs = String(current.Status || "").toUpperCase();
+                const ns = String(next.Status    || "").toUpperCase();
+                const ct = this.parseTimestamp(String(current.Timestamp || ""));
+                const nt = this.parseTimestamp(String(next.Timestamp    || ""));
+                if (ct && nt) {
+                    const diffMs = nt.getTime() - ct.getTime();
+                    if (cs === "RUNNING") { totalRunMs += diffMs; }
+                    else if (cs === "STOPPED") {
                         totalStopMs += diffMs;
-                        stoppageRows.push({
-                            company:   String(current.Companyname || "-"),
-                            deviceId,
-                            stopTime:  String(current.Timestamp || "-"),
-                            startTime: String(next.Timestamp    || "-"),
-                            duration:  this.formatDuration(diffMs)
-                        });
+                        stoppageRows.push({ company: String(current.Companyname || "-"), deviceId, stopTime: String(current.Timestamp || "-"), startTime: String(next.Timestamp || "-"), duration: this.formatDuration(diffMs) });
                     }
                 }
-                if (currentStatus !== nextStatus) {
-                    historyRows.push({
-                        timestamp:    String(next.Timestamp || "-"),
-                        machine:      deviceId,
-                        previous:     currentStatus,
-                        current:      nextStatus,
-                        currentState: nextStatus === "RUNNING" ? "Success" : "Error"
-                    });
+                if (cs !== ns) {
+                    historyRows.push({ timestamp: String(next.Timestamp || "-"), machine: deviceId, previous: cs, current: ns, currentState: ns === "RUNNING" ? "Success" : "Error" });
                 }
             }
         });
 
         // 5. Per-device last-record metrics
-        let totalProduction = 0;
-        let runningCount    = 0;
-        let stoppedCount    = 0;
-        const paramKeySet   = new Set<string>();
+        let totalProduction = 0, runningCount = 0, stoppedCount = 0;
+        const paramKeySet = new Set<string>();
 
         Object.keys(deviceMap).forEach((devId) => {
             const lastRow = deviceMap[devId][deviceMap[devId].length - 1];
@@ -239,12 +244,12 @@ export default class Dashboard extends Controller {
             try { params = JSON.parse(String(lastRow.Parameters || "{}")); } catch { params = {}; }
             totalProduction += Number(params.PRODUCTION_COUNT ?? lastRow.ProductionCount ?? 0);
             Object.keys(params).forEach((k) => paramKeySet.add(k));
-            const lastStatus = String(lastRow.Status || "").toUpperCase();
-            if      (lastStatus === "RUNNING") runningCount++;
-            else if (lastStatus === "STOPPED") stoppedCount++;
+            const ls = String(lastRow.Status || "").toUpperCase();
+            if      (ls === "RUNNING") runningCount++;
+            else if (ls === "STOPPED") stoppedCount++;
         });
 
-        // 6. Derived values
+        // 6. Derived
         const totalMs = totalRunMs + totalStopMs;
         const runPct  = totalMs > 0 ? Math.round((totalRunMs  / totalMs) * 100) : 0;
         const stopPct = totalMs > 0 ? Math.round((totalStopMs / totalMs) * 100) : 0;
@@ -268,23 +273,19 @@ export default class Dashboard extends Controller {
         model.setProperty("/stoppageRows",     stoppageRows.slice(0, 5));
         model.setProperty("/historyRows",      historyRows.slice(0, 5));
 
-        // 8. Donut chart data
+        // 8. Chart data
         model.setProperty("/timeChartData", [
             { type: "Run Time",  minutes: totalRunMs  > 0 ? Math.round(totalRunMs  / 60000) : 0.1 },
             { type: "Stop Time", minutes: totalStopMs > 0 ? Math.round(totalStopMs / 60000) : 0.1 }
         ]);
 
-        // 9. Bar chart data — field names MUST match view bindings exactly
-        //    View uses: {dash>label}, {dash>production}, {dash>temperature}, {dash>rpm}, {dash>pressure}
         const chartData: Array<any> = [];
         Object.keys(deviceMap).forEach((id) => {
             const rows = deviceMap[id];
             const last = rows[rows.length - 1];
             if (!last) return;
-
             let params: Record<string, any> = {};
             try { params = JSON.parse(String(last.Parameters || "{}")); } catch { params = {}; }
-
             chartData.push({
                 label:       id,
                 production:  Number(params.PRODUCTION_COUNT ?? last.ProductionCount ?? 0),
@@ -295,46 +296,30 @@ export default class Dashboard extends Controller {
         });
         model.setProperty("/chartData", chartData);
 
-        // 10. Chart colors via setVizProperties
+        // 9. Chart colors
         setTimeout(() => {
-            const donutChart = this.byId("timeSummaryChart") as any;
-            if (donutChart) {
-                donutChart.setVizProperties({
-                    title:   { visible: false },
-                    tooltip: { visible: true },
-                    plotArea: {
-                        colorPalette: ["#19A979", "#eb0d0d"],
-                        dataLabel: { visible: true, type: "percentage" }
-                    },
+            const donut = this.byId("timeSummaryChart") as any;
+            if (donut) {
+                donut.setVizProperties({
+                    title: { visible: false }, tooltip: { visible: true },
+                    plotArea: { colorPalette: ["#19A979", "#eb0d0d"], dataLabel: { visible: true, type: "percentage" } },
                     chart: { innerRadius: "50%" }
                 });
             }
-
-            const productionChart = this.byId("productionChart") as any;
-            if (productionChart) {
-                productionChart.setVizProperties({
-                    title:   { visible: false },
-                    tooltip: { visible: true },
-                    plotArea: {
-                        colorPalette: ["#5899DA", "#E8743B"],
-                        dataLabel: { visible: true, formatString: "#,##0" }
-                    },
-                    valueAxis:  { title: { text: "Production" } },
-                    valueAxis2: { title: { text: "Temperature (°C)" } }
+            const prod = this.byId("productionChart") as any;
+            if (prod) {
+                prod.setVizProperties({
+                    title: { visible: false }, tooltip: { visible: true },
+                    plotArea: { colorPalette: ["#5899DA", "#E8743B"], dataLabel: { visible: true, formatString: "#,##0" } },
+                    valueAxis: { title: { text: "Production" } }, valueAxis2: { title: { text: "Temperature (°C)" } }
                 });
             }
-
-            const rpmChart = this.byId("rpmChart") as any;
-            if (rpmChart) {
-                rpmChart.setVizProperties({
-                    title:   { visible: false },
-                    tooltip: { visible: true },
-                    plotArea: {
-                        colorPalette: ["#19A979", "#945ECF"],
-                        dataLabel: { visible: true, formatString: "#,##0.#" }
-                    },
-                    valueAxis:  { title: { text: "RPM" } },
-                    valueAxis2: { title: { text: "Pressure (bar)" } }
+            const rpm = this.byId("rpmChart") as any;
+            if (rpm) {
+                rpm.setVizProperties({
+                    title: { visible: false }, tooltip: { visible: true },
+                    plotArea: { colorPalette: ["#19A979", "#945ECF"], dataLabel: { visible: true, formatString: "#,##0.#" } },
+                    valueAxis: { title: { text: "RPM" } }, valueAxis2: { title: { text: "Pressure (bar)" } }
                 });
             }
         }, 100);
@@ -343,23 +328,22 @@ export default class Dashboard extends Controller {
     private parseTimestamp(ts: string): Date | null {
         if (!ts) return null;
         try {
-            let cleaned = ts.trim();
-            cleaned = cleaned.replace(" UTC", "Z").replace(" UT", "Z");
-            if (cleaned.includes(" ") && !cleaned.includes("T")) cleaned = cleaned.replace(" ", "T");
-            const d = new Date(cleaned);
+            let c = ts.trim().replace(" UTC","Z").replace(" UT","Z");
+            if (c.includes(" ") && !c.includes("T")) c = c.replace(" ","T");
+            const d = new Date(c);
             return isNaN(d.getTime()) ? null : d;
         } catch { return null; }
     }
 
     private formatDuration(ms: number): string {
         if (ms <= 0) return "0m";
-        const totalSeconds = Math.floor(ms / 1000);
-        const hours   = Math.floor(totalSeconds / 3600);
-        const minutes = Math.floor((totalSeconds % 3600) / 60);
-        const seconds = totalSeconds % 60;
-        if (hours   > 0) return `${hours}h ${minutes}m`;
-        if (minutes > 0) return `${minutes}m ${seconds}s`;
-        return `${seconds}s`;
+        const s = Math.floor(ms / 1000);
+        const h = Math.floor(s / 3600);
+        const m = Math.floor((s % 3600) / 60);
+        const sec = s % 60;
+        if (h > 0) return `${h}h ${m}m`;
+        if (m > 0) return `${m}m ${sec}s`;
+        return `${sec}s`;
     }
 
     public onLogout(): void {
