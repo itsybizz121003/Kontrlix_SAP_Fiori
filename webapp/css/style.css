@@ -269,244 +269,6 @@
    Live Data styles
    ================================ */
 
-.liveHeader {
-  margin-bottom: 1rem;
-}
-
-.liveLastUpdated {
-  font-size: 0.85rem;
-  opacity: 0.7;
-}
-
-.liveSectionTitle {
-  margin: 1rem 0 0.5rem 0;
-  font-weight: 600;
-}
-
-.liveTokenRow {
-  margin-top: 0.75rem;
-  gap: 0.75rem;
-}
-
-.liveTokenInput {
-  width: 100%;
-  max-width: 38rem;
-}
-
-.liveTokenActions {
-  flex-shrink: 0;
-}
-
-.liveCardsRow {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-  justify-content: flex-start;
-}
-
-.liveCard {
-  width: 320px;
-  background-color: #ffffff;
-  border-radius: 18px;
-  padding: 1rem 1.2rem;
-  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.08);
-  transition: all 0.3s ease;
-}
-
-.liveCard:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.12);
-}
-
-.liveCardMachine {
-  font-weight: 700;
-  font-size: 1.1rem;
-}
-
-.liveCardSub {
-  font-size: 0.8rem;
-  opacity: 0.7;
-}
-
-.liveCardBody {
-  margin-top: 0.5rem;
-  font-size: 0.85rem;
-}
-
-.liveDetailText {
-  font-size: 0.85rem;
-  margin: 0.2rem 0;
-}
-
-.liveDetailLabel {
-  font-size: 0.85rem;
-  font-weight: 600;
-  margin-right: 0.3rem;
-}
-
-.liveStatusBadge .sapMObjStatusText {
-  font-weight: 600;
-  font-size: 0.8rem;
-}
-
-/* DEBUG TEXT STYLES */
-.debugRedText {
-  color: red !important;
-  font-size: 0.7rem !important;
-  font-weight: bold !important;
-}
-
-/* ================================
-   MACHINE CARD STATUS COLORS
-   ================================ */
-
-/* GREEN - RUNNING */
-.liveCard.runningCard,
-.sapMVBox.runningCard {
-    background-color: #dcfce7 !important; /* Light Green Background */
-    border: 2.5px solid #16a34a !important; /* Strong Green Border */
-    box-shadow: 0 4px 16px rgba(34, 197, 94, 0.25) !important;
-}
-
-.runningCard .liveCardMachine,
-.runningCard .sapMText.liveCardMachine {
-  color: #15803d !important;
-}
-
-.liveStatusRunning {
-  color: #15803d !important;
-  font-weight: 700;
-}
-
-/* RED - STOPPED / FAULTED */
-.liveCard.stoppedCard,
-.sapMVBox.stoppedCard {
-    background-color: #fee2e2 !important; /* Light Red Background */
-    border: 2.5px solid #dc2626 !important; /* Strong Red Border */
-    box-shadow: 0 4px 16px rgba(239, 68, 68, 0.25) !important;
-}
-
-.stoppedCard .liveCardMachine,
-.stoppedCard .sapMText.liveCardMachine {
-  color: #b91c1c !important;
-}
-
-.liveStatusStopped {
-  color: #b91c1c !important;
-  font-weight: 700;
-}
-
-/* AMBER - IDLE / WARNING */
-.liveCard.idleCard,
-.sapMVBox.idleCard {
-  background-color: #fffbeb !important;
-  border: 2.5px solid #f59e0b !important;
-  box-shadow: 0 4px 16px rgba(245, 158, 11, 0.25) !important;
-}
-
-.idleCard .liveCardMachine,
-.idleCard .sapMText.liveCardMachine {
-  color: #b45309 !important;
-}
-
-.liveStatusIdle {
-  color: #b45309 !important;
-  font-weight: 700;
-}
-.sapMVBox.idleCard {
-    background-color: #fffbeb !important;
-    border: 2.5px solid #f59e0b !important;
-    box-shadow: 0 4px 16px rgba(245, 158, 11, 0.25) !important;
-}
-
-.idleCard .liveCardMachine,
-.idleCard .sapMText.liveCardMachine {
-    color: #b45309 !important;
-}
-
-.liveStatusIdle {
-    color: #b45309 !important;
-    font-weight: 700;
-}
-
-/* ALARM COLORS */
-.liveAlarmOk {
-  color: #16a34a;
-  font-weight: 600;
-}
-
-.liveAlarmWarn {
-  color: #f97316;
-  font-weight: 600;
-}
-
-.liveAlarmError {
-  color: #dc2626;
-  font-weight: 600;
-}
-
-/* STATS */
-.liveStatsRow {
-  margin-top: 1rem;
-  padding: 0.8rem 0;
-  border-top: 1px solid rgba(0, 0, 0, 0.06);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
-}
-
-.liveLabel {
-  font-size: 0.7rem;
-  opacity: 0.6;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.liveBigValue {
-  font-size: 1.4rem;
-  font-weight: 700;
-  margin-top: 0.2rem;
-}
-
-/* PARAMETERS BOX */
-.liveParamBox {
-  margin-top: 1rem;
-  padding: 0.8rem;
-  border-radius: 12px;
-  background: rgba(0, 0, 0, 0.03);
-}
-
-.liveParamTitle {
-  font-weight: 600;
-  font-size: 0.9rem;
-  margin-bottom: 0.8rem;
-  color: #374151;
-}
-
-.liveParamRow2 {
-  margin-top: 0.8rem;
-}
-
-.liveParamBox .sapMText {
-  font-size: 0.85rem;
-}
-
-.liveParamBox .liveLabel {
-  font-size: 0.65rem;
-  margin-bottom: 0.3rem;
-}
-
-/* SYNC ROW */
-.liveSyncRow {
-  margin-top: 0.8rem;
-  padding-top: 0.5rem;
-  border-top: 1px solid rgba(0, 0, 0, 0.06);
-}
-
-.liveSyncText {
-  font-size: 0.75rem;
-  opacity: 0.6;
-  font-style: italic;
-}
-
 /* ================================
    Machine History styles
    ================================ */
@@ -2238,7 +2000,7 @@
     flex: 1 1 280px;
     border-radius: 12px;
     background: #ffffff;
-    border: 1.5px solid #e2e8f0;
+    border: 1.5px solid #f7f7f7;
     box-shadow: 0 2px 8px rgba(15,23,42,0.07);
     display: flex;
     flex-direction: column;
@@ -2257,14 +2019,14 @@
     border-left: 4px solid #22c55e;
 }
 
-.runningCard { border: 2px solid #22c55e; }  /* green */
-.idleCard    { border: 2px solid #f59e0b; }  /* amber */
-.stoppedCard { border: 2px solid #ef4444; }  /* red   */
+.runningCard { border: 2px solid #22c55e !important; }  /* green */
+.idleCard    { border: 2px solid #f59e0b !important; }  /* amber */
+.stoppedCard { border: 2px solid #ef4444 !important; }  /* red   */
 
 
-.runningCard { background: linear-gradient(180deg, #f0fdf4 0%, #ffffff 18%); }
-.idleCard    { background: linear-gradient(180deg, #fffbeb 0%, #ffffff 18%); }
-.stoppedCard { background: linear-gradient(180deg, #fff5f5 0%, #ffffff 18%); }
+.runningCard { background: linear-gradient(180deg, #f0fdf4 0%, #ffffff 18%) !important; }
+.idleCard    { background: linear-gradient(180deg, #fffbeb 0%, #ffffff 18%) !important; }
+.stoppedCard { background: linear-gradient(180deg, #fff5f5 0%, #ffffff 18%) !important; }
 /* ── IDLE — amber left border accent ── */
 .idleCard {
     border-left: 4px solid #f59e0b;
@@ -2448,4 +2210,259 @@
     .livePageHeader { padding: 12px; flex-direction: column; align-items: flex-start; }
     .liveHeaderRight { width: 100%; justify-content: space-between; }
     .liveCardsGrid { padding: 4px 12px 20px !important; gap: 14px !important; }
+}
+
+
+
+/* ═══════════════════════════════════════════════════════════════════════
+   MY PROFILE PAGE
+═══════════════════════════════════════════════════════════════════════ */
+
+.profMainArea {
+    flex: 1;
+    min-width: 0;
+    background: #f1f5f9;
+    overflow-x: hidden;
+}
+
+/* ── Hero Banner ──────────────────────────────────────────────────────── */
+.profHeroBanner {
+    background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 60%, #1d4ed8 100%);
+    padding: 32px 36px;
+    position: relative;
+    overflow: hidden;
+}
+
+/* decorative circle */
+.profHeroBanner::before {
+    content: '';
+    position: absolute;
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.04);
+    top: -80px;
+    right: 80px;
+    pointer-events: none;
+}
+
+.profHeroBanner::after {
+    content: '';
+    position: absolute;
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.03);
+    bottom: -60px;
+    right: 260px;
+    pointer-events: none;
+}
+
+.profHeroContent {
+    flex-wrap: wrap;
+    gap: 16px;
+    position: relative;
+    z-index: 1;
+}
+
+.profHeroLeft {
+    gap: 20px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.profAvatar {
+    background: linear-gradient(135deg, #38bdf8, #818cf8) !important;
+    border: 3px solid rgba(255,255,255,0.3) !important;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.3) !important;
+    flex-shrink: 0;
+}
+
+.profAvatar .sapFAvatarInitials {
+    color: #ffffff !important;
+    font-size: 1.4rem !important;
+    font-weight: 800 !important;
+}
+
+.profHeroInfo { gap: 6px; }
+
+.profHeroName {
+    font-size: 1.6rem !important;
+    font-weight: 800 !important;
+    color: #ffffff !important;
+    line-height: 1.1 !important;
+}
+
+.profHeroBadgeRow {
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 4px;
+}
+
+.profRoleBadge { border-radius: 20px !important; font-size: 0.75rem !important; }
+
+.profHeroEmail {
+    font-size: 0.82rem !important;
+    color: rgba(255,255,255,0.65) !important;
+}
+
+.profHeroUserId {
+    font-size: 0.75rem !important;
+    color: rgba(255,255,255,0.45) !important;
+    font-family: monospace !important;
+    letter-spacing: 0.5px;
+    margin-top: 2px;
+}
+
+.profEditBtn {
+    border-radius: 10px !important;
+    flex-shrink: 0;
+}
+
+/* ── Content Row ──────────────────────────────────────────────────────── */
+.profContentRow {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    padding: 24px 28px;
+    align-items: flex-start;
+}
+
+/* Left column */
+.profCard--left {
+    flex: 1 1 320px;
+    min-width: 0;
+}
+
+/* Right column */
+.profCard--right {
+    flex: 2 1 480px;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* ── Info Card ────────────────────────────────────────────────────────── */
+.profCard {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 22px 24px;
+    box-shadow: 0 2px 10px rgba(15,23,42,0.07);
+    border: 1px solid #e2e8f0;
+    box-sizing: border-box;
+}
+
+.profCardMarginBottom { margin-bottom: 0; }
+
+.profCardHeader {
+    gap: 12px;
+    margin-bottom: 18px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.profCardIconBox {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.profCardIconBox--blue   { background: linear-gradient(135deg, #3b82f6, #6366f1); }
+.profCardIconBox--violet { background: linear-gradient(135deg, #8b5cf6, #a855f7); }
+.profCardIconBox--green  { background: linear-gradient(135deg, #10b981, #059669); }
+
+.profCardIcon {
+    color: #ffffff !important;
+    font-size: 1rem !important;
+}
+
+.profCardTitle {
+    font-size: 0.95rem !important;
+    font-weight: 700 !important;
+    color: #1e293b !important;
+}
+
+/* ── Info Row ─────────────────────────────────────────────────────────── */
+.profInfoList { gap: 0; }
+
+.profInfoRow {
+    padding: 11px 0;
+    border-bottom: 1px solid #f8fafc;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.profInfoRow:last-child { border-bottom: none; }
+
+.profInfoLabelBox {
+    gap: 8px;
+    align-items: center;
+    min-width: 130px;
+}
+
+.profInfoIcon {
+    font-size: 0.82rem !important;
+    color: #94a3b8 !important;
+    flex-shrink: 0;
+}
+
+.profInfoLabel {
+    font-size: 0.82rem !important;
+    color: #64748b !important;
+    font-weight: 500 !important;
+}
+
+.profInfoValue {
+    font-size: 0.85rem !important;
+    color: #1e293b !important;
+    font-weight: 600 !important;
+    text-align: right;
+}
+
+.profInfoValue--mono {
+    font-family: 'Courier New', monospace !important;
+    font-size: 0.8rem !important;
+    color: #475569 !important;
+    background: #f8fafc;
+    padding: 2px 6px;
+    border-radius: 4px;
+    border: 1px solid #e2e8f0;
+}
+
+.profInfoBadge { font-size: 0.75rem !important; }
+
+/* ── Drawer tweaks ────────────────────────────────────────────────────── */
+.profDrawerIcon {
+    color: #3b82f6 !important;
+    font-size: 1rem !important;
+    margin-right: 8px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════════════════════════════════════ */
+@media (max-width: 1024px) {
+    .profContentRow  { padding: 18px 20px; gap: 16px; }
+    .profHeroBanner  { padding: 24px 20px; }
+}
+
+@media (max-width: 768px) {
+    .dashSideNav     { width: 50px; min-width: 50px; }
+    .profCard--left  { flex: 1 1 100%; }
+    .profCard--right { flex: 1 1 100%; }
+}
+
+@media (max-width: 600px) {
+    .dashSideNav     { display: none !important; }
+    .profMainArea    { width: 100% !important; }
+    .profHeroBanner  { padding: 20px 16px; }
+    .profHeroName    { font-size: 1.3rem !important; }
+    .profContentRow  { padding: 14px 12px; gap: 14px; }
+    .profCard        { padding: 16px; }
+    .profHeroLeft    { flex-direction: column; align-items: flex-start; }
 }
