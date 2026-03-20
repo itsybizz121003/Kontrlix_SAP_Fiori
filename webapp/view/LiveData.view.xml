@@ -52,24 +52,7 @@
                     </HBox>
 
                     <!-- Summary Strip -->
-                    <HBox class="liveSummaryStrip" alignItems="Center">
-                        <VBox class="liveSummaryItem">
-                            <Text text="TOTAL" class="liveSummaryLabel" />
-                            <Text text="{live>/totalMachines}" class="liveSummaryValue" />
-                        </VBox>
-                        <VBox class="liveSummaryItem">
-                            <Text text="RUNNING" class="liveSummaryLabel" />
-                            <Text text="{live>/runningCount}" class="liveSummaryValue liveSummaryValue--run" />
-                        </VBox>
-                        <VBox class="liveSummaryItem">
-                            <Text text="IDLE" class="liveSummaryLabel" />
-                            <Text text="{live>/idleCount}" class="liveSummaryValue liveSummaryValue--idle" />
-                        </VBox>
-                        <VBox class="liveSummaryItem">
-                            <Text text="STOPPED" class="liveSummaryLabel" />
-                            <Text text="{live>/faultCount}" class="liveSummaryValue liveSummaryValue--stop" />
-                        </VBox>
-                    </HBox>
+                   
 
                     <!-- Filters -->
                     <HBox class="liveFilterBar" alignItems="End" justifyContent="SpaceBetween">

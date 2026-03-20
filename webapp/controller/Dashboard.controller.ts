@@ -55,7 +55,16 @@ export default class Dashboard extends Controller {
         });
 
         view.setModel(dashModel, "dash");
-        void this.loadDashboardData();
+        
+        // Start real-time updates (every 10 seconds for dashboard)
+        this.startRealTimeUpdates(() => {
+            void this.loadDashboardData();
+        }, 10000);
+    }
+
+    public onExit(): void {
+        this.stopRealTimeUpdates();
+        this.disconnectSocket();
     }
 
     public onRefresh(): void { void this.loadDashboardData(true); }
@@ -72,36 +81,6 @@ export default class Dashboard extends Controller {
 
     public onViewAllHistory(): void {
         (this.getOwnerComponent() as UIComponent).getRouter().navTo("machineHistory");
-    }
-
-    // ── Side nav ──────────────────────────────────────────────────────────
-    public onSideItemPress(oEvent: any): void {
-        const item   = oEvent.getParameter("listItem") as any;
-        const title  = item.getTitle && item.getTitle();
-        const router = (this.getOwnerComponent() as UIComponent).getRouter();
-        const map: Record<string, string> = {
-            "Monitoring-Dashboard": "dashboard",
-            "Live Data":            "liveData",
-            "Supervisor":           "supervisor",
-            "Employees":            "employees",
-            "Machine History":      "machineHistory",
-            "Resources":            "resources",
-            "Machine Info":         "machineInfo",
-            "Stoppage Info":        "stoppageInfo",
-            "Requests":             "requests",
-            "Kontrolix-AI":         "kontrolixAI",
-            "My Profile":           "myProfile"
-        };
-        const route = map[title];
-        if (route) router.navTo(route);
-    }
-
-    // ── Helper: get assigned resources from localStorage ──────────────────
-    public getAssignedResources(): Array<Record<string, any>> {
-        try {
-            const str = window.localStorage.getItem("assignedResources") || "[]";
-            return JSON.parse(str) as Array<Record<string, any>>;
-        } catch { return []; }
     }
 
     private async loadDashboardData(showToast = false): Promise<void> {

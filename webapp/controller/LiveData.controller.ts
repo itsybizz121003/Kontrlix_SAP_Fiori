@@ -1,4 +1,4 @@
-import Controller from "sap/ui/core/mvc/Controller";
+import Controller from "./BaseController";
 import UIComponent from "sap/ui/core/UIComponent";
 import JSONModel from "sap/ui/model/json/JSONModel";
 import MessageToast from "sap/m/MessageToast";
@@ -37,9 +37,19 @@ export default class LiveData extends Controller {
       runningCount: 0,
       idleCount: 0,
       faultCount: 0,
+      isRealTime: true
     });
     view.setModel(liveModel, "live");
-    void this.loadLiveData();
+    
+    // Start real-time updates (every 5 seconds)
+    this.startRealTimeUpdates(() => {
+      void this.loadLiveData();
+    }, 5000);
+  }
+
+  public onExit(): void {
+    this.stopRealTimeUpdates();
+    this.disconnectSocket();
   }
 
   // ─────────────────────────────────────────────────────────────
@@ -277,7 +287,7 @@ export default class LiveData extends Controller {
   // AUTH
   // ─────────────────────────────────────────────────────────────
 
-  private getAuthToken(): string {
+  public override getAuthToken(): string {
     return (
       window.localStorage.getItem("machineApiToken") ||
       window.sessionStorage.getItem("machineApiToken") ||
@@ -396,33 +406,5 @@ export default class LiveData extends Controller {
       pressure,
       MachineBrand:    String(row.MachineBrand || "-"),
     };
-  }
-
-  private getAssignedResources(): Array<Record<string, any>> {
-    try {
-      const str = window.localStorage.getItem("assignedResources") || "[]";
-      return JSON.parse(str) as Array<Record<string, any>>;
-    } catch { return []; }
-  }
-
-  public onSideItemPress(oEvent: any): void {
-    const item   = oEvent.getParameter("listItem") as any;
-    const title  = item.getTitle && item.getTitle();
-    const router = (this.getOwnerComponent() as UIComponent).getRouter();
-    const map: Record<string, string> = {
-      "Monitoring-Dashboard": "dashboard",
-      "Live Data":            "liveData",
-      "Supervisor":           "supervisor",
-      "Employees":            "employees",
-      "Machine History":      "machineHistory",
-      "Resources":            "resources",
-      "Machine Info":         "machineInfo",
-      "Stoppage Info":        "stoppageInfo",
-      "Requests":             "requests",
-      "Kontrolix-AI":         "kontrolixAI",
-      "My Profile":           "myProfile",
-    };
-    const route = map[title];
-    if (route) router.navTo(route);
   }
 }

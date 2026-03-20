@@ -1,11 +1,14 @@
 import Controller from "sap/ui/core/mvc/Controller";
 import UIComponent from "sap/ui/core/UIComponent";
 import MessageToast from "sap/m/MessageToast";
+import SocketService from "../model/SocketService";
 
 /**
  * @namespace ashu.ashu.controller
  */
 export default class BaseController extends Controller {
+    private _intervalId: number | null = null;
+    private _socketService: SocketService | null = null;
 
     public onSideItemPress(oEvent: any): void {
         const item = oEvent.getParameter("listItem") as any;
@@ -26,6 +29,8 @@ export default class BaseController extends Controller {
     }
 
     public onLogout(): void {
+        this.stopRealTimeUpdates();
+        this.disconnectSocket();
         window.localStorage.clear();
         MessageToast.show("Logged out successfully!");
         const router = (this.getOwnerComponent() as UIComponent).getRouter();
@@ -34,6 +39,53 @@ export default class BaseController extends Controller {
 
     public onSignOut(): void {
         this.onLogout();
+    }
+
+    /**
+     * Start automatic refresh (Real-time updates)
+     * @param fnRefresh Callback function to refresh data
+     * @param iInterval Interval in milliseconds (default 10s)
+     */
+    public startRealTimeUpdates(fnRefresh: () => void, iInterval: number = 10000): void {
+        this.stopRealTimeUpdates();
+        fnRefresh(); // Initial call
+        this._intervalId = window.setInterval(() => {
+            fnRefresh();
+        }, iInterval);
+        console.log("Real-time updates started with interval: " + iInterval + "ms");
+    }
+
+    /**
+     * Stop automatic refresh
+     */
+    public stopRealTimeUpdates(): void {
+        if (this._intervalId) {
+            window.clearInterval(this._intervalId);
+            this._intervalId = null;
+            console.log("Real-time updates stopped");
+        }
+    }
+
+    /**
+     * Initialize WebSocket for real-time updates
+     * @param sUrl WebSocket URL
+     * @param fnOnMessage Callback function for received messages
+     */
+    public connectSocket(sUrl: string, fnOnMessage: (data: any) => void): void {
+        if (!this._socketService) {
+            this._socketService = new SocketService(fnOnMessage);
+        }
+        this._socketService.connect(sUrl);
+    }
+
+    /**
+     * Close the WebSocket connection
+     */
+    public disconnectSocket(): void {
+        if (this._socketService) {
+            this._socketService.disconnect();
+            this._socketService = null;
+        }
     }
 
     public getAuthToken(): string {
