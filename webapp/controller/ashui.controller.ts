@@ -46,7 +46,8 @@ export default class ashui extends Controller {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    "Authorization": `Bearer ${sapToken}`
+                    "Authorization": `Bearer ${sapToken}`,
+                    "X-Requested-With": "XMLHttpRequest"
                 },
                 body: JSON.stringify({ email, password })
             });

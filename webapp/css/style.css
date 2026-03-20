@@ -1,4 +1,16 @@
 /* Login page background */
+
+/* --- App Header --- */
+.appHeaderLogo {
+  gap: 0.75rem;
+}
+
+.appHeaderTitle {
+  font-size: 1.25rem !important;
+  font-weight: 600 !important;
+  color: #1e293b !important;
+}
+
 .loginPage {
   background-image:
     linear-gradient(to bottom, rgba(0, 0, 0, 0.28), rgba(0, 0, 0, 0.55)),
@@ -283,7 +295,7 @@
 
 .mhIcon {
   margin-right: 0.8rem;
-  background: linear-gradient(135deg, #2563eb, #4f46e5);
+  background: linear-gradient(135deg, #7c818d, #8783cc);
 }
 
 .mhControls > .sapMHBoxChild {
@@ -573,10 +585,24 @@
    My Profile page
    ================================ */
 
-.profileMainArea {
+.profMainArea {
   flex: 1;
-  padding: 1.5rem 2rem;
+  padding: 2rem; /* 32px padding for large screens */
   box-sizing: border-box;
+}
+
+/* User request: 60px padding on smaller screens */
+@media (max-width: 768px) {
+  .profMainArea {
+    padding: 60px;
+  }
+}
+
+/* For very small mobile screens, reduce padding to avoid content squeeze */
+@media (max-width: 480px) {
+  .profMainArea {
+    padding: 1.5rem; /* 24px padding */
+  }
 }
 
 .profileHeader {
@@ -607,24 +633,23 @@
 }
 
 .profileContentRow {
+  display: flex;
   gap: 1rem;
   align-items: stretch;
+  flex-wrap: wrap; /* Allow wrapping on smaller screens */
 }
 
-.profileSummaryCard,
-.profileEditCard {
-  background-color: #ffffff;
-  border-radius: 16px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-  padding: 1rem;
+.profCard--left {
+  flex: 1 1 350px; /* Grow, shrink, with a base of 350px */
+  min-width: 300px;
 }
 
-.profileSummaryCard {
-  width: 36%;
-}
-
-.profileEditCard {
-  width: 64%;
+.profCard--right {
+  flex: 2 1 500px; /* Grow twice as fast, with a larger base */
+  min-width: 300px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
 .profileLabel {
