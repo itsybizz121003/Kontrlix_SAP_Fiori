@@ -51,9 +51,6 @@
                         </HBox>
                     </HBox>
 
-                    <!-- Summary Strip -->
-                   
-
                     <!-- Filters -->
                     <HBox class="liveFilterBar" alignItems="End" justifyContent="SpaceBetween">
                         <HBox class="dashFilterGroup" alignItems="End">
@@ -92,30 +89,35 @@
                         <Text text="{= 'Machine Data (' + ${live>/totalMachines} + ' machines)'}" class="liveSectionTitle" />
                     </HBox>
 
-                    <!-- ── Cards Grid ── -->
+                    <!-- Cards Grid -->
                     <HBox class="liveCardsGrid" items="{live>/machines}" wrap="Wrap">
                         <items>
-                            <VBox class="{path: 'live>statusState', formatter: '.formatCardClass'}">
+                            <VBox
+                                class="ldCard"
+                                style="{path: 'live>statusState', formatter: '.formatCardStyle'}">
 
-                                <!-- ── CARD HEADER: Device ID + Status Badge ── -->
+                                <customData>
+                                    <core:CustomData key="status" value="{live>statusState}" writeToDom="true" />
+                                </customData>
+
+                                <!-- CARD HEADER -->
                                 <HBox class="ldCardHead" justifyContent="SpaceBetween" alignItems="Center">
                                     <VBox>
                                         <Text text="{live>deviceId}" class="ldCardDeviceId" />
                                         <Text text="{live>subLine}"  class="ldCardCompany"  />
                                     </VBox>
                                     <ObjectStatus
-                                        text="{live>status}"
+                                        text="{live>statusUpper}"
                                         state="{live>statusState}"
                                         inverted="true"
                                         class="ldCardBadge" />
                                 </HBox>
 
-                                <!-- ── MACHINE DETAILS ── -->
+                                <!-- MACHINE DETAILS -->
                                 <VBox class="ldCardDetails">
-                                    <Text text="Model: {live>model}"    class="ldCardDetailText" />
-                                    <Text text="Part No: {live>partNo}" class="ldCardDetailText" />
+                                    <Text text="Model: {live>model}"       class="ldCardDetailText" />
+                                    <Text text="Part No: {live>partNo}"    class="ldCardDetailText" />
                                     <Text text="Material: {live>material}" class="ldCardDetailText" />
-                                    <!-- Alarm -->
                                     <HBox alignItems="Center" class="ldCardAlarmRow">
                                         <Text text="Alarm: " class="ldCardDetailLabel" />
                                         <Text text="{live>alarm}"
@@ -123,13 +125,13 @@
                                     </HBox>
                                 </VBox>
 
-                                <!-- ── START TIME ── -->
+                                <!-- START TIME -->
                                 <VBox class="ldCardStartBox">
                                     <Text text="Start" class="ldCardMiniLabel" />
                                     <Text text="{live>startTime}" class="ldCardStartTime" />
                                 </VBox>
 
-                                <!-- ── PRODUCTION + RPM BIG NUMBERS ── -->
+                                <!-- PRODUCTION + RPM BIG NUMBERS -->
                                 <HBox class="ldCardBigStats" justifyContent="SpaceBetween">
                                     <VBox class="ldCardBigStat">
                                         <Text text="PRODUCTION COUNT" class="ldCardBigLabel" />
@@ -141,42 +143,26 @@
                                     </VBox>
                                 </HBox>
 
-                                <!-- ── PARAMETERS GRID ── -->
-                                <VBox class="ldCardParamSection">
-                                    <Text text="PARAMETERS" class="ldCardParamTitle" />
-                                    <HBox class="ldCardParamGrid" justifyContent="SpaceBetween">
-                                        <VBox class="ldCardParam">
-                                            <Text text="TEMPERATURE" class="ldCardParamLabel" />
-                                            <Text text="{live>temperature}" class="ldCardParamVal" />
-                                        </VBox>
-                                        <VBox class="ldCardParam">
-                                            <Text text="PRESSURE" class="ldCardParamLabel" />
-                                            <Text text="{live>pressure}" class="ldCardParamVal" />
-                                        </VBox>
-                                        <VBox class="ldCardParam">
-                                            <Text text="RPM" class="ldCardParamLabel" />
-                                            <Text text="{live>rpm}" class="ldCardParamVal" />
-                                        </VBox>
-                                    </HBox>
-                                    <HBox class="ldCardParamGrid ldCardParamGrid--2" justifyContent="SpaceBetween">
-                                        <VBox class="ldCardParam">
-                                            <Text text="PRODUCTION" class="ldCardParamLabel" />
-                                            <Text text="{live>productionCount}" class="ldCardParamVal" />
-                                        </VBox>
-                                        <VBox class="ldCardParam">
-                                            <Text text="MACHINE STATUS" class="ldCardParamLabel" />
-                                            <Text text="{live>status}"
-                                                class="{= ${live>statusState} === 'Success' ? 'ldParamRunning' : ${live>statusState} === 'Error' ? 'ldParamStopped' : 'ldParamIdle'}" />
-                                        </VBox>
-                                        <VBox class="ldCardParam">
-                                            <Text text="ALARM" class="ldCardParamLabel" />
-                                            <Text text="{live>alarm}"
-                                                class="{= ${live>alarm} === 'NONE' ? 'ldAlarmOk' : 'ldAlarmErr'}" />
-                                        </VBox>
-                                    </HBox>
-                                </VBox>
+                                <!-- PARAMETERS SECTION — NO max-height, NO overflow here -->
+                               <VBox class="ldCardParamSection">
+    <Text text="PARAMETERS" class="ldCardParamTitle" />
 
-                                <!-- ── FOOTER: Last Sync ── -->
+    <!-- Scrollable area — sirf params scroll hoge, title nahi -->
+    <VBox class="ldCardParamScrollArea">
+        <HBox class="ldCardExtraParams"
+              items="{live>extraParams}"
+              wrap="Wrap">
+            <items>
+                <VBox class="ldCardParamExtra">
+                    <Text text="{live>key}"   class="ldCardParamLabel" />
+                    <Text text="{live>value}" class="ldCardParamVal"   />
+                </VBox>
+            </items>
+        </HBox>
+    </VBox>
+</VBox>
+
+                                <!-- FOOTER -->
                                 <HBox class="ldCardFooter" alignItems="Center">
                                     <Text text="Last Sync" class="ldCardMiniLabel" />
                                     <Text text="{live>timestamp}" class="ldCardFooterTs" />

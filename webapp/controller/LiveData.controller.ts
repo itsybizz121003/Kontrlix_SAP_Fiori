@@ -40,8 +40,7 @@ export default class LiveData extends Controller {
       isRealTime: true
     });
     view.setModel(liveModel, "live");
-    
-    // Start real-time updates (every 5 seconds)
+
     this.startRealTimeUpdates(() => {
       void this.loadLiveData();
     }, 5000);
@@ -56,22 +55,47 @@ export default class LiveData extends Controller {
   // FORMATTERS
   // ─────────────────────────────────────────────────────────────
 
-  public formatCardClass(sStatusState: string): string {
-    switch (sStatusState) {
-      case "Success": return "liveCard runningCard";
-      case "Warning": return "liveCard idleCard";
-      case "Error":   return "liveCard stoppedCard";
-      default:        return "liveCard";
-    }
-  }
-
   public formatCardStyle(sStatusState: string): string {
-    const base = "width:320px; border-radius:18px; padding:1rem 1.2rem; transition:all 0.3s ease;";
+    const base = [
+      "min-width: 280px",
+      "flex: 1 1 280px",
+      "border-radius: 12px",
+      "display: flex",
+      "flex-direction: column",
+      "box-sizing: border-box",
+      "overflow: hidden",
+      "transition: transform 0.2s ease, box-shadow 0.2s ease",
+      "margin: 0"
+    ].join("; ") + ";";
+
     switch (sStatusState) {
-      case "Success": return base + "background-color:#f0fdf4; border:2.5px solid #22c55e; box-shadow:0 4px 16px rgba(34,197,94,0.25);";
-      case "Warning": return base + "background-color:#fffbeb; border:2.5px solid #f59e0b; box-shadow:0 4px 16px rgba(245,158,11,0.25);";
-      case "Error":   return base + "background-color:#fef2f2; border:2.5px solid #ef4444; box-shadow:0 4px 16px rgba(239,68,68,0.25);";
-      default:        return base + "background-color:#ffffff; border:1px solid #e5e7eb; box-shadow:0 6px 18px rgba(15,23,42,0.08);";
+      case "Success":
+        return base + [
+          "background: linear-gradient(160deg, #bbf7d0 0%, #dcfce7 25%, #f0fdf4 55%, #ffffff 100%)",
+          "border: 2px solid #22c55e",
+          "box-shadow: 0 4px 20px rgba(34, 197, 94, 0.25)"
+        ].join("; ") + ";";
+
+      case "Warning":
+        return base + [
+          "background: linear-gradient(160deg, #fde68a 0%, #fef3c7 25%, #fffbeb 55%, #ffffff 100%)",
+          "border: 2px solid #f59e0b",
+          "box-shadow: 0 4px 20px rgba(245, 158, 11, 0.25)"
+        ].join("; ") + ";";
+
+      case "Error":
+        return base + [
+          "background: linear-gradient(160deg, #fecaca 0%, #fee2e2 25%, #fff5f5 55%, #ffffff 100%)",
+          "border: 2px solid #ef4444",
+          "box-shadow: 0 4px 20px rgba(239, 68, 68, 0.25)"
+        ].join("; ") + ";";
+
+      default:
+        return base + [
+          "background: #ffffff",
+          "border: 1.5px solid #e2e8f0",
+          "box-shadow: 0 2px 8px rgba(15, 23, 42, 0.07)"
+        ].join("; ") + ";";
     }
   }
 
@@ -147,7 +171,7 @@ export default class LiveData extends Controller {
   private applyFilters(): void {
     const view = this.getView();
     if (!view) return;
-    const model   = view.getModel("live") as JSONModel;
+    const model    = view.getModel("live") as JSONModel;
     const allCards = model.getProperty("/allMachines") || [];
     const filters  = model.getProperty("/filters");
 
@@ -180,7 +204,7 @@ export default class LiveData extends Controller {
       return true;
     });
 
-    model.setProperty("/machines",     filtered);
+    model.setProperty("/machines",      filtered);
     model.setProperty("/totalMachines", filtered.length);
     model.setProperty("/runningCount",  filtered.filter((c: any) => c.statusState === "Success").length);
     model.setProperty("/idleCount",     filtered.filter((c: any) => c.statusState === "Warning").length);
@@ -188,7 +212,7 @@ export default class LiveData extends Controller {
   }
 
   // ─────────────────────────────────────────────────────────────
-  // DATA LOADING  ← MAIN FIX IS HERE
+  // DATA LOADING
   // ─────────────────────────────────────────────────────────────
 
   private async loadLiveData(showToast = false): Promise<void> {
@@ -205,26 +229,15 @@ export default class LiveData extends Controller {
     }
 
     try {
-      // ── Pehle saare DeviceIds fetch karo ─────────────────────────────────
-      // OData entity set = Machine (collection), $top=500 taaki saari milein
-      // $orderby=Timestamp desc taaki latest pehle aayein
-      const allRows = await this.fetchAllPages(authToken);
-
-      console.log("LiveData: Total rows fetched =", allRows.length);
-      const uniqueIds = [...new Set(allRows.map((r: any) => String(r.DeviceId || "?")))];
-      console.log("LiveData: Unique DeviceIds =", uniqueIds);
-
-      // ── Har device ka sirf LATEST record rakho ────────────────────────────
+      const allRows    = await this.fetchAllPages(authToken);
       const latestRows = this.getLatestRowsByDevice(allRows);
-      console.log("LiveData: Machines after dedup =", latestRows.length);
 
       const allCards = latestRows.map((row) => {
-        const card   = this.toCardData(row);
+        const card    = this.toCardData(row);
         card.plcBrand = String(row.PlcBrand || "Unknown");
         return card;
       });
 
-      // Brand list dynamically build karo
       const brandsSet = new Set<string>();
       allCards.forEach((c: any) => brandsSet.add(c.plcBrand));
       const brandItems = [{ key: "all", text: "All Brands" }];
@@ -248,21 +261,16 @@ export default class LiveData extends Controller {
     }
   }
 
-  // ── Pagination support — saare pages fetch karo ───────────────────────────
-  // OData v4 default page size chota hota hai (20), isliye @odata.nextLink follow karo
   private async fetchAllPages(authToken: string): Promise<Array<Record<string, any>>> {
     const allRows: Array<Record<string, any>> = [];
-
-    // Pehla request — $top=1000 taaki zyada se zyada ek baar mein aaye
     let url: string | null =
-      "/sap/opu/odata4/sap/zmachine_sb/srvd_a2x/sap/zmachine_sd/0001/Machine?$top=1000&$orderby=Timestamp desc";
+      "/sap/opu/odata4/sap/zmachine_sb/srvd_a2x/sap/zmachine_sd/0001/Machine?$orderby=Timestamp desc";
 
     while (url) {
       const response = await fetch(url, {
         method: "GET",
         headers: { Accept: "application/json", Authorization: `Bearer ${authToken}` },
       });
-
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
       const payload = await response.json() as {
@@ -270,16 +278,10 @@ export default class LiveData extends Controller {
         "@odata.nextLink"?: string;
       };
 
-      const rows = payload.value || [];
-      allRows.push(...rows);
-
-      // Agar nextLink hai toh agle page pe jao, warna ruk jao
+      allRows.push(...(payload.value || []));
       url = payload["@odata.nextLink"] ?? null;
-
-      // Safety: agar 5000 se zyada rows aa gayi toh rok lo
       if (allRows.length >= 5000) break;
     }
-
     return allRows;
   }
 
@@ -313,7 +315,6 @@ export default class LiveData extends Controller {
         headers: { "Content-Type": "application/x-www-form-urlencoded", Accept: "application/json" },
         body: body.toString(),
       });
-
       if (!tokenResponse.ok) throw new Error(`Token API failed: ${tokenResponse.status}`);
 
       const tokenPayload = await tokenResponse.json() as { access_token?: string };
@@ -335,21 +336,16 @@ export default class LiveData extends Controller {
   // HELPERS
   // ─────────────────────────────────────────────────────────────
 
-  // Har DeviceId ka sirf ek (latest Timestamp wala) record rakho
   private getLatestRowsByDevice(rows: Array<Record<string, any>>): Array<Record<string, any>> {
     const latestMap: Record<string, Record<string, any>> = {};
-
     rows.forEach((row) => {
       const deviceId  = String(row.DeviceId || "UNKNOWN");
       const currentTs = this.toTimestampMs(row.Timestamp);
       const existing  = latestMap[deviceId];
-
       if (!existing || currentTs > this.toTimestampMs(existing.Timestamp)) {
         latestMap[deviceId] = row;
       }
     });
-
-    // Latest timestamp wale device pehle
     return Object.values(latestMap).sort(
       (a, b) => this.toTimestampMs(b.Timestamp) - this.toTimestampMs(a.Timestamp),
     );
@@ -364,16 +360,29 @@ export default class LiveData extends Controller {
     return Number.isNaN(parsed) ? 0 : parsed;
   }
 
-  private toCardData(row: Record<string, any>): Record<string, string> {
+  private toCardData(row: Record<string, any>): Record<string, any> {
     let alarm = "NONE", temperature = "-", pressure = "-", rpm = "-", productionCount = "-";
+    let extraParams: Array<{ key: string; value: string }> = [];
 
     try {
       const parameters = row.Parameters ? JSON.parse(String(row.Parameters)) : {};
-      alarm           = String(parameters.ALARM        || "NONE");
-      temperature     = String(parameters.TEMPERATURE  || parameters.TEMP || "-");
-      pressure        = String(parameters.PRESSURE     || "-");
-      rpm             = String(parameters.RPM          || "-");
-      productionCount = String(row.ProductionCount     || parameters.PRODUCTION || "-");
+
+      alarm           = String(parameters.ALARM       || "NONE");
+      temperature     = String(parameters.TEMPERATURE || parameters.TEMP || "-");
+      pressure        = String(parameters.PRESSURE    || "-");
+      rpm             = String(parameters.RPM         || "-");
+      productionCount = String(row.ProductionCount    || parameters.PRODUCTION || "-");
+
+      // Fixed keys jo upar already show ho rahe hain
+      const fixedKeys = new Set([
+        "ALARM", "TEMPERATURE", "TEMP", "PRESSURE",
+        "RPM", "PRODUCTION", "MACHINE_STATUS"
+      ]);
+
+      // Baaki saare extra params dynamically collect karo
+      extraParams = Object.entries(parameters)
+        .map(([k, v]) => ({ key: k, value: String(v) }));
+
     } catch { alarm = "NONE"; }
 
     const status      = String(row.Status || "UNKNOWN");
@@ -385,26 +394,25 @@ export default class LiveData extends Controller {
       statusUpper === "WARNING" ? "Warning" : "Error";
 
     const alarmState =
-      alarm === "NONE"        ? "Success" :
-      alarm.includes("WARN")  ? "Warning" : "Error";
+      alarm === "NONE"       ? "Success" :
+      alarm.includes("WARN") ? "Warning" : "Error";
 
     return {
       deviceId:        String(row.DeviceId     || "-"),
       subLine:         String(row.Companyname  || "-"),
+      statusUpper,
       status,
       statusState,
       model:           String(row.PlcModel     || "-"),
       partNo:          String(row.PartNo       || "-"),
-      material:        String(row.MaterialCode || "-"),
-      alarm,
+        material:        String(row.MaterialCode || "-"),
+        rpm : String(rpm || "-"),
       alarmState,
       startTime:       String(row.StartTime    || row.Timestamp || "-"),
       timestamp:       String(row.Timestamp    || "-"),
       productionCount,
-      rpm,
-      temperature,
-      pressure,
       MachineBrand:    String(row.MachineBrand || "-"),
+      extraParams,   // ← extra dynamic parameters
     };
   }
 }

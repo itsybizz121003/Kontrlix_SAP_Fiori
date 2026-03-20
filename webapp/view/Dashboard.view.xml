@@ -49,11 +49,7 @@
                                 <Text text="Last Updated" class="dashLastUpdatedLabel" />
                                 <Text text="{dash>/lastUpdated}" class="dashLastUpdatedVal" />
                             </VBox>
-                            <ObjectStatus
-                                text="LIVE"
-                                state="Success"
-                                icon="sap-icon://status-positive"
-                                class="sapUiSmallMarginEnd" />
+                            
                             <ObjectStatus
                                 text="{dash>/connectionStatus}"
                                 state="{dash>/connectionState}"

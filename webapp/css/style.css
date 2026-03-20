@@ -1794,6 +1794,280 @@
     color: #94a3b8 !important;
 }
 
+
+/* ═══════════════════════════════════════════════════════════════════════
+   LIVE DATA PAGE
+═══════════════════════════════════════════════════════════════════════ */
+
+.liveMainArea {
+    flex: 1;
+    min-width: 0;
+    background: #f1f5f9;
+    overflow-x: hidden;
+}
+
+/* ── Page Header ── */
+.livePageHeader {
+    background: #ffffff;
+    padding: 20px 28px;
+    border-bottom: 1px solid #e2e8f0;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.livePageTitle {
+    font-size: 1.4rem !important;
+    font-weight: 800 !important;
+    color: #0f172a !important;
+}
+
+.livePageSub {
+    font-size: 0.83rem !important;
+    color: #64748b !important;
+    margin-top: 3px;
+}
+
+.liveHeaderRight    { gap: 14px; flex-wrap: wrap; align-items: center; }
+.liveLastUpdLabel   { font-size: 0.68rem !important; color: #94a3b8 !important; text-transform: uppercase; letter-spacing: 0.5px; }
+.liveLastUpdVal     { font-size: 0.78rem !important; color: #475569 !important; font-weight: 500 !important; }
+
+/* ── Filter Bar ── */
+.liveFilterBar {
+    background: #ffffff;
+    padding: 12px 28px;
+    border-bottom: 1px solid #e2e8f0;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+/* ── Section Header ── */
+.liveSectionHeader  { padding: 14px 28px 8px; }
+.liveSectionTitle   { font-size: 0.95rem !important; font-weight: 700 !important; color: #334155 !important; }
+
+/* ═══════════════════════════════════════════════════════════════════════
+   CARDS GRID
+═══════════════════════════════════════════════════════════════════════ */
+/* Cards grid */
+.liveCardsGrid {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 20px !important;
+    padding: 16px 28px 32px !important;
+    align-items: flex-start !important;
+}
+
+.ldCard {
+    flex: 0 0 calc(33.33% - 14px) !important;
+    width: calc(33.33% - 14px) !important;
+    max-width: calc(33.33% - 14px) !important;
+    min-width: 0 !important;
+    border-radius: 16px;
+    box-sizing: border-box !important;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.ldCard:hover {
+    transform: translateY(-3px);
+}
+
+/* ── Status colors via data-status ── */
+.ldCard[data-status="Success"] {
+    background: linear-gradient(160deg, #bbf7d0 0%, #dcfce7 25%, #f0fdf4 55%, #ffffff 100%) !important;
+    border: 2px solid #22c55e !important;
+    box-shadow: 0 4px 20px rgba(34, 197, 94, 0.2) !important;
+}
+
+.ldCard[data-status="Warning"] {
+    background: linear-gradient(160deg, #fde68a 0%, #fef3c7 25%, #fffbeb 55%, #ffffff 100%) !important;
+    border: 2px solid #f59e0b !important;
+    box-shadow: 0 4px 20px rgba(245, 158, 11, 0.2) !important;
+}
+
+.ldCard[data-status="Error"] {
+    background: linear-gradient(160deg, #fecaca 0%, #fee2e2 25%, #fff5f5 55%, #ffffff 100%) !important;
+    border: 2px solid #ef4444 !important;
+    box-shadow: 0 4px 20px rgba(239, 68, 68, 0.2) !important;
+}
+
+/* ── Card Header ── */
+.ldCardHead {
+    padding: 14px 16px 10px;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+
+.ldCardDeviceId {
+    font-size: 1.05rem !important;
+    font-weight: 800 !important;
+    color: #0f172a !important;
+    letter-spacing: 0.3px;
+}
+
+.ldCardCompany  { font-size: 0.72rem !important; color: #64748b !important; margin-top: 2px; }
+.ldCardBadge    { font-size: 0.72rem !important; }
+
+/* ── Machine Details ── */
+.ldCardDetails {
+    padding: 10px 16px 6px;
+    gap: 3px;
+}
+
+.ldCardDetailText   { font-size: 0.8rem !important; color: #475569 !important; }
+.ldCardDetailLabel  { font-size: 0.8rem !important; color: #475569 !important; }
+.ldCardAlarmRow     { gap: 2px; margin-top: 2px; }
+
+.ldAlarmOk  { font-size: 0.8rem !important; color: #16a34a !important; font-weight: 600 !important; }
+.ldAlarmErr { font-size: 0.8rem !important; color: #dc2626 !important; font-weight: 600 !important; }
+
+/* ── Start Time ── */
+.ldCardStartBox     { padding: 4px 16px 8px; gap: 1px; }
+.ldCardMiniLabel    { font-size: 0.65rem !important; color: #94a3b8 !important; text-transform: uppercase; letter-spacing: 0.4px; }
+.ldCardStartTime    { font-size: 0.78rem !important; color: #475569 !important; }
+
+/* ── Production + RPM ── */
+.ldCardBigStats {
+    padding: 10px 16px;
+    border-top: 1px solid rgba(0,0,0,0.05);
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+    gap: 12px;
+}
+
+.ldCardBigStat  { gap: 2px; }
+
+.ldCardBigLabel {
+    font-size: 0.62rem !important;
+    font-weight: 700 !important;
+    color: #94a3b8 !important;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.ldCardBigValue {
+    font-size: 1.7rem !important;
+    font-weight: 800 !important;
+    color: #0f172a !important;
+    line-height: 1 !important;
+}
+
+/* ── Parameters Section ── */
+.ldCardParamSection {
+    margin: 8px 10px;
+    padding: 10px 12px 8px;
+    background: rgba(255, 255, 255, 0.7);
+    border: 1px solid rgba(0,0,0,0.07);
+    border-radius: 10px;
+    gap: 0;
+    overflow: visible !important;
+    max-height: none !important;
+}
+
+.ldCardParamTitle {
+    font-size: 0.62rem !important;
+    font-weight: 700 !important;
+    color: #94a3b8 !important;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+}
+
+/* ── Scrollable params area ── */
+.ldCardParamScrollArea {
+    max-height: 120px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+/* Scrollbar — thin, only on hover */
+.ldCardParamScrollArea::-webkit-scrollbar          { width: 4px; }
+.ldCardParamScrollArea::-webkit-scrollbar-track    { background: transparent; }
+.ldCardParamScrollArea::-webkit-scrollbar-thumb    { background: transparent; border-radius: 4px; }
+.ldCardParamScrollArea:hover::-webkit-scrollbar-thumb { background: #94a3b8; }
+
+/* ── Params Grid ── */
+.ldCardExtraParams {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    width: 100% !important;
+    gap: 0 !important;
+}
+
+/* Each param — exactly 1/3 width = 3 per row */
+.ldCardParamExtra {
+    flex: 0 0 33.33% !important;
+    width: 33.33% !important;
+    max-width: 33.33% !important;
+    box-sizing: border-box;
+    padding: 5px 6px 5px 0;
+    gap: 2px;
+    overflow: hidden;
+}
+
+.ldCardParamExtra .ldCardParamLabel {
+    font-size: 0.58rem !important;
+    font-weight: 600 !important;
+    color: #94a3b8 !important;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+    max-width: 100% !important;
+}
+
+.ldCardParamExtra .ldCardParamVal {
+    font-size: 0.88rem !important;
+    font-weight: 700 !important;
+    color: #1e293b !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+    max-width: 100% !important;
+}
+
+/* Status colors in params */
+.ldParamRunning { font-size: 0.85rem !important; color: #16a34a !important; font-weight: 700 !important; }
+.ldParamStopped { font-size: 0.85rem !important; color: #dc2626 !important; font-weight: 700 !important; }
+.ldParamIdle    { font-size: 0.85rem !important; color: #d97706 !important; font-weight: 700 !important; }
+
+/* ── Footer ── */
+.ldCardFooter {
+    padding: 8px 16px 12px;
+    border-top: 1px solid rgba(0,0,0,0.05);
+    gap: 6px;
+    margin-top: auto;
+}
+
+.ldCardFooterTs { font-size: 0.75rem !important; color: #64748b !important; }
+
+/* ═══════════════════════════════════════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════════════════════════════════════ */
+/* Tablet — 2 per row */
+@media (max-width: 1024px) {
+    .ldCard {
+        flex: 0 0 calc(50% - 10px) !important;
+        width: calc(50% - 10px) !important;
+        min-width: calc(50% - 10px) !important;
+        max-width: calc(50% - 10px) !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .ldCard { width: calc(50% - 10px) !important; min-width: calc(50% - 10px) !important; max-width: calc(50% - 10px) !important; flex: 0 0 calc(50% - 10px) !important; }
+}
+
+/* Mobile — 1 per row */
+@media (max-width: 600px) {
+    .ldCard {
+        flex: 0 0 100% !important;
+        width: 100% !important;
+        min-width: 100% !important;
+        max-width: 100% !important;
+    }
+}
+
 /* ═══════════════════════════════════════════════════════════════════════
    HISTORY TABLE
 ═══════════════════════════════════════════════════════════════════════ */
@@ -1893,323 +2167,6 @@
 @media (max-width: 400px) {
     .dashKpi         { flex: 1 1 100%; }
     .dashKpiValue    { font-size: 1.8rem !important; }
-}
-/* ═══════════════════════════════════════════════════════════════════════
-   LIVE DATA — CARD DESIGN MATCHING IMAGE
-═══════════════════════════════════════════════════════════════════════ */
-
-.liveMainArea {
-    flex: 1;
-    min-width: 0;
-    background: #f1f5f9;
-    overflow-x: hidden;
-}
-
-/* ── Page Header ──────────────────────────────────────────────────────── */
-.livePageHeader {
-    background: #ffffff;
-    padding: 20px 28px;
-    border-bottom: 1px solid #e2e8f0;
-    flex-wrap: wrap;
-    gap: 12px;
-}
-
-.livePageTitle {
-    font-size: 1.4rem !important;
-    font-weight: 800 !important;
-    color: #0f172a !important;
-}
-
-.livePageSub {
-    font-size: 0.83rem !important;
-    color: #64748b !important;
-    margin-top: 3px;
-}
-
-.liveHeaderRight { gap: 14px; flex-wrap: wrap; align-items: center; }
-.liveLastUpdLabel { font-size: 0.68rem !important; color: #94a3b8 !important; text-transform: uppercase; letter-spacing: 0.5px; }
-.liveLastUpdVal   { font-size: 0.78rem !important; color: #475569 !important; font-weight: 500 !important; }
-
-/* ── Summary Strip ────────────────────────────────────────────────────── */
-.liveSummaryStrip {
-    background: #0f172a;
-    padding: 12px 28px;
-    gap: 0;
-}
-
-.liveSummaryItem {
-    flex: 1;
-    align-items: center;
-    padding: 6px 16px;
-    border-right: 1px solid rgba(255,255,255,0.1);
-    gap: 2px;
-}
-.liveSummaryItem:last-child { border-right: none; }
-
-.liveSummaryLabel {
-    font-size: 0.65rem !important;
-    font-weight: 700 !important;
-    color: #94a3b8 !important;
-    text-transform: uppercase;
-    letter-spacing: 0.6px;
-}
-
-.liveSummaryValue {
-    font-size: 1.5rem !important;
-    font-weight: 800 !important;
-    color: #f8fafc !important;
-    line-height: 1 !important;
-}
-
-.liveSummaryValue--run  { color: #4ade80 !important; }
-.liveSummaryValue--idle { color: #fbbf24 !important; }
-.liveSummaryValue--stop { color: #f87171 !important; }
-
-/* ── Filter Bar ───────────────────────────────────────────────────────── */
-.liveFilterBar {
-    background: #ffffff;
-    padding: 12px 28px;
-    border-bottom: 1px solid #e2e8f0;
-    flex-wrap: wrap;
-    gap: 10px;
-}
-
-/* ── Section Header ───────────────────────────────────────────────────── */
-.liveSectionHeader { padding: 14px 28px 8px; }
-.liveSectionTitle {
-    font-size: 0.95rem !important;
-    font-weight: 700 !important;
-    color: #334155 !important;
-}
-
-/* ═══════════════════════════════════════════════════════════════════════
-   CARDS GRID
-═══════════════════════════════════════════════════════════════════════ */
-.liveCardsGrid {
-    display: flex !important;
-    flex-wrap: wrap !important;
-    gap: 18px !important;
-    padding: 4px 28px 32px !important;
-    align-items: stretch;
-}
-
-/* ── Base Card ── white, subtle border, same as image ── */
-.liveCard {
-    width: 300px;
-    min-width: 280px;
-    flex: 1 1 280px;
-    border-radius: 12px;
-    background: #ffffff;
-    border: 1.5px solid #f7f7f7;
-    box-shadow: 0 2px 8px rgba(15,23,42,0.07);
-    display: flex;
-    flex-direction: column;
-    box-sizing: border-box;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    overflow: hidden;
-}
-
-.liveCard:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 24px rgba(15,23,42,0.12);
-}
-
-/* ── RUNNING — green left border accent ── */
-.runningCard {
-    border-left: 4px solid #22c55e;
-}
-
-.runningCard { border: 2px solid #22c55e !important; }  /* green */
-.idleCard    { border: 2px solid #f59e0b !important; }  /* amber */
-.stoppedCard { border: 2px solid #ef4444 !important; }  /* red   */
-
-
-.runningCard { background: linear-gradient(180deg, #f0fdf4 0%, #ffffff 18%) !important; }
-.idleCard    { background: linear-gradient(180deg, #fffbeb 0%, #ffffff 18%) !important; }
-.stoppedCard { background: linear-gradient(180deg, #fff5f5 0%, #ffffff 18%) !important; }
-/* ── IDLE — amber left border accent ── */
-.idleCard {
-    border-left: 4px solid #f59e0b;
-}
-
-/* ── STOPPED — red left border accent ── */
-.stoppedCard {
-    border-left: 4px solid #ef4444;
-}
-
-/* ── Card Header ── */
-.ldCardHead {
-    padding: 14px 16px 10px;
-    border-bottom: 1px solid #f1f5f9;
-}
-
-.ldCardDeviceId {
-    font-size: 1.05rem !important;
-    font-weight: 800 !important;
-    color: #0f172a !important;
-    letter-spacing: 0.3px;
-}
-
-.ldCardCompany {
-    font-size: 0.72rem !important;
-    color: #94a3b8 !important;
-    margin-top: 2px;
-}
-
-.ldCardBadge { font-size: 0.72rem !important; }
-
-/* ── Machine Details ── */
-.ldCardDetails {
-    padding: 10px 16px 6px;
-    gap: 3px;
-}
-
-.ldCardDetailText {
-    font-size: 0.8rem !important;
-    color: #475569 !important;
-}
-
-.ldCardDetailLabel {
-    font-size: 0.8rem !important;
-    color: #475569 !important;
-}
-
-.ldCardAlarmRow { gap: 2px; margin-top: 2px; }
-
-.ldAlarmOk  { font-size: 0.8rem !important; color: #16a34a !important; font-style: italic; font-weight: 600 !important; }
-.ldAlarmErr { font-size: 0.8rem !important; color: #dc2626 !important; font-style: italic; font-weight: 600 !important; }
-
-/* ── Start Time ── */
-.ldCardStartBox {
-    padding: 4px 16px 8px;
-    gap: 1px;
-}
-
-.ldCardMiniLabel {
-    font-size: 0.65rem !important;
-    color: #94a3b8 !important;
-    text-transform: uppercase;
-    letter-spacing: 0.4px;
-}
-
-.ldCardStartTime {
-    font-size: 0.78rem !important;
-    color: #475569 !important;
-}
-
-/* ── Production + RPM Big Numbers ── */
-.ldCardBigStats {
-    padding: 10px 16px;
-    border-top: 1px solid #f1f5f9;
-    border-bottom: 1px solid #f1f5f9;
-    gap: 12px;
-}
-
-.ldCardBigStat { gap: 2px; }
-
-.ldCardBigLabel {
-    font-size: 0.62rem !important;
-    font-weight: 700 !important;
-    color: #94a3b8 !important;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.ldCardBigValue {
-    font-size: 1.7rem !important;
-    font-weight: 800 !important;
-    color: #0f172a !important;
-    line-height: 1 !important;
-}
-
-/* ── Parameters Grid ── */
-.ldCardParamSection {
-    padding: 10px 16px 8px;
-    gap: 6px;
-}
-
-.ldCardParamTitle {
-    font-size: 0.65rem !important;
-    font-weight: 700 !important;
-    color: #94a3b8 !important;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin-bottom: 4px;
-}
-
-.ldCardParamGrid {
-    gap: 4px;
-    border-top: 1px solid #f1f5f9;
-    padding-top: 6px;
-}
-
-.ldCardParamGrid--2 {
-    margin-top: 4px;
-}
-
-.ldCardParam {
-    flex: 1;
-    gap: 1px;
-    padding: 4px 2px;
-}
-
-.ldCardParamLabel {
-    font-size: 0.6rem !important;
-    font-weight: 600 !important;
-    color: #94a3b8 !important;
-    text-transform: uppercase;
-    letter-spacing: 0.3px;
-    /* truncate long labels */
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    max-width: 70px;
-}
-
-.ldCardParamVal {
-    font-size: 0.9rem !important;
-    font-weight: 700 !important;
-    color: #1e293b !important;
-}
-
-.ldParamRunning { font-size: 0.85rem !important; color: #16a34a !important; font-weight: 700 !important; }
-.ldParamStopped { font-size: 0.85rem !important; color: #dc2626 !important; font-weight: 700 !important; }
-.ldParamIdle    { font-size: 0.85rem !important; color: #d97706 !important; font-weight: 700 !important; }
-
-/* ── Footer ── */
-.ldCardFooter {
-    padding: 8px 16px 12px;
-    border-top: 1px solid #f1f5f9;
-    gap: 6px;
-}
-
-.ldCardFooterTs {
-    font-size: 0.75rem !important;
-    color: #64748b !important;
-}
-
-/* ═══════════════════════════════════════════════════════════════════════
-   RESPONSIVE
-═══════════════════════════════════════════════════════════════════════ */
-@media (max-width: 1024px) {
-    .liveCardsGrid  { padding: 4px 18px 24px !important; }
-    .livePageHeader { padding: 16px 18px; }
-    .liveFilterBar  { padding: 10px 18px; }
-    .liveSummaryStrip { padding: 10px 18px; }
-}
-
-@media (max-width: 768px) {
-    .dashSideNav { width: 50px; min-width: 50px; }
-    .liveCard    { flex: 1 1 calc(50% - 18px); }
-}
-
-@media (max-width: 600px) {
-    .dashSideNav  { display: none !important; }
-    .liveMainArea { width: 100% !important; }
-    .liveCard     { flex: 1 1 100%; }
-    .livePageHeader { padding: 12px; flex-direction: column; align-items: flex-start; }
-    .liveHeaderRight { width: 100%; justify-content: space-between; }
-    .liveCardsGrid { padding: 4px 12px 20px !important; gap: 14px !important; }
 }
 
 
@@ -2465,4 +2422,31 @@
     .profContentRow  { padding: 14px 12px; gap: 14px; }
     .profCard        { padding: 16px; }
     .profHeroLeft    { flex-direction: column; align-items: flex-start; }
+}
+
+.ldCard[data-status="Success"] {
+    background: linear-gradient(160deg, #bbf7d0 0%, #dcfce7 25%, #f0fdf4 55%, #ffffff 100%) !important;
+    border: 1px solid #22c55e !important;
+    border-radius: 20px;
+    padding: 10px;
+
+    box-shadow: 0 4px 16px rgba(34,197,94,0.2) !important;
+}
+
+.ldCard[data-status="Warning"] {
+    background: linear-gradient(160deg, #fde68a 0%, #fef3c7 25%, #fffbeb 55%, #ffffff 100%) !important;
+    border: 1px solid #f59e0b !important;
+    border-radius: 20px;
+    padding: 10px;
+
+    box-shadow: 0 4px 16px rgba(245,158,11,0.2) !important;
+}
+
+.ldCard[data-status="Error"] {
+    background: linear-gradient(160deg, #fecaca 0%, #fee2e2 25%, #fff5f5 55%, #ffffff 100%) !important;
+    border: 1px solid #ef4444 !important;
+    border-radius: 20px;
+    padding: 10px;
+
+    box-shadow: 0 4px 16px rgba(239,68,68,0.2) !important;
 }
