@@ -2,11 +2,15 @@ import Controller from "sap/ui/core/mvc/Controller";
 import UIComponent from "sap/ui/core/UIComponent";
 import MessageToast from "sap/m/MessageToast";
 import JSONModel from "sap/ui/model/json/JSONModel";
+import Fragment from "sap/ui/core/Fragment";
+import Dialog from "sap/m/Dialog";
 
 /**
  * @namespace ashu.ashu.controller
  */
 export default class Requests extends Controller {
+
+    private _addRequestDialog: Dialog | null = null;
 
     public onInit(): void {
         const view = this.getView();
@@ -28,8 +32,24 @@ export default class Requests extends Controller {
             // Pagination
             currentPage: 1,
             pageSize: 10,
-            totalPages: 1
+            totalPages: 1,
+            // Role & Form
+            isEmployee: false,
+            isAdmin: false,
+            isSupervisor: false,
+            form: {
+                ReqType: "tea",
+                Reason: ""
+            }
         });
+
+        // Role check
+        const userStr = window.localStorage.getItem("user");
+        const user = userStr ? JSON.parse(userStr) : {};
+        const role = String(user.Role || user.role || "").toUpperCase();
+        requestModel.setProperty("/isEmployee", role === "EMPLOYEE");
+        requestModel.setProperty("/isAdmin", role === "ADMIN" || role === "SUPER ADMIN");
+        requestModel.setProperty("/isSupervisor", role === "SUPERVISOR");
 
         view.setModel(requestModel, "req");
         void this.loadRequests();
@@ -67,6 +87,99 @@ export default class Requests extends Controller {
     public onSignOut(): void { this.onLogout(); }
 
     public onRefreshRequests(): void { void this.loadRequests(true); }
+
+    public async onOpenAddRequest(): Promise<void> {
+        const view = this.getView();
+        if (!view) return;
+
+        if (!this._addRequestDialog) {
+            this._addRequestDialog = await Fragment.load({
+                id: view.getId(),
+                name: "ashu.ashu.view.AddRequestDialog",
+                controller: this
+            }) as Dialog;
+            view.addDependent(this._addRequestDialog);
+        }
+
+        const model = view.getModel("req") as JSONModel;
+        model.setProperty("/form", {
+            ReqType: "tea",
+            Reason: ""
+        });
+
+        this._addRequestDialog.open();
+    }
+
+    public onCloseAddRequest(): void {
+        this._addRequestDialog?.close();
+    }
+
+    public async onSubmitRequest(): Promise<void> {
+        const view = this.getView();
+        if (!view) return;
+
+        const model = view.getModel("req") as JSONModel;
+        const form = model.getProperty("/form");
+
+        if (!form.Reason) {
+            MessageToast.show("Please provide a reason");
+            return;
+        }
+
+        const userStr = window.localStorage.getItem("user");
+        const user = userStr ? JSON.parse(userStr) : {};
+        const supervisorsStr = window.localStorage.getItem("supervisors");
+        const supervisor = supervisorsStr ? JSON.parse(supervisorsStr) : {};
+
+        const token = this.getAuthToken();
+        const csrfToken = await this.getCSRFToken();
+
+        const supervisorName = (String(supervisor.firstName || "") + " " + String(supervisor.lastName || "")).trim();
+        const supervisorEmail = String(supervisor.email || "");
+        const supervisorId = String(supervisor.supervisorId || "");
+
+        const newRequest = {
+            RequestId: "REQ" + Date.now(),
+            EmployeeId: String(user.EmployeeId || user.userId || ""),
+            EmployeeName: (String(user.firstName || user.Name || user.name || "") + " " + String(user.lastName || "")).trim() || String(user.email || user.Email || ""),
+            EmployeeEmail: String(user.Email || user.email || ""),
+            SupervisorId: supervisorId,
+            SupervisorName: supervisorName,
+            SupervisorEmail: supervisorEmail,
+            ReqType: form.ReqType,
+            Reason: form.Reason,
+            Status: "pending",
+            SupApprovalStatus: "pending",
+            AdminApprovalStatus: "pending",
+            CreatedAt: new Date().toISOString()
+        };
+
+        try {
+            const res = await fetch(
+                "/sap/opu/odata4/sap/zrequest_sb/srvd_a2x/sap/zrequest_sd/0001/Request",
+                {
+                    method: "POST",
+                    headers: {
+                        "Accept": "application/json",
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${token}`,
+                        "x-csrf-token": csrfToken
+                    },
+                    body: JSON.stringify(newRequest)
+                }
+            );
+
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+            MessageToast.show("Request submitted successfully!");
+            this.onCloseAddRequest();
+            await this.loadRequests();
+
+        } catch (e) {
+            console.error("Submission failed:", e);
+            MessageToast.show("Failed to submit request");
+        }
+    }
 
     public onSearch(oEvent: any): void {
         const query = oEvent.getParameter("query") || oEvent.getParameter("newValue") || "";
@@ -156,6 +269,26 @@ export default class Requests extends Controller {
     private async updateRequestStatus(requestId: string, status: string): Promise<void> {
         const token     = this.getAuthToken();
         const csrfToken = await this.getCSRFToken();
+        const model = this.getView()?.getModel("req") as JSONModel;
+        const isAdmin = model.getProperty("/isAdmin") as boolean;
+        const isSupervisor = model.getProperty("/isSupervisor") as boolean;
+
+        const payload: Record<string, any> = {};
+
+        if (isAdmin) {
+            payload.AdminApprovalStatus = status;
+            payload.AdminApprovedAt = new Date().toISOString();
+            // If Admin approves, it's final
+            payload.Status = status;
+        } else if (isSupervisor) {
+            payload.SupApprovalStatus = status;
+            payload.SupApprovedAt = new Date().toISOString();
+            // If Supervisor rejects, it's final (optional, based on requirements)
+            // But if Admin approves, Supervisor approval is not needed
+            if (status === "rejected") {
+                payload.Status = "rejected";
+            }
+        }
 
         try {
             const res = await fetch(
@@ -168,11 +301,7 @@ export default class Requests extends Controller {
                         "Authorization": `Bearer ${token}`,
                         "x-csrf-token":  csrfToken
                     },
-                    body: JSON.stringify({
-                        AdminApprovalStatus: status,
-                        AdminApprovedAt:     new Date().toISOString(),
-                        Status:              status
-                    })
+                    body: JSON.stringify(payload)
                 }
             );
 

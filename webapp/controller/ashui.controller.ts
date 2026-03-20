@@ -62,6 +62,7 @@ export default class ashui extends Controller {
                     lastName?: string;
                     isSuper?: number;
                     isSupervisor?: number;
+
                 };
                 assignedResources?: Array<{
                     resourceId?: string;
@@ -71,6 +72,12 @@ export default class ashui extends Controller {
                     employeeId?: string;
                     firstName?: string;
                 }>;
+                supervisor
+                ?: Array<{
+                    supervisorId?: string;
+                    
+                }>;
+
             };
 
             if (loginData.success && loginData.token) {
@@ -78,7 +85,8 @@ export default class ashui extends Controller {
                 window.localStorage.setItem("machineApiToken", sapToken);
                 window.localStorage.setItem("appToken", String(loginData.token));
                 window.localStorage.setItem("user", JSON.stringify(loginData.user));
-                
+                window.localStorage.setItem("supervisors", JSON.stringify(loginData.supervisor));
+
                 // Store assigned resources and employees
                 if (loginData.assignedResources) {
                     window.localStorage.setItem("assignedResources", JSON.stringify(loginData.assignedResources));

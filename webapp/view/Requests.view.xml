@@ -43,6 +43,13 @@
                                 state="{req>/connectionStatusState}"
                                 class="reqConnectionStatus" />
                             <Button
+                                icon="sap-icon://add"
+                                text="New Request"
+                                type="Emphasized"
+                                press=".onOpenAddRequest"
+                                visible="{req>/isEmployee}"
+                                class="reqAddBtn" />
+                            <Button
                                 icon="sap-icon://synchronize"
                                 text="Refresh"
                                 type="Default"
@@ -176,22 +183,43 @@
 
                                         <!-- Actions -->
                                         <HBox class="reqActionBtns" alignItems="Center">
+                                            <!-- Supervisor Approve/Reject -->
                                             <Button
                                                 text="Approve"
                                                 type="Accept"
                                                 class="reqApproveBtn"
-                                                visible="{= ${req>AdminApprovalStatus} === 'pending'}"
+                                                visible="{= ${req>/isSupervisor} &amp;&amp; ${req>SupApprovalStatus} === 'pending' &amp;&amp; ${req>AdminApprovalStatus} === 'pending'}"
                                                 press=".onApproveRequest" />
                                             <Button
                                                 text="Reject"
                                                 type="Reject"
                                                 class="reqRejectBtn"
-                                                visible="{= ${req>AdminApprovalStatus} === 'pending'}"
+                                                visible="{= ${req>/isSupervisor} &amp;&amp; ${req>SupApprovalStatus} === 'pending' &amp;&amp; ${req>AdminApprovalStatus} === 'pending'}"
                                                 press=".onRejectRequest" />
+
+                                            <!-- Admin Approve/Reject -->
+                                            <Button
+                                                text="Admin Approve"
+                                                type="Accept"
+                                                class="reqApproveBtn"
+                                                visible="{= ${req>/isAdmin} &amp;&amp; ${req>AdminApprovalStatus} === 'pending'}"
+                                                press=".onApproveRequest" />
+                                            <Button
+                                                text="Admin Reject"
+                                                type="Reject"
+                                                class="reqRejectBtn"
+                                                visible="{= ${req>/isAdmin} &amp;&amp; ${req>AdminApprovalStatus} === 'pending'}"
+                                                press=".onRejectRequest" />
+
+                                            <!-- Final Status Display -->
                                             <ObjectStatus
-                                                text="{= ${req>AdminApprovalStatus} === 'approved' ? '✓ Approved' : '✗ Rejected'}"
-                                                state="{= ${req>AdminApprovalStatus} === 'approved' ? 'Success' : 'Error'}"
-                                                visible="{= ${req>AdminApprovalStatus} !== 'pending'}"
+                                                text="{= ${req>AdminApprovalStatus} === 'approved' ? '✓ Approved' : 
+                                                         ${req>AdminApprovalStatus} === 'rejected' ? '✗ Rejected' : 
+                                                         ${req>SupApprovalStatus} === 'approved' ? '✓ Sup Approved' : 
+                                                         ${req>SupApprovalStatus} === 'rejected' ? '✗ Sup Rejected' : '...'}"
+                                                state="{= ${req>AdminApprovalStatus} === 'approved' || ${req>SupApprovalStatus} === 'approved' ? 'Success' : 
+                                                         ${req>AdminApprovalStatus} === 'rejected' || ${req>SupApprovalStatus} === 'rejected' ? 'Error' : 'None'}"
+                                                visible="{= ${req>AdminApprovalStatus} !== 'pending' || ${req>SupApprovalStatus} !== 'pending'}"
                                                 class="reqDoneStatus" />
                                         </HBox>
                                     </cells>
