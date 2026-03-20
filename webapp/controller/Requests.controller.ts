@@ -13,7 +13,8 @@ export default class Requests extends Controller {
         if (!view) return;
 
         const requestModel = new JSONModel({
-            rows: [],
+            allRows: [],     // Unfiltered data
+            rows: [],        // Displayed data
             rowCount:        0,
             pendingCount:    0,
             supApprovedCount: 0,
@@ -21,7 +22,13 @@ export default class Requests extends Controller {
             rejectedCount:   0,
             connectionStatusText:  "OFFLINE",
             connectionStatusState: "Error",
-            lastUpdated: "-"
+            lastUpdated: "-",
+            searchQuery: "",
+            selectedStatus: "allStatus",
+            // Pagination
+            currentPage: 1,
+            pageSize: 10,
+            totalPages: 1
         });
 
         view.setModel(requestModel, "req");
@@ -60,6 +67,79 @@ export default class Requests extends Controller {
     public onSignOut(): void { this.onLogout(); }
 
     public onRefreshRequests(): void { void this.loadRequests(true); }
+
+    public onSearch(oEvent: any): void {
+        const query = oEvent.getParameter("query") || oEvent.getParameter("newValue") || "";
+        const model = this.getView()?.getModel("req") as JSONModel;
+        model.setProperty("/searchQuery", query);
+        model.setProperty("/currentPage", 1); // Reset to first page
+        this.applyFilters();
+    }
+
+    public onStatusFilterChange(oEvent: any): void {
+        const selectedKey = oEvent.getSource().getSelectedKey();
+        const model = this.getView()?.getModel("req") as JSONModel;
+        model.setProperty("/selectedStatus", selectedKey);
+        model.setProperty("/currentPage", 1); // Reset to first page
+        this.applyFilters();
+    }
+
+    public onPreviousPage(): void {
+        const model = this.getView()?.getModel("req") as JSONModel;
+        const current = model.getProperty("/currentPage") as number;
+        if (current > 1) {
+            model.setProperty("/currentPage", current - 1);
+            this.applyFilters();
+        }
+    }
+
+    public onNextPage(): void {
+        const model = this.getView()?.getModel("req") as JSONModel;
+        const current = model.getProperty("/currentPage") as number;
+        const total = model.getProperty("/totalPages") as number;
+        if (current < total) {
+            model.setProperty("/currentPage", current + 1);
+            this.applyFilters();
+        }
+    }
+
+    private applyFilters(): void {
+        const model = this.getView()?.getModel("req") as JSONModel;
+        if (!model) return;
+
+        const allRows = model.getProperty("/allRows") as any[];
+        const query = (model.getProperty("/searchQuery") || "").toLowerCase();
+        const status = model.getProperty("/selectedStatus");
+        const currentPage = model.getProperty("/currentPage") as number;
+        const pageSize = model.getProperty("/pageSize") as number;
+
+        let filtered = allRows;
+
+        // 1. Search Filter
+        if (query) {
+            filtered = allRows.filter(r => 
+                String(r.EmployeeName  || "").toLowerCase().includes(query) ||
+                String(r.EmployeeEmail || "").toLowerCase().includes(query) ||
+                String(r.Reason        || "").toLowerCase().includes(query) ||
+                String(r.ReqType       || "").toLowerCase().includes(query)
+            );
+        }
+
+        // 2. Status Filter
+        if (status && status !== "allStatus") {
+            filtered = filtered.filter(r => String(r.AdminApprovalStatus || "").toLowerCase() === status.toLowerCase());
+        }
+
+        // 3. Pagination slicing
+        const totalItems = filtered.length;
+        const totalPages = Math.ceil(totalItems / pageSize) || 1;
+        const startIndex = (currentPage - 1) * pageSize;
+        const endIndex = startIndex + pageSize;
+        const paginatedRows = filtered.slice(startIndex, endIndex);
+
+        model.setProperty("/rows", paginatedRows);
+        model.setProperty("/totalPages", totalPages);
+    }
 
     public async onApproveRequest(oEvent: any): Promise<void> {
         const ctx = oEvent.getSource().getBindingContext("req");
@@ -135,7 +215,7 @@ export default class Requests extends Controller {
             const approvedCount    = rows.filter(r => String(r.AdminApprovalStatus       || "").toLowerCase() === "approved").length;
             const rejectedCount    = rows.filter(r => String(r.AdminApprovalStatus       || "").toLowerCase() === "rejected").length;
 
-            model.setProperty("/rows",                rows);
+            model.setProperty("/allRows",             rows);
             model.setProperty("/rowCount",            rows.length);
             model.setProperty("/pendingCount",        pendingCount);
             model.setProperty("/supApprovedCount",    supApprovedCount);
@@ -144,6 +224,8 @@ export default class Requests extends Controller {
             model.setProperty("/connectionStatusText",  "ONLINE");
             model.setProperty("/connectionStatusState", "Success");
             model.setProperty("/lastUpdated",           new Date().toLocaleString());
+
+            this.applyFilters(); // Apply existing search/filter on newly loaded data
 
             if (showToast) MessageToast.show(`Loaded ${rows.length} requests`);
 

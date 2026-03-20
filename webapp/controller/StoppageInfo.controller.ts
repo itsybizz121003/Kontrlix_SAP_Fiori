@@ -15,10 +15,24 @@ export default class StoppageInfo extends Controller {
             runTime: "0m",
             idealTime: "0m",
             stopTime: "0m",
-            stoppageRows: [],
+            allStoppageRows: [], // Unfiltered data
+            stoppageRows: [],    // Displayed data
             stoppageTotalCount: 0,
             selectedTime: "allTime",
-            selectedMachine: "allMachines"
+            timeOptions: [
+                { key: "allTime", text: "All Time" },
+                { key: "today", text: "Today" },
+                { key: "yesterday", text: "Yesterday" },
+                { key: "thisWeek", text: "This Week" },
+                { key: "thisMonth", text: "This Month" },
+                { key: "lastThreeMonths", text: "Last 3 Months" }
+            ],
+            selectedMachine: "allMachines",
+            machineList: [{ key: "allMachines", text: "All Machines" }],
+            // Pagination
+            currentPage: 1,
+            pageSize: 10,
+            totalPages: 1
         });
 
         view.setModel(stoppageModel, "stoppage");
@@ -27,6 +41,109 @@ export default class StoppageInfo extends Controller {
 
     public onRefresh(): void {
         void this.loadStoppageData(true);
+    }
+
+    public onFilterChange(): void {
+        const model = this.getView()?.getModel("stoppage") as JSONModel;
+        model.setProperty("/currentPage", 1); // Reset to first page on filter change
+        this.applyFilters();
+    }
+
+    public onPreviousPage(): void {
+        const model = this.getView()?.getModel("stoppage") as JSONModel;
+        const current = model.getProperty("/currentPage") as number;
+        if (current > 1) {
+            model.setProperty("/currentPage", current - 1);
+            this.applyFilters();
+        }
+    }
+
+    public onNextPage(): void {
+        const model = this.getView()?.getModel("stoppage") as JSONModel;
+        const current = model.getProperty("/currentPage") as number;
+        const total = model.getProperty("/totalPages") as number;
+        if (current < total) {
+            model.setProperty("/currentPage", current + 1);
+            this.applyFilters();
+        }
+    }
+
+    private applyFilters(): void {
+        const view = this.getView();
+        if (!view) return;
+        const model = view.getModel("stoppage") as JSONModel;
+        const allRows = model.getProperty("/allStoppageRows") as any[];
+        const selectedTime = model.getProperty("/selectedTime");
+        const selectedMachine = model.getProperty("/selectedMachine");
+        const currentPage = model.getProperty("/currentPage") as number;
+        const pageSize = model.getProperty("/pageSize") as number;
+
+        let filteredRows = allRows;
+
+        // 1. Time Filter
+        if (selectedTime !== "allTime") {
+            const now = new Date();
+            const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            
+            filteredRows = filteredRows.filter(row => {
+                const rowDate = this.parseTimestamp(row.timestampRaw);
+                if (!rowDate) return false;
+
+                switch (selectedTime) {
+                    case "today":
+                        return rowDate >= startOfToday;
+                    case "yesterday":
+                        const startOfYesterday = new Date(startOfToday);
+                        startOfYesterday.setDate(startOfYesterday.getDate() - 1);
+                        return rowDate >= startOfYesterday && rowDate < startOfToday;
+                    case "thisWeek":
+                        const startOfWeek = new Date(startOfToday);
+                        startOfWeek.setDate(startOfToday.getDate() - startOfToday.getDay());
+                        return rowDate >= startOfWeek;
+                    case "thisMonth":
+                        const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+                        return rowDate >= startOfMonth;
+                    case "lastThreeMonths":
+                        const threeMonthsAgo = new Date(now.getFullYear(), now.getMonth() - 3, 1);
+                        return rowDate >= threeMonthsAgo;
+                    default:
+                        return true;
+                }
+            });
+        }
+
+        // 2. Machine Filter
+        if (selectedMachine !== "allMachines") {
+            filteredRows = filteredRows.filter(row => row.deviceId === selectedMachine);
+        }
+
+        // 3. Recalculate totals for filtered rows (before pagination)
+        let runMs = 0;
+        let stopMs = 0;
+        const allFilteredTableRows: any[] = [];
+
+        filteredRows.forEach(row => {
+            if (row.statusRaw === "RUNNING") {
+                runMs += row.durationMs;
+            } else if (row.statusRaw === "STOPPED") {
+                stopMs += row.durationMs;
+                allFilteredTableRows.push(row);
+            }
+        });
+
+        // 4. Pagination slicing
+        const totalItems = allFilteredTableRows.length;
+        const totalPages = Math.ceil(totalItems / pageSize) || 1;
+        const startIndex = (currentPage - 1) * pageSize;
+        const endIndex = startIndex + pageSize;
+        const paginatedRows = allFilteredTableRows.slice(startIndex, endIndex);
+
+        model.setProperty("/stoppageRows", paginatedRows);
+        model.setProperty("/stoppageTotalCount", totalItems);
+        model.setProperty("/totalPages", totalPages);
+        model.setProperty("/runTime", this.formatDuration(runMs));
+        model.setProperty("/stopTime", this.formatDuration(stopMs));
+        model.setProperty("/idealTime", this.formatDuration(runMs));
     }
 
     private async loadStoppageData(showToast = false): Promise<void> {
@@ -75,17 +192,26 @@ export default class StoppageInfo extends Controller {
                 });
             }
 
-            // Group by DeviceId
             const deviceMap: Record<string, Array<Record<string, any>>> = {};
+            const machineList = [{ key: "allMachines", text: "All Machines" }];
+            const deviceIds = new Set<string>();
+
             rows.forEach((row) => {
                 const id = String(row.DeviceId || "UNKNOWN");
                 if (!deviceMap[id]) deviceMap[id] = [];
                 deviceMap[id].push(row);
+                
+                if (id !== "UNKNOWN" && !deviceIds.has(id)) {
+                    deviceIds.add(id);
+                    machineList.push({ key: id, text: id });
+                }
             });
+
+            model.setProperty("/machineList", machineList);
 
             let totalRunMs  = 0;
             let totalStopMs = 0;
-            const stoppageRows: Array<Record<string, any>> = [];
+            const allStoppageRows: Array<Record<string, any>> = [];
 
             Object.keys(deviceMap).forEach((deviceId) => {
                 const deviceRows = deviceMap[deviceId];
@@ -103,28 +229,34 @@ export default class StoppageInfo extends Controller {
 
                         if (currentStatus === "RUNNING") {
                             totalRunMs += diffMs;
-                        } else if (currentStatus === "STOPPED") {
+                        }
+
+                        // We store all pairs to allow filtering later, 
+                        // but only display STOPPED ones in the table if they are stoppages
+                        allStoppageRows.push({
+                            company:     String(current.Companyname || current.CompanyName || "-"),
+                            machineName: String(current.MachineName || current.Machinename || current.PlcModel || "-"),
+                            deviceId:    deviceId,
+                            startedAt:   this.formatTimestamp(String(current.Timestamp || "-")),
+                            stoppedAt:   this.formatTimestamp(String(next.Timestamp    || "-")),
+                            duration:    this.formatDuration(diffMs),
+                            runTime:     this.formatDuration(diffMs),
+                            idealTime:   this.formatDuration(diffMs),
+                            // Metadata for filtering
+                            statusRaw:    currentStatus,
+                            timestampRaw: String(current.Timestamp || ""),
+                            durationMs:   diffMs
+                        });
+
+                        if (currentStatus === "STOPPED") {
                             totalStopMs += diffMs;
-                            stoppageRows.push({
-                                company:     String(current.Companyname || current.CompanyName || "-"),
-                                machineName: String(current.MachineName || current.Machinename || current.PlcModel || "-"),
-                                deviceId:    deviceId,
-                                startedAt:   this.formatTimestamp(String(current.Timestamp || "-")),
-                                stoppedAt:   this.formatTimestamp(String(next.Timestamp    || "-")),
-                                duration:    this.formatDuration(diffMs),
-                                runTime:     this.formatDuration(diffMs),
-                                idealTime:   this.formatDuration(diffMs)
-                            });
                         }
                     }
                 }
             });
 
-            model.setProperty("/runTime",           this.formatDuration(totalRunMs));
-            model.setProperty("/stopTime",          this.formatDuration(totalStopMs));
-            model.setProperty("/idealTime",         this.formatDuration(totalRunMs));
-            model.setProperty("/stoppageRows",      stoppageRows);
-            model.setProperty("/stoppageTotalCount", stoppageRows.length);
+            model.setProperty("/allStoppageRows", allStoppageRows);
+            this.applyFilters(); // This will set /stoppageRows and totals based on current filters
 
             if (showToast) {
                 const MessageToast = await import("sap/m/MessageToast");

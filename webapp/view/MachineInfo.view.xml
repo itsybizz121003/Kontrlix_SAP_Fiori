@@ -39,11 +39,11 @@
                             </VBox>
                         </HBox>
                         <HBox alignItems="Center" class="mhControls">
-                            <Select width="10rem" selectedKey="{machineInfo>/selectedMachine}">
-                                <items>
-                                    <core:Item key="allMachines" text="All Machines" />
-                                </items>
+                            <Select width="12rem" selectedKey="{machineInfo>/selectedCompany}" 
+                                items="{machineInfo>/companyList}" change=".onCompanyFilter">
+                                <core:Item key="{machineInfo>key}" text="{machineInfo>text}" />
                             </Select>
+                            
                             <Button text="Refresh" type="Default" press=".onRefresh" />
                         </HBox>
                     </HBox>

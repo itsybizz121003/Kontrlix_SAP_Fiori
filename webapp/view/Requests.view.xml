@@ -111,9 +111,12 @@
                         <SearchField
                             placeholder="Search by employee, email, or reason..."
                             width="60%"
+                            value="{req>/searchQuery}"
+                            liveChange=".onSearch"
+                            search=".onSearch"
                             class="reqSearchField" />
                         <HBox alignItems="Center" class="reqFilterRight">
-                            <Select width="9rem" class="reqStatusFilter">
+                            <Select width="9rem" selectedKey="{req>/selectedStatus}" change=".onStatusFilterChange" class="reqStatusFilter">
                                 <items>
                                     <core:Item key="allStatus" text="All Status"  />
                                     <core:Item key="pending"   text="Pending"     />
@@ -195,6 +198,14 @@
                                 </ColumnListItem>
                             </items>
                         </Table>
+
+                        <!-- Pager -->
+                        <HBox justifyContent="Center" alignItems="Center" class="mhPager sapUiSmallMarginTop">
+                            <Button text="Previous" enabled="{= ${req>/currentPage} > 1 }" press=".onPreviousPage" />
+                            <Button text="{req>/currentPage}" type="Emphasized" />
+                            <Text text="of {req>/totalPages}" class="sapUiSmallMarginBegin" />
+                            <Button text="Next" enabled="{= ${req>/currentPage} &lt; ${req>/totalPages} }" press=".onNextPage" />
+                        </HBox>
                     </VBox>
 
                 </VBox>

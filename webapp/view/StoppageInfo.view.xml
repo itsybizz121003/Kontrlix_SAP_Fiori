@@ -41,11 +41,13 @@
                             </VBox>
                         </HBox>
                         <HBox alignItems="Center" class="mhControls">
-                            <Select width="8rem" selectedKey="{stoppage>/selectedTime}">
-                                <items><core:Item key="allTime" text="All Time" /></items>
+                            <Select width="10rem" selectedKey="{stoppage>/selectedTime}" 
+                                items="{stoppage>/timeOptions}" change=".onFilterChange">
+                                <core:Item key="{stoppage>key}" text="{stoppage>text}" />
                             </Select>
-                            <Select width="10rem" selectedKey="{stoppage>/selectedMachine}">
-                                <items><core:Item key="allMachines" text="All Machines" /></items>
+                            <Select width="10rem" selectedKey="{stoppage>/selectedMachine}"
+                                items="{stoppage>/machineList}" change=".onFilterChange">
+                                <core:Item key="{stoppage>key}" text="{stoppage>text}" />
                             </Select>
                             <Button text="Refresh" type="Default" press=".onRefresh" />
                         </HBox>
@@ -128,9 +130,10 @@
 
                     <!-- Pager -->
                     <HBox justifyContent="Center" alignItems="Center" class="mhPager">
-                        <Button text="Previous" enabled="false" />
-                        <Button text="1" type="Emphasized" />
-                        <Button text="Next" />
+                        <Button text="Previous" enabled="{= ${stoppage>/currentPage} > 1 }" press=".onPreviousPage" />
+                        <Button text="{stoppage>/currentPage}" type="Emphasized" />
+                        <Text text="of {stoppage>/totalPages}" class="sapUiSmallMarginBegin" />
+                        <Button text="Next" enabled="{= ${stoppage>/currentPage} &lt; ${stoppage>/totalPages} }" press=".onNextPage" />
                     </HBox>
 
                 </VBox>

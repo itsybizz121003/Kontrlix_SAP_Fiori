@@ -12,9 +12,12 @@ export default class MachineInfo extends Controller {
         if (!view) return;
 
         const machineModel = new JSONModel({
-            machineRows: [],
+            allMachineRows: [], // Original un-filtered data
+            machineRows: [],    // Displayed (potentially filtered) data
             machineTotalCount: 0,
-            selectedMachine: "allMachines"
+            selectedMachine: "allMachines",
+            companyList: [{ key: "All", text: "All Companies" }],
+            selectedCompany: "All"
         });
 
         view.setModel(machineModel, "machineInfo");
@@ -23,6 +26,26 @@ export default class MachineInfo extends Controller {
 
     public onRefresh(): void {
         void this.loadMachineInfoData(true);
+    }
+
+    public onCompanyFilter(oEvent: any): void {
+        const selectedKey = oEvent.getSource().getSelectedKey();
+        this.applyCompanyFilter(selectedKey);
+    }
+
+    private applyCompanyFilter(companyKey: string): void {
+        const view = this.getView();
+        if (!view) return;
+        const model = view.getModel("machineInfo") as JSONModel;
+        const allRows = model.getProperty("/allMachineRows") as any[];
+
+        let filteredRows = allRows;
+        if (companyKey !== "All") {
+            filteredRows = allRows.filter((row: any) => row.company === companyKey);
+        }
+
+        model.setProperty("/machineRows", filteredRows);
+        model.setProperty("/machineTotalCount", filteredRows.length);
     }
 
     private async loadMachineInfoData(showToast = false): Promise<void> {
@@ -119,8 +142,28 @@ export default class MachineInfo extends Controller {
                 });
             });
 
+            // Set original and display data
+            model.setProperty("/allMachineRows", machineRows);
             model.setProperty("/machineRows", machineRows);
             model.setProperty("/machineTotalCount", machineRows.length);
+
+            // Populate Company Filter List
+            const companiesSet = new Set<string>();
+            machineRows.forEach((row) => {
+                if (row.company && row.company !== "-") companiesSet.add(row.company);
+            });
+
+            const companyList = [{ key: "All", text: "All Companies" }];
+            Array.from(companiesSet).sort().forEach((comp) => {
+                companyList.push({ key: comp, text: comp });
+            });
+            model.setProperty("/companyList", companyList);
+
+            // Apply existing filter if any
+            const selectedComp = model.getProperty("/selectedCompany");
+            if (selectedComp && selectedComp !== "All") {
+                this.applyCompanyFilter(selectedComp);
+            }
 
             if (showToast) {
                 const MessageToast = await import("sap/m/MessageToast");
