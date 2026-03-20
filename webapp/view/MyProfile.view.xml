@@ -1,127 +1,240 @@
 <mvc:View controllerName="ashu.ashu.controller.MyProfile"
     xmlns:mvc="sap.ui.core.mvc"
     xmlns="sap.m"
-    xmlns:core="sap.ui.core"
-    xmlns:form="sap.ui.layout.form">
+    xmlns:core="sap.ui.core">
     <Page showHeader="false" class="dashboardPage">
         <content>
             <HBox fitContainer="true" class="dashboardLayout">
+
                 <!-- Side Nav -->
                 <VBox class="dashSideNav">
                     <HBox class="dashLogoRow" justifyContent="Start" alignItems="Center">
+                        <core:Icon src="sap-icon://factory" class="dashLogoIcon" />
                         <Text text="ITSYBIZZ" class="dashLogoText" />
                     </HBox>
                     <List mode="None" class="dashSideList" itemPress=".onSideItemPress">
-                        <StandardListItem title="Monitoring-Dashboard" icon="sap-icon://home" type="Active" />
-                        <StandardListItem title="Live Data" icon="sap-icon://activity-individual" type="Active" />
-                        <StandardListItem title="Supervisor" icon="sap-icon://group-2" type="Active" />
-                        <StandardListItem title="Employees" icon="sap-icon://employee" type="Active" />
-                        <StandardListItem title="Machine History" icon="sap-icon://history" type="Active" />
-                        <StandardListItem title="Resources" icon="sap-icon://database" type="Active" />
-                        <StandardListItem title="Machine Info" icon="sap-icon://settings" type="Active" />
-                        <StandardListItem title="Stoppage Info" icon="sap-icon://alert" type="Active" />
-                        <StandardListItem title="Requests" icon="sap-icon://inbox" type="Active" />
-                        <StandardListItem title="Kontrolix-AI" icon="sap-icon://physical-activity" type="Active" />
-                        <StandardListItem title="My Profile" icon="sap-icon://customer" type="Active" selected="true" />
+                        <StandardListItem title="Monitoring-Dashboard" icon="sap-icon://home"               type="Active" />
+                        <StandardListItem title="Live Data"            icon="sap-icon://activity-individual" type="Active" />
+                        <StandardListItem title="Supervisor"           icon="sap-icon://group-2"             type="Active" />
+                        <StandardListItem title="Employees"            icon="sap-icon://employee"            type="Active" />
+                        <StandardListItem title="Machine History"      icon="sap-icon://history"             type="Active" />
+                        <StandardListItem title="Resources"            icon="sap-icon://database"            type="Active" />
+                        <StandardListItem title="Machine Info"         icon="sap-icon://settings"            type="Active" />
+                        <StandardListItem title="Stoppage Info"        icon="sap-icon://alert"               type="Active" />
+                        <StandardListItem title="Requests"             icon="sap-icon://inbox"               type="Active" />
+                        <StandardListItem title="Kontrolix-AI"         icon="sap-icon://physical-activity"   type="Active" />
+                        <StandardListItem title="My Profile"           icon="sap-icon://customer"            type="Active" selected="true" />
                     </List>
-                    <Button text="Log Out" type="Transparent" class="dashLogout" press=".onLogout" />
+                    <Button text="Log Out" icon="sap-icon://log" type="Transparent" class="dashLogout" press=".onLogout" />
                 </VBox>
 
-                <!-- Main -->
-                <VBox class="dashMainArea">
-                    <HBox class="supTopBar" justifyContent="SpaceBetween" alignItems="Center">
-                        <Title text="My Profile" level="H3" />
-                        <Button text="Edit Profile" type="Emphasized" press=".onOpenEditProfile" />
+                <!-- Main Area -->
+                <VBox class="dashMainArea profMainArea">
+
+                    <!-- ── Hero Banner ── -->
+                    <VBox class="profHeroBanner">
+                        <HBox justifyContent="SpaceBetween" alignItems="Center" class="profHeroContent">
+                            <HBox alignItems="Center" class="profHeroLeft">
+                                <Avatar
+                                    initials="{profile>/initials}"
+                                    displaySize="XL"
+                                    class="profAvatar" />
+                                <VBox class="profHeroInfo">
+                                    <Title text="{profile>/fullName}" level="H2" class="profHeroName" />
+                                    <HBox alignItems="Center" class="profHeroBadgeRow">
+                                        <ObjectStatus
+                                            text="{profile>/role}"
+                                            state="Success"
+                                            inverted="true"
+                                            class="profRoleBadge" />
+                                        <Text text="{profile>/email}" class="profHeroEmail" />
+                                    </HBox>
+                                    <Text text="{profile>/userId}" class="profHeroUserId" />
+                                </VBox>
+                            </HBox>
+                            <Button
+                                text="Edit Profile"
+                                icon="sap-icon://edit"
+                                type="Emphasized"
+                                press=".onOpenEditProfile"
+                                class="profEditBtn" />
+                        </HBox>
+                    </VBox>
+
+                    <!-- ── Content Area ── -->
+                    <HBox class="profContentRow" alignItems="Start">
+
+                        <!-- Left: Personal Info Card -->
+                        <VBox class="profCard profCard--left">
+                            <HBox alignItems="Center" class="profCardHeader">
+                                <VBox class="profCardIconBox profCardIconBox--blue">
+                                    <core:Icon src="sap-icon://person-placeholder" class="profCardIcon" />
+                                </VBox>
+                                <Title text="Personal Information" level="H4" class="profCardTitle" />
+                            </HBox>
+
+                            <VBox class="profInfoList">
+                                <HBox class="profInfoRow" justifyContent="SpaceBetween" alignItems="Center">
+                                    <HBox alignItems="Center" class="profInfoLabelBox">
+                                        <core:Icon src="sap-icon://customer" class="profInfoIcon" />
+                                        <Label text="Full Name" class="profInfoLabel" />
+                                    </HBox>
+                                    <Text text="{profile>/fullName}" class="profInfoValue" />
+                                </HBox>
+
+                                <HBox class="profInfoRow" justifyContent="SpaceBetween" alignItems="Center">
+                                    <HBox alignItems="Center" class="profInfoLabelBox">
+                                        <core:Icon src="sap-icon://email" class="profInfoIcon" />
+                                        <Label text="Email" class="profInfoLabel" />
+                                    </HBox>
+                                    <Text text="{profile>/email}" class="profInfoValue" />
+                                </HBox>
+
+                                <HBox class="profInfoRow" justifyContent="SpaceBetween" alignItems="Center">
+                                    <HBox alignItems="Center" class="profInfoLabelBox">
+                                        <core:Icon src="sap-icon://phone" class="profInfoIcon" />
+                                        <Label text="Phone" class="profInfoLabel" />
+                                    </HBox>
+                                    <Text text="{profile>/phone}" class="profInfoValue" />
+                                </HBox>
+
+                                <HBox class="profInfoRow" justifyContent="SpaceBetween" alignItems="Center">
+                                    <HBox alignItems="Center" class="profInfoLabelBox">
+                                        <core:Icon src="sap-icon://role" class="profInfoIcon" />
+                                        <Label text="Role" class="profInfoLabel" />
+                                    </HBox>
+                                    <ObjectStatus text="{profile>/role}" state="Success" class="profInfoBadge" />
+                                </HBox>
+
+                                <HBox class="profInfoRow" justifyContent="SpaceBetween" alignItems="Center">
+                                    <HBox alignItems="Center" class="profInfoLabelBox">
+                                        <core:Icon src="sap-icon://key" class="profInfoIcon" />
+                                        <Label text="User ID" class="profInfoLabel" />
+                                    </HBox>
+                                    <Text text="{profile>/userId}" class="profInfoValue profInfoValue--mono" />
+                                </HBox>
+                            </VBox>
+                        </VBox>
+
+                        <!-- Right: Business + Bank Cards -->
+                        <VBox class="profCard--right">
+
+                            <!-- Business Info Card -->
+                            <VBox class="profCard profCardMarginBottom">
+                                <HBox alignItems="Center" class="profCardHeader">
+                                    <VBox class="profCardIconBox profCardIconBox--violet">
+                                        <core:Icon src="sap-icon://building" class="profCardIcon" />
+                                    </VBox>
+                                    <Title text="Business Information" level="H4" class="profCardTitle" />
+                                </HBox>
+
+                                <VBox class="profInfoList">
+                                    <HBox class="profInfoRow" justifyContent="SpaceBetween" alignItems="Center">
+                                        <HBox alignItems="Center" class="profInfoLabelBox">
+                                            <core:Icon src="sap-icon://building" class="profInfoIcon" />
+                                            <Label text="Company" class="profInfoLabel" />
+                                        </HBox>
+                                        <Text text="{profile>/CpnyName}" class="profInfoValue" />
+                                    </HBox>
+                                    <HBox class="profInfoRow" justifyContent="SpaceBetween" alignItems="Center">
+                                        <HBox alignItems="Center" class="profInfoLabelBox">
+                                            <core:Icon src="sap-icon://map" class="profInfoIcon" />
+                                            <Label text="Address" class="profInfoLabel" />
+                                        </HBox>
+                                        <Text text="{profile>/address}" class="profInfoValue" />
+                                    </HBox>
+                                    <HBox class="profInfoRow" justifyContent="SpaceBetween" alignItems="Center">
+                                        <HBox alignItems="Center" class="profInfoLabelBox">
+                                            <core:Icon src="sap-icon://tag" class="profInfoIcon" />
+                                            <Label text="GSTIN" class="profInfoLabel" />
+                                        </HBox>
+                                        <Text text="{profile>/gstin}" class="profInfoValue profInfoValue--mono" />
+                                    </HBox>
+                                </VBox>
+                            </VBox>
+
+                            <!-- Bank Info Card -->
+                            <VBox class="profCard">
+                                <HBox alignItems="Center" class="profCardHeader">
+                                    <VBox class="profCardIconBox profCardIconBox--green">
+                                        <core:Icon src="sap-icon://money-bills" class="profCardIcon" />
+                                    </VBox>
+                                    <Title text="Bank Information" level="H4" class="profCardTitle" />
+                                </HBox>
+
+                                <VBox class="profInfoList">
+                                    <HBox class="profInfoRow" justifyContent="SpaceBetween" alignItems="Center">
+                                        <HBox alignItems="Center" class="profInfoLabelBox">
+                                            <core:Icon src="sap-icon://building" class="profInfoIcon" />
+                                            <Label text="Bank Name" class="profInfoLabel" />
+                                        </HBox>
+                                        <Text text="{profile>/bankName}" class="profInfoValue" />
+                                    </HBox>
+                                    <HBox class="profInfoRow" justifyContent="SpaceBetween" alignItems="Center">
+                                        <HBox alignItems="Center" class="profInfoLabelBox">
+                                            <core:Icon src="sap-icon://credit-card" class="profInfoIcon" />
+                                            <Label text="Account No" class="profInfoLabel" />
+                                        </HBox>
+                                        <Text text="{profile>/accountNo}" class="profInfoValue profInfoValue--mono" />
+                                    </HBox>
+                                    <HBox class="profInfoRow" justifyContent="SpaceBetween" alignItems="Center">
+                                        <HBox alignItems="Center" class="profInfoLabelBox">
+                                            <core:Icon src="sap-icon://number-sign" class="profInfoIcon" />
+                                            <Label text="IFSC Code" class="profInfoLabel" />
+                                        </HBox>
+                                        <Text text="{profile>/ifscCode}" class="profInfoValue profInfoValue--mono" />
+                                    </HBox>
+                                </VBox>
+                            </VBox>
+
+                        </VBox>
                     </HBox>
-
-                    <!-- Profile Card -->
-                    <VBox alignItems="Center" class="sapUiMediumMargin">
-                        <Avatar initials="{profile>/initials}" displaySize="XL" />
-                        <Title text="{profile>/fullName}" level="H2" class="sapUiSmallMarginTop" />
-                        <ObjectStatus text="{profile>/role}" state="Success" />
-                    </VBox>
-
-                    <!-- Info List -->
-                    <VBox class="sapUiMediumMargin">
-                        <HBox justifyContent="SpaceBetween" class="sapUiSmallMarginBottom">
-                            <Label text="User ID" />
-                            <Text text="{profile>/userId}" />
-                        </HBox>
-                        <HBox justifyContent="SpaceBetween" class="sapUiSmallMarginBottom">
-                            <Label text="Email" />
-                            <Text text="{profile>/email}" />
-                        </HBox>
-                        <HBox justifyContent="SpaceBetween" class="sapUiSmallMarginBottom">
-                            <Label text="Phone" />
-                            <Text text="{profile>/phone}" />
-                        </HBox>
-                        <HBox justifyContent="SpaceBetween" class="sapUiSmallMarginBottom">
-                            <Label text="Company" />
-                            <Text text="{profile>/CpnyName}" />
-                        </HBox>
-                        <HBox justifyContent="SpaceBetween" class="sapUiSmallMarginBottom">
-                            <Label text="Address" />
-                            <Text text="{profile>/address}" />
-                        </HBox>
-                        <HBox justifyContent="SpaceBetween" class="sapUiSmallMarginBottom">
-                            <Label text="GSTIN" />
-                            <Text text="{profile>/gstin}" />
-                        </HBox>
-                        <HBox justifyContent="SpaceBetween" class="sapUiSmallMarginBottom">
-                            <Label text="Bank Name" />
-                            <Text text="{profile>/bankName}" />
-                        </HBox>
-                        <HBox justifyContent="SpaceBetween" class="sapUiSmallMarginBottom">
-                            <Label text="Account No" />
-                            <Text text="{profile>/accountNo}" />
-                        </HBox>
-                        <HBox justifyContent="SpaceBetween" class="sapUiSmallMarginBottom">
-                            <Label text="IFSC Code" />
-                            <Text text="{profile>/ifscCode}" />
-                        </HBox>
-                    </VBox>
                 </VBox>
             </HBox>
 
-            <!-- Edit Drawer -->
+            <!-- ── Edit Drawer ── -->
             <VBox id="editProfileOverlay" class="supModalOverlay" visible="false">
                 <VBox class="supDrawer">
                     <HBox justifyContent="SpaceBetween" alignItems="Center" class="supDrawerHeader">
-                        <Title text="Edit Profile" level="H4" />
-                        <Button icon="sap-icon://decline" type="Transparent" press=".onCloseEditProfile" />
+                        <HBox alignItems="Center">
+                            <core:Icon src="sap-icon://edit" class="profDrawerIcon" />
+                            <Title text="Edit Profile" level="H4" />
+                        </HBox>
+                        <Button icon="sap-icon://decline" type="Transparent" press=".onCloseEditProfile" class="supDrawerClose" />
                     </HBox>
 
                     <VBox class="supDrawerBody">
-                        <Label text="First Name" />
-                        <Input value="{profile>/editForm/FirstName}" width="100%" />
+                        <Label text="First Name *"   class="supFieldLabel" />
+                        <Input value="{profile>/editForm/FirstName}" placeholder="Enter first name" width="100%" />
 
-                        <Label text="Last Name" />
-                        <Input value="{profile>/editForm/LastName}" width="100%" />
+                        <Label text="Last Name"      class="supFieldLabel" />
+                        <Input value="{profile>/editForm/LastName}"  placeholder="Enter last name"  width="100%" />
 
-                        <Label text="Phone" />
-                        <Input value="{profile>/editForm/Phone}" width="100%" />
+                        <Label text="Phone"          class="supFieldLabel" />
+                        <Input value="{profile>/editForm/Phone}"     placeholder="Enter phone"      width="100%" />
 
-                        <Label text="Company Name" />
-                        <Input value="{profile>/editForm/CpnyName}" width="100%" />
+                        <Label text="Company Name"   class="supFieldLabel" />
+                        <Input value="{profile>/editForm/CpnyName}"  placeholder="Enter company"    width="100%" />
 
-                        <Label text="Address" />
-                        <Input value="{profile>/editForm/Address}" width="100%" />
+                        <Label text="Address"        class="supFieldLabel" />
+                        <Input value="{profile>/editForm/Address}"   placeholder="Enter address"    width="100%" />
 
-                        <Label text="GSTIN" />
-                        <Input value="{profile>/editForm/Gstin}" width="100%" />
+                        <Label text="GSTIN"          class="supFieldLabel" />
+                        <Input value="{profile>/editForm/Gstin}"     placeholder="Enter GSTIN"      width="100%" />
 
-                        <Label text="Bank Name" />
-                        <Input value="{profile>/editForm/BankName}" width="100%" />
+                        <Label text="Bank Name"      class="supFieldLabel" />
+                        <Input value="{profile>/editForm/BankName}"  placeholder="Enter bank name"  width="100%" />
 
-                        <Label text="Account No" />
-                        <Input value="{profile>/editForm/AccountNo}" width="100%" />
+                        <Label text="Account No"     class="supFieldLabel" />
+                        <Input value="{profile>/editForm/AccountNo}" placeholder="Enter account no" width="100%" />
 
-                        <Label text="IFSC Code" />
-                        <Input value="{profile>/editForm/IfscCode}" width="100%" />
+                        <Label text="IFSC Code"      class="supFieldLabel" />
+                        <Input value="{profile>/editForm/IfscCode}"  placeholder="Enter IFSC code"  width="100%" />
                     </VBox>
 
-                    <Button text="Update Profile" type="Emphasized"
-                        width="100%" press=".onUpdateProfile" />
+                    <Button text="Update Profile" icon="sap-icon://accept"
+                        type="Emphasized" width="100%"
+                        class="supCreateBtn" press=".onUpdateProfile" />
                 </VBox>
             </VBox>
         </content>
