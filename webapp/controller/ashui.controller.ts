@@ -26,7 +26,7 @@ export default class ashui extends Controller {
         const email = emailInput?.getValue()?.trim() || "";
         const password = passwordInput?.getValue()?.trim() || "";
         if (!email || !password) {
-            MessageToast.show("Email aur Password daalo!");
+            MessageToast.show("Please enter Email & Password!");
             return;
         }
 
